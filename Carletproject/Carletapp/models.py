@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings 
+from django import forms
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
@@ -23,7 +24,35 @@ class Carlet_User (models.Model):
 
 class Vehicle_detail(models.Model):
     vehicle_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    vehicle_user_id = models.ForeignKey(Carlet_User, on_delete=models.CASCADE)
     vehicle_name = models.CharField(max_length = 100)
+    vehicle_model = models.CharField(max_length = 100)
+    vehicle_type = models.CharField(max_length = 100)
+    vehicle_photos1 = models.ImageField(default = "") 
+    vehicle_photos2 = models.ImageField(default = None)
+    vehicle_photos3 = models.ImageField(blank = True, default = None, null = True)  
+    vehicle_photos4 = models.ImageField(blank = True, default = None, null = True) 
+    vehicle_photos5 = models.ImageField(blank = True, default = None, null = True) 
+    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default = 0)
+    vehicle_isverified = models.BooleanField(default = False)
+
+    def __str__(self):
+        return (self.vehicle_name +" "+ str(self.vehicle_id))
+
+
+class Vehicle_document(models.Model):
+    vehicledoc_id = models.ForeignKey(Vehicle_detail, on_delete=models.CASCADE, primary_key=True)
+    ownerdoc_id = models.ForeignKey(Carlet_User, on_delete=models.CASCADE)
+    reg_papers = models.FileField()
+    insurance_papers = models.FileField()
+    tracker_papers = models.FileField()
+
+    def __str__(self):
+        return self.vehicledoc_id
+
+
+class Vehicle_Location(models.Model):
+    vehicleloc_id = models.ForeignKey(Vehicle_detail, on_delete=models.CASCADE, primary_key=True)
     vehicle_street_address = models.TextField(max_length = 300)
     vehicle_city = models.CharField(max_length = 100)
     vehicle_state = models.CharField(max_length = 100)
@@ -33,21 +62,7 @@ class Vehicle_detail(models.Model):
 
 
     def __str__(self):
-        return (self.vehicle_name +" "+ str(self.vehicle_id))
-
-
-# class Vehicle_document(models.Model):
-#     vehicledoc_id = models.EmailField(max_length=100)
-
-#     def __str__(self):
-#         return self.vehicledoc_id
-
-
-# class Vehicle_Location(models.Model):
-#     vehicleloc_id = models.EmailField(max_length=100)
-
-#     def __str__(self):
-#         return self.vehicleloc_id
+        return self.vehicleloc_id
 
 
 # class User_document(models.Model):
