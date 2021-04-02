@@ -23,6 +23,10 @@ export default function Welcome() {
 }
 
 const win = Dimensions.get('window')
+
+console.log(`height`,win.height)
+console.log(`width`,win.width)
+
 const height = (win.width/350)*320
 
 const styles = StyleSheet.create({

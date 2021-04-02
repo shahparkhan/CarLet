@@ -30,7 +30,20 @@ const getFonts = () => {
 
 
 export default function App() {
+
+
+  const [email,setEmail] = React.useState(``)
+  const [password,setPassword] = React.useState(``)  
   const [fontLoaded, setFontsLoaded] = useState(false)
+
+
+  const submitEmail = (val) =>{
+    setEmail(val)
+  }
+  const submitPassword = (val) =>{
+    setPassword(val)
+  }
+  
 
   if (fontLoaded) {
     return (
@@ -49,8 +62,6 @@ export default function App() {
   }
 
   
-
-  
 }
 
 const styles = StyleSheet.create({
@@ -61,3 +72,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 });
+
+
+//submitEmail = {submitEmail} submitPassword = {submitPassword}
