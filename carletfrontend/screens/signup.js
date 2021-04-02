@@ -1,22 +1,31 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { View, Image, StyleSheet } from "react-native";
+import TouchableButton from "../assets/components/TouchableButton";
 
 export default function Signup() {
-    return (
-      <View style={styles.container}>
-          <Text>
-              Signup Screen
-          </Text>
-      </View>
-    );
+  return (
+    <View style={styles.viewContainer}>
+      <Image source={require("./../assets/SignupVector.png")} />
+      <TouchableButton
+        title="Next"
+        onPress={() => {
+          console.log("Pressed");
+        }}
+      ></TouchableButton>
+
+      {/* <TouchableButton
+        title="Sign In"
+        onPress={() => {
+          console.log("Pressed");
+        }}
+      ></TouchableButton> */}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 50,
-        fontWeight: 'bold'
-    }
-})
+  viewContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

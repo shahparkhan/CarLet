@@ -1,3 +1,4 @@
+
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import AppLoading from 'expo-app-loading'
@@ -48,7 +49,7 @@ export default function App() {
   if (fontLoaded) {
     return (
       <View style={styles.container}>
-        <Welcome />
+        <Signup />
       </View>
     )
   } else {
@@ -60,17 +61,14 @@ export default function App() {
         />
       )
   }
-
-  
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
+  }
 });
 
 
