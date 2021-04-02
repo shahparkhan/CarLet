@@ -7,9 +7,20 @@ import Signup from './screens/signup'
 // import SvgComponent from './svgcomponents/yellowvector'
 
 export default function App() {
+
+  const [email,setEmail] = React.useState(``)
+  const [password,setPassword] = React.useState(``)
+
+  const submitEmail = (val) =>{
+    setEmail(val)
+  }
+  const submitPassword = (val) =>{
+    setPassword(val)
+  }
+  
   return (
     <View style={styles.container}>
-      <Welcome />
+      < Login  />
     </View>
   );
 }
@@ -22,3 +33,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+//submitEmail = {submitEmail} submitPassword = {submitPassword}
