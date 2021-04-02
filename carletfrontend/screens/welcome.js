@@ -2,6 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 
 export default function Welcome() {
+    
+    
+    
+    
     return (
         <View style={styles.container}>
             <Image 
@@ -9,7 +13,7 @@ export default function Welcome() {
                 source={require('./../assets/YellowVector.png')}
             />
             <Text style = {styles.welcometext}>
-                Welcome Screen
+                Welcome Screens!!!!
             </Text>
             <Text style = {styles.bodytext}>
                 Our tagline which we haven't thought of yet
@@ -36,8 +40,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         top: -50,
         alignSelf: 'center',
+        fontFamily: 'Nunito-ExtraBold',
         fontSize: 36,
-        fontWeight: 'bold',
         textAlign: 'center'
     },
 
