@@ -2,6 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 
 export default function Welcome() {
+    
+    
+    
+    
     return (
         <View style={styles.container}>
             <Image 
@@ -9,7 +13,7 @@ export default function Welcome() {
                 source={require('./../assets/YellowVector.png')}
             />
             <Text style = {styles.welcometext}>
-                Welcome Screen
+                Welcome Screens!!!!
             </Text>
             <Text style = {styles.bodytext}>
                 Our tagline which we haven't thought of yet
@@ -19,6 +23,10 @@ export default function Welcome() {
 }
 
 const win = Dimensions.get('window')
+
+console.log(`height`,win.height)
+console.log(`width`,win.width)
+
 const height = (win.width/350)*320
 
 const styles = StyleSheet.create({
@@ -36,8 +44,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         top: -50,
         alignSelf: 'center',
+        fontFamily: 'Nunito-ExtraBold',
         fontSize: 36,
-        fontWeight: 'bold',
         textAlign: 'center'
     },
 
