@@ -49,6 +49,9 @@ export default function App() {
   if (fontLoaded) {
     return (
       <View style={styles.container}>
+        <StatusBar
+          backgroundColor = "#ffa000"
+        />
         <Signup />
       </View>
     )
@@ -65,9 +68,12 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    flex:1,
+    backgroundColor: "#fafafa"
+  },
+  statusbar: {
+    color: '#ccc100',
+    height: 30
   }
 });
 
