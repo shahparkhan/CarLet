@@ -47,9 +47,11 @@ export default function App() {
 
   if (fontLoaded) {
     return (
+     
       <View style={styles.container}>
-        <Welcome />
+        <Login />
       </View>
+      
     )
   } else {
       return (
@@ -65,6 +67,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
