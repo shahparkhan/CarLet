@@ -2,19 +2,16 @@ import React, { useState } from "react";
 import { Header } from 'react-navigation-stack'
 import { Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, TextInput, StyleSheet } from "react-native";
 
-const TextField = ({placeholder, changeHandler, style}) => {
+const TextField = ({placeholder, changeHandler, style,secureTextEntry}) => {
   const [enableshift, setEnableShift] = useState(false)
   
   
   return (
     <KeyboardAvoidingView 
         behavior = "position"
-        style = {styles.keyboard}
         enabled={enableshift}
       >
-    
-      
-        <TextInput style = {{...styles.default, ...style}} placeholder = {placeholder} onChangeText = { changeHandler } onFocus={() => setEnableShift(true)}/> 
+        <TextInput style = {{...styles.default, ...style}} placeholder = {placeholder} onChangeText = { changeHandler } secureTextEntry = {secureTextEntry} onFocus={() => setEnableShift(true)}/> 
       
     </KeyboardAvoidingView>
     
