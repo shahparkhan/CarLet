@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings 
+from django import forms
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
@@ -41,6 +42,7 @@ class Vehicle_detail(models.Model):
         return (self.vehicle_name + " " + str(self.vehicle_id) + " " + self.vehicle_user.user.username)
 
 
+
 class Vehicle_document(models.Model):
     vehicledoc_id = models.OneToOneField(Vehicle_detail, on_delete=models.CASCADE, primary_key=True)
     reg_papers = models.FileField()
@@ -49,6 +51,7 @@ class Vehicle_document(models.Model):
     
     def __str__(self):
         return  (self.vehicledoc_id.vehicle_user.user.username + " " +  str(self.vehicledoc_id))
+
 
 
 class Vehicle_Location(models.Model):
@@ -74,6 +77,7 @@ class User_document(models.Model):
     driver_license = models.CharField(max_length = 50)
     driver_license_picture = models.ImageField()
     account_number = models.CharField(max_length = 24)
+
 
 
     def __str__(self):

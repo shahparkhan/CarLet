@@ -1,5 +1,6 @@
 from django.contrib import admin
 from Carletapp.models import Carlet_User, Vehicle_detail, Vehicle_Location, Vehicle_document, User_document, Trip_detail, Rating, Voucher
+
 # Register your models here.
 admin.site.register(Carlet_User)
 admin.site.register(Vehicle_detail)
