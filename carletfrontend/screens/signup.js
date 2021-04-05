@@ -11,7 +11,6 @@ export default function Signup() {
         <Image 
           style={styles.yellowvector}
           source={require("./../assets/SignupVector.png")} 
-
         />
 
         <ScrollView>

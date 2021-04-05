@@ -35,7 +35,7 @@ export default function App() {
 
   const [email,setEmail] = React.useState(``)
   const [password,setPassword] = React.useState(``)  
-  const [fontLoaded, setFontsLoaded] = useState(false)
+  const [fontLoaded, setFontsLoaded] = React.useState(false)
 
 
   const submitEmail = (val) =>{
@@ -53,7 +53,7 @@ export default function App() {
         <StatusBar
           backgroundColor = "#ffa000"
         />
-        <Signup />
+        <Login />
 
       </View>
       
