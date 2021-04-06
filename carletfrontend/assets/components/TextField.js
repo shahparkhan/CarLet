@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Header } from "react-navigation-stack";
 import {
+  Dimensions,
   Keyboard,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
@@ -29,6 +30,8 @@ const TextField = ({ placeholder, changeHandler, style, secureTextEntry }) => {
   );
 };
 
+const win = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   default: {
     
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
     borderColor: "#212121",
     padding: 16,
     borderRadius: 4,
-    width: 328,
+    width: win.width - 32,
     height: 56,
     fontFamily: "Nunito-Light",
   },

@@ -4,6 +4,7 @@ import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
 import SignUpView from "./SignUpView";
 import SignUpStyles from "./SignUpStyles";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -72,9 +73,8 @@ const Signup = () => {
   return (
     <SignUpView>
 
-      
-        <KeyboardAvoidingView
-          behavior="position"
+        <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
         >
 
           <Image
@@ -114,8 +114,7 @@ const Signup = () => {
           changeHandler={re_enterHandler}
           secureTextEntry={true}
         />
-        </KeyboardAvoidingView>
-
+        </KeyboardAwareScrollView>
       <TouchableButton
         buttonposition={SignUpStyles.buttonposition}
         title="Next"
