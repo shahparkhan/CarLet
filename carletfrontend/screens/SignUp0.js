@@ -48,6 +48,8 @@ const Signup = ({ navigation }) => {
     }
     return false;
   };
+
+
   const validateInput = () => {
     console.log(email, Password, confirmPassword);
     
@@ -73,12 +75,6 @@ const Signup = ({ navigation }) => {
       setborderColor([field1, field2, field3])
       console.log("Some fields are empty");
 
-    } else if (Password != confirmPassword) {
-      
-      seterror(true);
-      setborderColor(["black","red","red"]);
-      seterrorMsg(`Passwords don't match`);
-
     } else if (!validateEmailFromDataBase(email)) {
       
       console.log("Invalidate Email");
@@ -86,6 +82,21 @@ const Signup = ({ navigation }) => {
       seterror(true);
       seterrorMsg("Invalid Email. Enter New Email");
       setborderColor(["red", "black", "black"]);
+
+    } else if (Password != confirmPassword) {
+      
+      seterror(true);
+      setborderColor(["black","red","red"]);
+      seterrorMsg(`Passwords don't match`);
+
+    } else if (Password.length < 8) {
+      
+      console.log("Not Eight Char Long");
+      console.log("Length: ", Password.length);
+      
+      seterror(true);
+      seterrorMsg("Password Should be Eight Character Long");
+      setborderColor(["black", "red", "red"]);
 
     } else {
       
