@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { View, Image, KeyboardAvoidingView, ScrollView, Text, TextInput } from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
 import SignUpView from "./SignUpView";
@@ -23,6 +23,10 @@ const Signup = () => {
     console.log("EMAIL:::", addr, emailList.includes(addr));
     return emailList.includes(addr);
   };
+  const [enableshift, setEnableShift] = useState(false);
+  const handleChange = (e) => {
+    changeHandler(e);
+  };
 
   const emailHandler = (e) => {
     setEmail(e);
@@ -45,7 +49,7 @@ const Signup = () => {
   const validateInput = () => {
     console.log(email, Password, confirmPassword);
     if (Password != confirmPassword) {
-      setpasswordsmatch(false);
+      // setpasswordsmatch(false);
       seterror(true);
       setborderColor("red");
       seterrorMsg(`Passwords don't match`);
@@ -67,12 +71,22 @@ const Signup = () => {
 
   return (
     <SignUpView>
-      {error ? <Text style={SignUpStyles.error}>{errorMsg}</Text> : <></>}
 
-      <ScrollView contentContainerStyle={{ justifyContent: "center" }}>
+      
+        <KeyboardAvoidingView
+          behavior="position"
+        >
+
+          <Image
+            style={SignUpStyles.yellowvector}
+            source={require("./../assets/SignupVector.png")}
+          />
+          
+        {error ? <Text style={SignUpStyles.error}>{errorMsg}</Text> : <></>}
+        
         <TextField
           placeholder={"Email"}
-          style={{ position: "relative", marginTop: 20 }}
+          style={{ position: "relative", alignSelf: "center" }}
           changeHandler={emailHandler}
           secureTextEntry={false}
         />
@@ -81,8 +95,9 @@ const Signup = () => {
           placeholder={"Password"}
           style={{
             position: "relative",
-            marginTop: 10,
+            marginTop: 16,
             borderColor: borderColor,
+            alignSelf: "center"
           }}
           changeHandler={passHandler}
           secureTextEntry={true}
@@ -92,13 +107,14 @@ const Signup = () => {
           placeholder={"Confirm Password"}
           style={{
             position: "relative",
-            marginTop: 10,
+            marginTop: 16,
             borderColor: borderColor,
+            alignSelf: "center"
           }}
           changeHandler={re_enterHandler}
           secureTextEntry={true}
         />
-      </ScrollView>
+        </KeyboardAvoidingView>
 
       <TouchableButton
         buttonposition={SignUpStyles.buttonposition}

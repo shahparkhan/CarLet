@@ -20,7 +20,11 @@ const SignUpStyles = StyleSheet.create({
   },
   error: {
     color: "tomato",
-  },
+    alignSelf: "center",
+    position: "relative",
+    marginTop: -40,
+    marginBottom: 16
+  }
 });
 
 export default SignUpStyles;

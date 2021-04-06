@@ -5,10 +5,10 @@ import SignUpStyles from "./SignUpStyles";
 const SignUpView = (props) => {
   return (
     <View style={SignUpStyles.viewContainer}>
-      <Image
+      {/* <Image
         style={SignUpStyles.yellowvector}
         source={require("./../assets/SignupVector.png")}
-      />
+      /> */}
       {props.children}
     </View>
   );

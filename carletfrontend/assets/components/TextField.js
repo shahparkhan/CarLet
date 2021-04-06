@@ -15,11 +15,7 @@ const TextField = ({ placeholder, changeHandler, style, secureTextEntry }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior="position"
-      style={styles.keyboard}
-      enabled={enableshift}
-    >
+    
       <TextInput
         style={{ ...styles.default, ...style }}
         placeholder={placeholder}
@@ -29,12 +25,13 @@ const TextField = ({ placeholder, changeHandler, style, secureTextEntry }) => {
         }}
         secureTextEntry={secureTextEntry}
       />
-    </KeyboardAvoidingView>
+    
   );
 };
 
 const styles = StyleSheet.create({
   default: {
+    
     borderWidth: 1,
     borderColor: "#212121",
     padding: 16,
