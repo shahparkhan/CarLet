@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 
-const TextField = ({ placeholder, changeHandler, style, secureTextEntry }) => {
+const TextField = ({ placeholder, changeHandler, style, secureTextEntry, keyboardType }) => {
   const [enableshift, setEnableShift] = useState(false);
   const handleChange = (e) => {
     changeHandler(e);
@@ -25,6 +25,7 @@ const TextField = ({ placeholder, changeHandler, style, secureTextEntry }) => {
           setEnableShift(true);
         }}
         secureTextEntry={secureTextEntry}
+        keyboardType={keyboardType}
       />
     
   );

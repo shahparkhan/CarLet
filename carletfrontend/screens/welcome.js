@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
-
-export default function Welcome() {
+import TouchableButton from "../assets/components/TouchableButton";
+export default function Welcome({ navigation }) {
     
     
-    
+    const pressHandler = (to) => {
+        navigation.navigate(to)
+    }
     
     return (
         <View style={styles.container}>
@@ -18,6 +20,16 @@ export default function Welcome() {
             <Text style = {styles.bodytext}>
                 Our tagline which we haven't thought of yet
             </Text>
+            <TouchableButton
+                buttonposition={styles.buttonposition}
+                title="LOGIN"
+                onPress={() => pressHandler("Login")}
+            ></TouchableButton>
+            <TouchableButton
+                buttonposition={styles.buttonposition}
+                title="SIGNUP"
+                onPress={() => pressHandler("SignUp0")}
+            ></TouchableButton>
         </View>
     );
 }
@@ -56,5 +68,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontSize: 18,
         textAlign: 'center'
-    }
+    },
+
+    buttonposition: {
+        position: "relative",
+        marginTop: 16,
+        alignSelf: "center"
+    },
+
 })

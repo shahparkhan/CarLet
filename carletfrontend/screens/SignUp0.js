@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import { View, Image, KeyboardAvoidingView, ScrollView, Text, TextInput } from "react-native";
+import { Image, Text} from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
 import SignUpView from "./SignUpView";
 import SignUpStyles from "./SignUpStyles";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-const Signup = () => {
+const Signup = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
   const [error, seterror] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
-  const [borderColor, setborderColor] = useState("black");
+  const [borderColor, setborderColor] = useState(["black", "black", "black"]);
 
   let l = "";
 
   const validateEmailFromDataBase = (addr) => {
     const emailList = [
       "ashir1999@gmail.com",
-      "adnan.abbas@lums.com, ShahparNafeesKhan@gmail.com",
+      "adnan.abbas@lums.com", 
+      "shahparnafeeskhan@gmail.com",
     ];
     console.log("EMAIL:::", addr, emailList.includes(addr));
     return emailList.includes(addr);
@@ -49,24 +50,52 @@ const Signup = () => {
   };
   const validateInput = () => {
     console.log(email, Password, confirmPassword);
-    if (Password != confirmPassword) {
-      // setpasswordsmatch(false);
-      seterror(true);
-      setborderColor("red");
-      seterrorMsg(`Passwords don't match`);
-    } else if (anyfieldEmpty()) {
+    
+    if (anyfieldEmpty()) {
+      
       seterror(true);
       seterrorMsg(`Some fields are empty`);
+      
+      let field1 = "black"
+      let field2 = "black"
+      let field3 = "black"
+      
+      if (email === ""){
+        field1 = "red"
+      } 
+      if (Password === "") {
+        field2 = "red"
+      } 
+      if (confirmPassword === "") {
+        field3 = "red"
+      }
+      
+      setborderColor([field1, field2, field3])
       console.log("Some fields are empty");
-    } else if (!validateEmailFromDataBase(email)) {
-      console.log("Invalidate Email");
+
+    } else if (Password != confirmPassword) {
+      
       seterror(true);
-      seterrorMsg("Invalid Email. Enter new email");
+      setborderColor(["black","red","red"]);
+      seterrorMsg(`Passwords don't match`);
+
+    } else if (!validateEmailFromDataBase(email)) {
+      
+      console.log("Invalidate Email");
+      
+      seterror(true);
+      seterrorMsg("Invalid Email. Enter New Email");
+      setborderColor(["red", "black", "black"]);
+
     } else {
+      
       console.log("ALl GOOD!");
+      
       seterrorMsg("");
       seterror(false);
-      setborderColor("black");
+      setborderColor(["black", "black", "black"]);
+      navigation.navigate("SignUp1")
+
     }
   };
 
@@ -86,9 +115,13 @@ const Signup = () => {
         
         <TextField
           placeholder={"Email"}
-          style={{ position: "relative", alignSelf: "center" }}
+          style={{ 
+            position: "relative", 
+            borderColor: borderColor[0],
+            alignSelf: "center" }}
           changeHandler={emailHandler}
           secureTextEntry={false}
+          keyboardType={"email-address"}
         />
 
         <TextField
@@ -96,11 +129,12 @@ const Signup = () => {
           style={{
             position: "relative",
             marginTop: 16,
-            borderColor: borderColor,
+            borderColor: borderColor[1],
             alignSelf: "center"
           }}
           changeHandler={passHandler}
           secureTextEntry={true}
+          keyboardType={"default"}
         />
 
         <TextField
@@ -108,16 +142,17 @@ const Signup = () => {
           style={{
             position: "relative",
             marginTop: 16,
-            borderColor: borderColor,
+            borderColor: borderColor[2],
             alignSelf: "center"
           }}
           changeHandler={re_enterHandler}
           secureTextEntry={true}
+          keyboardType={"default"}
         />
         </KeyboardAwareScrollView>
       <TouchableButton
         buttonposition={SignUpStyles.buttonposition}
-        title="Next"
+        title="NEXT"
         onPress={validateInput}
       ></TouchableButton>
     </SignUpView>

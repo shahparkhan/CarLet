@@ -1,16 +1,25 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Image, TouchableWithoutFeedback, Keyboard } from "react-native";
 import SignUpStyles from "./SignUpStyles";
 
 const SignUpView = (props) => {
   return (
+    <TouchableWithoutFeedback onPress = {() =>{Keyboard.dismiss()}}>
+    
     <View style={SignUpStyles.viewContainer}>
       {/* <Image
         style={SignUpStyles.yellowvector}
         source={require("./../assets/SignupVector.png")}
       /> */}
       {props.children}
+      <Image
+          style={SignUpStyles.smallcar}
+          source={require("./../assets/smallcar.png")}
+    />
     </View>
+    
+    </TouchableWithoutFeedback>
+
   );
 };
 
