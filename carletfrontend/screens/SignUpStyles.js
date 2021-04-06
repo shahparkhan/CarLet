@@ -24,6 +24,13 @@ const SignUpStyles = StyleSheet.create({
     position: "relative",
     marginTop: -40,
     marginBottom: 16
+  },
+  smallcar: {
+    width: 40,
+    height: 20,
+    position: "absolute",
+    top: win.height -36,
+    right: 16,
   }
 });
 

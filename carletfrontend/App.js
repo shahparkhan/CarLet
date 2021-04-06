@@ -1,13 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import AppLoading from "expo-app-loading";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import * as Font from "expo-font";
-import Welcome from "./screens/welcome";
-import Login from "./screens/login";
+import Welcome from "./screens/Welcome";
+import Login from "./screens/Login";
 import SignUp1 from "./screens/SignUp1/";
-import SignUp from "./screens/SignUp0/";
-// import SvgComponent from './svgcomponents/yellowvector'
+import SignUp0 from "./screens/SignUp0/";
+import Navigator from './routes/HomeStack'
 
 const getFonts = () => {
   return Font.loadAsync({
@@ -44,7 +44,7 @@ export default function App() {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#ffa000" />
-        <SignUp />
+        <Navigator />
       </View>
     );
   } else {

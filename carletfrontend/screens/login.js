@@ -1,17 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  StyleSheet,
   Text,
+  StyleSheet,
   View,
   Image,
   Dimensions,
-  TextInput,
-  Button,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
 } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
@@ -19,56 +16,126 @@ import TextField from "../assets/components/TextField";
 export default function Login() {
   const [email, setEmail] = React.useState(``);
   const [password, setPassword] = React.useState(``);
-  const [enableshift, setEnableShift] = React.useState(false);
+  const [borderColor, setborderColor] = useState(["black", "black"]);
+  const [error, seterror] = useState(false);
+  const [errorMsg, seterrorMsg] = useState("");
 
-  const changeHandler = (val) => {
-    setEmail(val);
+  const emailHandler = (e) => {
+    setEmail(e);
   };
-  const changeHandlerPassword = (val) => {
-    setPassword(val);
+
+  const passHandler = (e) => {
+    setPassword(e);
   };
+
+  const anyfieldEmpty = () => {
+    if (password == "" || email == "") {
+      return true;
+    }
+    return false;
+  };
+
+  const validateEmailFromDataBase = (addr) => {
+    const emailList = [
+      "ashir1999@gmail.com",
+      "adnan.abbas@lums.com", 
+      "shahparnafeeskhan@gmail.com",
+    ];
+    console.log("EMAIL:::", addr, emailList.includes(addr));
+    return emailList.includes(addr);
+  };
+
+  const validateInput = () => {
+    console.log(email, password);
+    if (anyfieldEmpty()) {
+      seterror(true);
+      seterrorMsg(`Some fields are empty`);
+      
+      let field1 = "black"
+      let field2 = "black"
+      
+      if (email === ""){
+        field1 = "red"
+      } 
+      if (password === "") {
+        field2 = "red"
+      } 
+      
+      setborderColor([field1, field2])
+      console.log("Some fields are empty");
+
+    } else if (!validateEmailFromDataBase(email)) {
+      
+      console.log("Invalidate Email");
+      
+      seterror(true);
+      seterrorMsg("Invalid Email. Enter New Email");
+      setborderColor(["red", "black"]);
+
+    } else {
+      
+      console.log("ALL GOOD!");
+      
+      seterrorMsg("");
+      seterror(false);
+      setborderColor(["black", "black"]);
+      
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.yellowvector}
-        source={require("./../assets/login.png")}
-      />
-      <ScrollView contentContainerStyle={{ justifyContent: "center" }}>
-        <TextField
-          style={{ position: "relative", marginTop: 50 }}
-          placeholder="Email"
-          changeHandler={changeHandler}
-          secureTextEntry={false}
-        />
+    <TouchableWithoutFeedback onPress = {() =>{Keyboard.dismiss()}}>
 
-        <TextField
-          style={{ position: "relative", marginTop: 50 }}
-          placeholder="Password"
-          changeHandler={changeHandler}
-          secureTextEntry={true}
-        />
-      </ScrollView>
-      {/* <KeyboardAvoidingView 
-                            behavior = "position"
-                            enabled={enableshift}
-                        >
-                            <TextInput style = {{...styles.default,...{position:"relative",top:-50}}} placeholder = 'Email' onChangeText = { changeHandler } onFocus={() => setEnableShift(true)}/> 
-                            <TextInput secureTextEntry={true} style = {{...styles.default,...{position:"relative",top:-34}}} placeholder = 'Password' onChangeText = { changeHandlerPassword } onFocus={() => setEnableShift(true)}/> 
-                        
-                    </KeyboardAvoidingView> */}
+      <View style={styles.container}>
+        <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+        >
+          <Image
+            style={styles.yellowvector}
+            source={require("./../assets/login.png")}
+          />
 
-      <TouchableButton
-        buttonposition={styles.buttonposition}
-        title="LOGIN"
-        onPress={() => {
-          console.log(password);
-        }}
-      ></TouchableButton>
-      <Image
-        style={styles.smallcar}
-        source={require("./../assets/smallcar.png")}
-      />
-    </View>
+          {error ? <Text style={styles.error}>{errorMsg}</Text> : <></>}
+
+          <TextField
+            style={{ 
+              position: "relative", 
+              alignSelf: "center",
+              borderColor: borderColor[0]
+            }}
+            placeholder="Email"
+            changeHandler={emailHandler}
+            secureTextEntry={false}
+            keyboardType={"email-address"}
+          />
+
+          <TextField
+            style={{ 
+              position: "relative", 
+              alignSelf: "center", 
+              marginTop: 16,
+              borderColor: borderColor[1]
+            }}
+            placeholder="Password"
+            changeHandler={passHandler}
+            secureTextEntry={true}
+            keyboardType={"default"}
+          />
+        </KeyboardAwareScrollView>
+        
+        
+
+        <TouchableButton
+          buttonposition={styles.buttonposition}
+          title="LOGIN"
+          onPress={validateInput}
+        ></TouchableButton>
+        <Image
+          style={styles.smallcar}
+          source={require("./../assets/smallcar.png")}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 const win = Dimensions.get("window");
@@ -103,5 +170,12 @@ const styles = StyleSheet.create({
     width: 328,
     height: 56,
     fontFamily: "Nunito-Light",
+  },
+  error: {
+    color: "tomato",
+    alignSelf: "center",
+    position: "relative",
+    marginTop: -40,
+    marginBottom: 16
   },
 });
