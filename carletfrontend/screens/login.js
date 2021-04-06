@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 20,
     position: "absolute",
-    bottom: 16,
+    top: win.height - 36,
     right: 16,
   },
   buttonposition: {
