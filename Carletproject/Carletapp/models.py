@@ -1,16 +1,20 @@
 from django.db import models
 from django.conf import settings 
 from django import forms
+from django.contrib.auth.models import User
+
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 
 # Create your models here.
 
 
-class Carlet_User (models.Model):
+
+
+class CarletUser (models.Model):
     carletuser_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberField(unique=True)
     isVerified = models.BooleanField(default = False)
     isBanned = models.BooleanField(default = False)
     isSuperadmin = models.BooleanField(default = False)
@@ -24,9 +28,9 @@ class Carlet_User (models.Model):
 
 
 
-class Vehicle_detail(models.Model):
+class VehicleDetail(models.Model):
     vehicle_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    vehicle_user = models.ForeignKey(Carlet_User, on_delete=models.CASCADE, related_name='vehicle_user')
+    vehicle_user = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name='vehicle_user')
     vehicle_model = models.CharField(max_length = 50)
     vehicle_name = models.CharField(max_length = 50)
     vehicle_type = models.CharField(max_length = 50)
@@ -42,9 +46,8 @@ class Vehicle_detail(models.Model):
         return (self.vehicle_name + " " + str(self.vehicle_id) + " " + self.vehicle_user.user.username)
 
 
-
-class Vehicle_document(models.Model):
-    vehicledoc_id = models.OneToOneField(Vehicle_detail, on_delete=models.CASCADE, primary_key=True)
+class VehicleDocument(models.Model):
+    vehicledoc_id = models.OneToOneField(VehicleDetail, on_delete=models.CASCADE, primary_key=True)
     reg_papers = models.FileField()
     insurance_papers = models.FileField()
     tracker_papers = models.FileField()
@@ -54,8 +57,8 @@ class Vehicle_document(models.Model):
 
 
 
-class Vehicle_Location(models.Model):
-    vehicleloc_id = models.OneToOneField(Vehicle_detail, on_delete=models.CASCADE, primary_key=True, related_name='vehicleloc_id')
+class VehicleLocation(models.Model):
+    vehicleloc_id = models.OneToOneField(VehicleDetail, on_delete=models.CASCADE, primary_key=True, related_name='vehicleloc_id')
     vehicle_street_address = models.TextField(max_length = 300)
     vehicle_city = models.CharField(max_length = 50)
     vehicle_state = models.CharField(max_length = 50)
@@ -69,15 +72,16 @@ class Vehicle_Location(models.Model):
 
 
 
-class User_document(models.Model):
+class UserDocument(models.Model):
     doc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user_doc_id = models.OneToOneField(Carlet_User, on_delete=models.CASCADE, related_name='user_doc_id')
-    NIC = models.CharField(max_length = 13)
+    user_doc_id = models.OneToOneField(CarletUser, on_delete=models.CASCADE, related_name='user_doc_id')
+    NIC = models.CharField(max_length = 13, unique= True)
     NIC_picture = models.ImageField()
     picture = models.ImageField(blank = True, null = True)
     driver_license = models.CharField(max_length = 50)
     driver_license_picture = models.ImageField()
     account_number = models.CharField(max_length = 24)
+    picture = models.ImageField(blank=True, null=True)
 
 
 
@@ -85,11 +89,11 @@ class User_document(models.Model):
         return (self.user_doc_id.user.email + " " + str(self.doc_id))
 
 
-class Trip_detail(models.Model):
+class TripDetail(models.Model):
     trip_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    owner_id = models.ForeignKey(Carlet_User, on_delete=models.CASCADE, related_name ='owner_id')
-    renter_id = models.ForeignKey(Carlet_User, on_delete=models.CASCADE, related_name ='renter_id')
-    vehicle_id = models.ForeignKey(Vehicle_detail, on_delete=models.CASCADE)
+    owner_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='owner_id')
+    renter_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='renter_id')
+    vehicle_id = models.ForeignKey(VehicleDetail, on_delete=models.CASCADE)
     pickup_date = models.DateField()
     dropoff_date = models.DateField()
     duration = models.PositiveIntegerField()
@@ -102,8 +106,8 @@ class Trip_detail(models.Model):
 
 class Rating(models.Model):
     rating_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    rater_id = models.OneToOneField(Carlet_User, on_delete=models.CASCADE, related_name= 'rater_id')
-    rated_id = models.OneToOneField(Carlet_User, on_delete= models.CASCADE, related_name = 'rated_id')
+    rater_id = models.OneToOneField(CarletUser, on_delete=models.CASCADE, related_name= 'rater_id')
+    rated_id = models.OneToOneField(CarletUser, on_delete= models.CASCADE, related_name = 'rated_id')
     rating_points = models.DecimalField(max_digits = 1, decimal_places = 1)
     review = models.TextField(max_length = 300)
     isRenter = models.BooleanField()
@@ -119,7 +123,7 @@ class Rating(models.Model):
 class Voucher(models.Model):
     voucher_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     amount = models.PositiveIntegerField()
-    carlet_user_id = models.ForeignKey(Carlet_User, on_delete=models.CASCADE, related_name='carletuser')
+    carlet_user_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name='carletuser')
     status = models.BooleanField(default=False)
     issue_date = models.DateField()
     due_date = models.DateField()
