@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'Carletapp',
     'django_extensions',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

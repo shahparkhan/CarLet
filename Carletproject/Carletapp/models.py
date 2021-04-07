@@ -1,16 +1,16 @@
 from django.db import models
 from django.conf import settings 
 from django import forms
-from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 
 # Create your models here.
+
+
 class Carlet_User (models.Model):
     carletuser_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone_number = PhoneNumberField()
-    picture = models.ImageField()
     isVerified = models.BooleanField(default = False)
     isBanned = models.BooleanField(default = False)
     isSuperadmin = models.BooleanField(default = False)
@@ -20,7 +20,7 @@ class Carlet_User (models.Model):
     wallet = models.IntegerField(default=0)
     
     def __str__(self):
-      return self.user.username
+      return self.user.email
 
 
 
@@ -74,6 +74,7 @@ class User_document(models.Model):
     user_doc_id = models.OneToOneField(Carlet_User, on_delete=models.CASCADE, related_name='user_doc_id')
     NIC = models.CharField(max_length = 13)
     NIC_picture = models.ImageField()
+    picture = models.ImageField(blank = True, null = True)
     driver_license = models.CharField(max_length = 50)
     driver_license_picture = models.ImageField()
     account_number = models.CharField(max_length = 24)
@@ -81,7 +82,7 @@ class User_document(models.Model):
 
 
     def __str__(self):
-        return (self.user_doc_id.user.username + " " + str(self.doc_id))
+        return (self.user_doc_id.user.email + " " + str(self.doc_id))
 
 
 class Trip_detail(models.Model):
