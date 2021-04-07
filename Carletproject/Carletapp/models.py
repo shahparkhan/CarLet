@@ -1,7 +1,12 @@
 from django.db import models
 from django.conf import settings 
+<<<<<<< HEAD
 from django.contrib.auth.base_user import BaseUserManager
 
+=======
+from django import forms
+from django.contrib.auth.models import User
+>>>>>>> 0c9e1766752d0aba5e758131a58b9cdfa4dc9b8b
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 
@@ -44,8 +49,14 @@ class VehicleDetail(models.Model):
         return (self.vehicle_name + " " + str(self.vehicle_id) + " " + self.vehicle_user.user.username)
 
 
+<<<<<<< HEAD
 class VehicleDocument(models.Model):
     vehicledoc_id = models.OneToOneField(VehicleDetail, on_delete=models.CASCADE, primary_key=True)
+=======
+
+class Vehicle_document(models.Model):
+    vehicledoc_id = models.OneToOneField(Vehicle_detail, on_delete=models.CASCADE, primary_key=True)
+>>>>>>> 0c9e1766752d0aba5e758131a58b9cdfa4dc9b8b
     reg_papers = models.FileField()
     insurance_papers = models.FileField()
     tracker_papers = models.FileField()
@@ -54,8 +65,14 @@ class VehicleDocument(models.Model):
         return  (self.vehicledoc_id.vehicle_user.user.username + " " +  str(self.vehicledoc_id))
 
 
+<<<<<<< HEAD
 class VehicleLocation(models.Model):
     vehicleloc_id = models.OneToOneField(VehicleDetail, on_delete=models.CASCADE, primary_key=True, related_name='vehicleloc_id')
+=======
+
+class Vehicle_Location(models.Model):
+    vehicleloc_id = models.OneToOneField(Vehicle_detail, on_delete=models.CASCADE, primary_key=True, related_name='vehicleloc_id')
+>>>>>>> 0c9e1766752d0aba5e758131a58b9cdfa4dc9b8b
     vehicle_street_address = models.TextField(max_length = 300)
     vehicle_city = models.CharField(max_length = 50)
     vehicle_state = models.CharField(max_length = 50)
@@ -78,6 +95,7 @@ class UserDocument(models.Model):
     driver_license_picture = models.ImageField()
     account_number = models.CharField(max_length = 24)
     picture = models.ImageField(blank=True, null=True)
+
 
 
     def __str__(self):
