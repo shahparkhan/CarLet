@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Carletapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('signup1/', views.SignUp1.as_view()),
+    path('signup2/', views.SignUp2.as_view()),
+    path('login/', views.Login.as_view()),
+    path('uservalidation/', views.UserRegistrationValidation.as_view()),
+    path('userregister/', views.UserRegistration.as_view())
 ]
