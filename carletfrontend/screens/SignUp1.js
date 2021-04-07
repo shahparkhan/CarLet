@@ -6,29 +6,18 @@ import SignUpView from "./SignUpView";
 import SignUpStyles from "./SignUpStyles";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-const Signup = () => {
-  const [username, setUsername] = useState("");
+const Signup = ({ navigation }) => {
   const [name, setName] = useState("");
   const [phonenumber, setPhonenumber] = useState("");
   const [error, seterror] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
-  const [borderColor, setborderColor] = useState(["black", "black", "black"]);
+  const [borderColor, setborderColor] = useState(["black", "black"]);
 
   let l = "";
 
-  const validateUsernameFromDataBase = (addr) => {
-    const usernameList = [
-      "mistermaster",
-      "thejuggler", 
-      "jamesbond007"
-    ];
-    console.log("USERNAME:::", addr, usernameList.includes(addr));
-    return usernameList.includes(addr);
-  };
+  
 
-  const usernameHandler = (e) => {
-    setUsername(e);
-  };
+  
 
   const nameHandler = (e) => {
     setName(e);
@@ -39,40 +28,50 @@ const Signup = () => {
   };
 
   const anyfieldEmpty = () => {
-    if (username == "" || name == "" || phonenumber == "") {
+    if (name == "" || phonenumber == "") {
       return true;
     }
     return false;
   };
+
+  const addCountryCode = () => {
+    
+  }
+
   const validateInput = () => {
-    console.log(username, name, phonenumber);
+    console.log(name, phonenumber);
     if (anyfieldEmpty()) {
       seterror(true);
-      seterrorMsg(`Some fields are empty`);
+      seterrorMsg(`Some Fields are Empty`);
       let field1 = "black"
       let field2 = "black"
-      let field3 = "black"
-      if (username === ""){
-        field1 = "red"
-      } 
+      
       if (name === "") {
         field2 = "red"
       } 
       if (phonenumber === "") {
         field3 = "red"
       }
-      setborderColor([field1, field2, field3])
+      setborderColor([field1, field2])
       console.log("Some fields are empty");
-    } else if (!validateUsernameFromDataBase(username)) {
-      console.log("Invalidate Username");
+    } else if (phonenumber.length !== 11 ) {
       seterror(true);
-      seterrorMsg("Invalid Username. Enter New Username");
-      setborderColor(["red", "black", "black"])
+      seterrorMsg(`Phone Number should be of 11 digits`);
+      setborderColor(["black", "red"])
     } else {
       console.log("ALl GOOD!");
+      console.log("phone number: ", phonenumber)
+      let newphone = phonenumber
+      newphone = newphone.replace("0","+92")
+      console.log("newphone: ", newphone)
+
+      setPhonenumber(newphone)
+      
+      console.log("updated phone number: ", phonenumber)
       seterrorMsg("");
       seterror(false);
-      setborderColor(["black", "black", "black"]);
+      setborderColor(["black", "black"]);
+      navigation.navigate("Register")
     }
   };
 
@@ -88,26 +87,17 @@ const Signup = () => {
             source={require("./../assets/SignupVector.png")}
           />
           
+          
         {error ? <Text style={SignUpStyles.error}>{errorMsg}</Text> : <></>}
         
-        <TextField
-          placeholder={"Username"}
-          style={{ 
-            position: "relative", 
-            alignSelf: "center",
-            borderColor: borderColor[0],
-            }}
-          changeHandler={usernameHandler}
-          secureTextEntry={false}
-          keyboardType={"default"}
-        />
+        
 
         <TextField
           placeholder={"Name"}
           style={{
             position: "relative",
             marginTop: 16,
-            borderColor: borderColor[1],
+            borderColor: borderColor[0],
             alignSelf: "center"
           }}
           changeHandler={nameHandler}
@@ -120,19 +110,20 @@ const Signup = () => {
           style={{
             position: "relative",
             marginTop: 16,
-            borderColor: borderColor[2],
+            borderColor: borderColor[1],
             alignSelf: "center"
           }}
           changeHandler={phonenumberHandler}
           secureTextEntry={false}
           keyboardType={"numeric"}
         />
-        </KeyboardAwareScrollView>
-      <TouchableButton
+        <TouchableButton
         buttonposition={SignUpStyles.buttonposition}
         title="SIGNUP"
         onPress={validateInput}
       ></TouchableButton>
+        </KeyboardAwareScrollView>
+      
     </SignUpView>
   );
 };
