@@ -4,7 +4,7 @@
 ### ReactNative ###
 # React Native Stack Base
 
-.expo/
+.expo/*
 __generated__
 
 ### ReactNative.Android Stack ###
@@ -171,7 +171,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+node_modules/*
 jspm_packages/
 
 # TypeScript v1 declaration files
