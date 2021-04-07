@@ -7,7 +7,13 @@ import Welcome from "./screens/Welcome";
 import Login from "./screens/Login";
 import SignUp1 from "./screens/SignUp1/";
 import SignUp0 from "./screens/SignUp0/";
+import Register from './screens/Register'
+import Register1 from './screens/Register1'
+import Register4 from './screens/Register4'
+import Register5 from './screens/Register5'
+import Register6 from './screens/Register6'
 import Navigator from './routes/HomeStack'
+import { registerRootComponent } from "expo";
 
 const getFonts = () => {
   return Font.loadAsync({
