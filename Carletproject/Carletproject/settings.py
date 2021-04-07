@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'Carletapp',
     'django_extensions',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -105,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 
 # Internationalization
