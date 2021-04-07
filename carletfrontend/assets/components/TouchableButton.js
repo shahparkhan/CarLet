@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     width: 125,
     flexDirection: "row",
     alignItems: "center",
+    alignSelf: "center",
     justifyContent: "center",
     elevation: 5,
   },
