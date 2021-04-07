@@ -7,6 +7,13 @@ import Welcome from "./screens/welcome";
 import Login from "./screens/login";
 import SignUp1 from "./screens/SignUp1/";
 import SignUp from "./screens/SignUp0/";
+import Register from "./screens/Register";
+import Register1 from "./screens/Register1";
+import Register4 from "./screens/Register4";
+import Register5 from "./screens/Register5";
+import Register6 from "./screens/Register6";
+
+
 // import SvgComponent from './svgcomponents/yellowvector'
 
 const getFonts = () => {
@@ -44,7 +51,7 @@ export default function App() {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#ffa000" />
-        <SignUp />
+        <Register1 />
       </View>
     );
   } else {

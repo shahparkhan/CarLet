@@ -19,7 +19,7 @@ const Signup = () => {
   const validateEmailFromDataBase = (addr) => {
     const emailList = [
       "ashir1999@gmail.com",
-      "adnan.abbas@lums.com, ShahparNafeesKhan@gmail.com",
+      "adnan.abbas@lums.com", "ShahparNafeesKhan@gmail.com",
     ];
     console.log("EMAIL:::", addr, emailList.includes(addr));
     return emailList.includes(addr);
