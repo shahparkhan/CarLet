@@ -14,9 +14,9 @@ const SignUpStyles = StyleSheet.create({
     height: height,
   },
   buttonposition: {
-    position: "absolute",
-    top: buttonHeight,
-    marginTop: 10,
+    position: "relative",
+    marginTop: 16,
+    marginBottom: 48,
   },
   error: {
     color: "tomato",

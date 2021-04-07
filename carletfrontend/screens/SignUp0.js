@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, Text} from "react-native";
+import { Image, ScrollView, Text} from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
 import SignUpView from "./SignUpView";
@@ -112,7 +112,7 @@ const Signup = ({ navigation }) => {
 
   return (
     <SignUpView>
-
+      <ScrollView>
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
         >
@@ -160,12 +160,17 @@ const Signup = ({ navigation }) => {
           secureTextEntry={true}
           keyboardType={"default"}
         />
+
+        
+
+        
         </KeyboardAwareScrollView>
       <TouchableButton
         buttonposition={SignUpStyles.buttonposition}
         title="NEXT"
         onPress={validateInput}
       ></TouchableButton>
+      </ScrollView>
     </SignUpView>
   );
 };
