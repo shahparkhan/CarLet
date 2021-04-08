@@ -14,15 +14,14 @@ const SignUpStyles = StyleSheet.create({
     height: height,
   },
   buttonposition: {
-    position: "relative",
-    marginTop: 16,
-    marginBottom: 48,
+    position: "absolute",
+    top: buttonHeight,
   },
   error: {
     color: "tomato",
     alignSelf: "center",
     position: "relative",
-    marginTop: -40,
+    marginTop: -50,
     marginBottom: 16
   },
   smallcar: {

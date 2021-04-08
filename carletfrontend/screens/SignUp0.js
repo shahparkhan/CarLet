@@ -122,7 +122,7 @@ const Signup = ({ navigation }) => {
             source={require("./../assets/SignupVector.png")}
           />
           
-        {error ? <Text style={SignUpStyles.error}>{errorMsg}</Text> : <></>}
+        {error ? <Text style={SignUpStyles.error}>{errorMsg}</Text> : <Text style={SignUpStyles.error}></Text>}
         
         <TextField
           placeholder={"Email"}
@@ -165,12 +165,13 @@ const Signup = ({ navigation }) => {
 
         
         </KeyboardAwareScrollView>
+      
+      </ScrollView>
       <TouchableButton
         buttonposition={SignUpStyles.buttonposition}
         title="NEXT"
         onPress={validateInput}
       ></TouchableButton>
-      </ScrollView>
     </SignUpView>
   );
 };
