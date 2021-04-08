@@ -3,6 +3,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
+from validate_email import validate_email
 from .models import CarletUser
 
 
@@ -10,6 +11,12 @@ from .models import CarletUser
 class UserSerializer(serializers.ModelSerializer):
     # user = Carlet_UserSerializer(read_only=True, many=True)
     def validate_email(self, value):
+        # try:
+        #     valid = validate_email(email_address = value, check_format = True, check_smtp = True, check_dns = True)
+        #     print(valid)
+        # except:
+        #     raise serializers.ValidationError("Email is not valid")
+
         lower_email = value.lower()
         if User.objects.filter(email__iexact=lower_email).exists():
             raise serializers.ValidationError("Email already exists")

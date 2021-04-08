@@ -10,6 +10,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token 
+import smtplib 
+from password_generator import PasswordGenerator
+from email.message import EmailMessage
+# from email_validator import validate_email, EmailNotValidError
+from validate_email import validate_email
 from .models import CarletUser, UserDocument
 import uuid
 
@@ -47,16 +52,53 @@ class SignUp2(APIView):
         except:
             return Response({"email": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
+class ForgetPassword(APIView):
+    def post(self, request, format=None):
+        email = request.data.get("email")
+        EmailAdd = "automatedcarlet@gmail.com" #senders Gmail id over here
+        Pass = "monashmishad" #senders Gmail's Password over here 
+        try : 
+            msg = EmailMessage()
+            msg['Subject'] = 'Password Reset' 
+            msg['From'] = EmailAdd
+            msg['To'] = email
+            pwo = PasswordGenerator()
+            pwo.minlen = 8
+            pwo.maxlen = 10
+            new_password = pwo.generate()
+            print(new_password)
+            try:
+                user = User.objects.get(username=email)
+                user.password = new_password
+                user.save()
+            except:
+                return Response({"email": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+            msg.set_content('Your password has been rest to: ' + new_password) 
+
+            #### >> Code from here will send the message << ####
+            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp: #Added Gmails SMTP Server
+                smtp.login(EmailAdd,Pass) #This command Login SMTP Library using your GMAIL
+                smtp.send_message(msg) #This Sends the message
+            
+            return Response({"Success": "Email has been sent"})
+        except: 
+            return Response({"Failed": "Email not sent"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class Login(APIView):
-    
     def post(self, request, format=None):
         email = request.data.get('email')
         password = request.data.get('password')
+        try:
+            user1 = User.objects.get(email = email)
+        except:
+            return Response({"Error": "Username or password is incorrect"}, status = status.HTTP_403_FORBIDDEN)
 
-        user = authenticate(username=email, password=password)
-        if user is not None:
+        # user = authenticate(request, username=email, password=password)
+        if user1.password == password:
             user_uuid = CarletUser.objects.get(user__email=email).carletuser_id
-            token, created = Token.objects.get_or_create(user=user) 
+            token, created = Token.objects.get_or_create(user=user1) 
             return Response({"Success": "Successfully logged in",
                             "uuid": str(user_uuid),
                             "token": token.key})
@@ -66,7 +108,6 @@ class Login(APIView):
 class UserRegistrationValidation(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    
     
     def post(self,request,format=None):
         for attribute in request.data:
