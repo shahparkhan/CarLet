@@ -47,10 +47,10 @@ const Signup = ({ navigation }) => {
       let field2 = "black"
       
       if (name === "") {
-        field2 = "red"
+        field1 = "red"
       } 
       if (phonenumber === "") {
-        field3 = "red"
+        field2 = "red"
       }
       setborderColor([field1, field2])
       console.log("Some fields are empty");
@@ -88,7 +88,7 @@ const Signup = ({ navigation }) => {
           />
           
           
-        {error ? <Text style={SignUpStyles.error}>{errorMsg}</Text> : <></>}
+        {error ? <Text style={SignUpStyles.error}>{errorMsg}</Text> : <Text style={SignUpStyles.error}></Text>}
         
         
 
@@ -117,13 +117,13 @@ const Signup = ({ navigation }) => {
           secureTextEntry={false}
           keyboardType={"numeric"}
         />
+        
+        </KeyboardAwareScrollView>
         <TouchableButton
         buttonposition={SignUpStyles.buttonposition}
         title="SIGNUP"
         onPress={validateInput}
       ></TouchableButton>
-        </KeyboardAwareScrollView>
-      
     </SignUpView>
   );
 };

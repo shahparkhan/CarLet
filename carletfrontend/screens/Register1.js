@@ -7,7 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-export default function Register1() {
+export default function Register1( {navigation} ) {
 
     const [borderColor, setborderColor] = useState("black");
     const [Nic,setNic] = useState(``)
@@ -45,6 +45,12 @@ export default function Register1() {
                 quality:1
             })
             console.log(result)
+            setImage({
+                uri: result.uri,
+                type: "image/jpeg",
+                name: "photo.jpg",
+
+            })
             if (!result.cancelled)
             {
                 setImage(result.uri)
@@ -60,24 +66,52 @@ export default function Register1() {
         setNic(nic)
     }
 
+    
+
     const validateInput = () =>
     {
-        if (Nic === ``)
+        if (Nic === `` || image === null)
         {
+            let field = "black"
+
+            if (Nic === ``) {
+                seterrorMsg(`Please input NIC number`);
+                console.log("NIC fields is empty");
+                field = "red"
+            } else if (Nic.length !== 13) {
+                seterrorMsg(`NIC number should have 13 digits`);
+                console.log("NIC number not of correct length");
+                field = "red"
+            } else if (image === null){
+                seterrorMsg(`Please upload NIC picture`);
+                console.log("Pic not uploaded");
+            } 
             seterror(true);
-            seterrorMsg(`Some fields are empty`);
-            setborderColor("red");
-            console.log("Some fields are empty");
+            setborderColor(field);    
+            
+        } else if (Nic.length !== 13) {
+            seterrorMsg(`NIC number should have 13 digits`);
+            console.log("NIC number not of correct length");
+            seterror(true);
+            setborderColor("red")
+        } else {
+            console.log("ALL GOOD!");
+            console.log("image", image);
+            seterrorMsg("");
+            seterror(false);
+            setborderColor("black");
+            navigation.navigate("Register2")
         }
 
     }
 
     return (
         <View style={styles.container}>
+            <KeyboardAwareScrollView>
             <Text style = {styles.registertext}>
                 Register
             </Text>
-            {error ? <Text style={styles.error}>{errorMsg}</Text> : <></>}
+            {error ? <Text style={styles.error}>{errorMsg}</Text> : <Text style={styles.error}></Text>}
             
             <Text style = {styles.subheading}>
                 NIC
@@ -92,6 +126,7 @@ export default function Register1() {
                 }}
                 changeHandler={NICHandler}
                 secureTextEntry={false}
+                keyboardType={"numeric"}
             />
             <Text style = {styles.key}>
                 NIC Picture
@@ -106,14 +141,12 @@ export default function Register1() {
                 style={styles.smallcar}
                 source={require("./../assets/smallcar.png")}
             />
-            <View style={{flex:1, justifyContent:"flex-end"}}>
-                <TouchableButton
-                    title="NEXT"
-                    onPress={validateInput}
-                    buttonposition={styles.buttonposition}>
-                </TouchableButton>
-            </View>
-            
+            </KeyboardAwareScrollView>
+            <TouchableButton
+                title="NEXT"
+                onPress={validateInput}
+                buttonposition={styles.buttonposition}>
+            </TouchableButton>
         </View>
     );
 }
@@ -122,7 +155,7 @@ const win = Dimensions.get('window')
 
 
 const height = (win.width/350)*320
-const buttonHeight = win.height-130;
+const buttonHeight = win.height-184;
 const uploadHeight = win.height - 347;
 
 const styles = StyleSheet.create({
@@ -147,7 +180,7 @@ const styles = StyleSheet.create({
         marginTop:16,
         fontFamily:"Nunito-SemiBold",
         fontSize: 24,
-        width:49
+        width:win.width
     },
     key:{
         fontFamily:"Nunito-Regular",
@@ -173,7 +206,8 @@ const styles = StyleSheet.create({
     },
     buttonposition: {
         alignSelf:'center',
-        marginBottom: 48
+        position: "absolute",
+        top: buttonHeight
     },
     error: {
         color: "tomato",
