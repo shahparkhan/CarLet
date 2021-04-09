@@ -84,11 +84,7 @@ WSGI_APPLICATION = 'Carletproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'carletdb',
-        'USER': 'carletdbmanager',
-        'PASSWORD': 'monashmishad',
-        'HOST' : 'localhost',
-        'PORT' : '',
+        'NAME': 'carletdb'
     }
 }
 
