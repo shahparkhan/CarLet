@@ -2,6 +2,7 @@ import { createStackNavigator} from 'react-navigation-stack'
 import { createAppContainer } from 'react-navigation'
 import Welcome from './../screens/Welcome'
 import Login from './../screens/Login'
+import ForgotPassword from './../screens/ForgotPassword'
 import SignUp0 from './../screens/SignUp0'
 import SignUp1 from './../screens/SignUp1'
 import Register from './../screens/Register'
@@ -20,6 +21,12 @@ const screens = {
     },
     Login: {
         screen: Login,
+        navigationOptions: {
+            headerShown: false,
+        }
+    },
+    ForgotPassword: {
+        screen: ForgotPassword,
         navigationOptions: {
             headerShown: false,
         }

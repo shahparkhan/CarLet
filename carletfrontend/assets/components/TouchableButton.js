@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   text: {
-    // fontFamily: ,
+    fontFamily: "Nunito-Regular",
     fontSize: 14,
     color: "white",
   },

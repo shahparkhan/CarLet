@@ -17,24 +17,19 @@ import TextField from "../assets/components/TextField";
 export default function Login({ navigation }) {
   const [email, setEmail] = React.useState(``);
   const [password, setPassword] = React.useState(``);
-  const [borderColor, setborderColor] = useState(["black", "black"]);
+  const [borderColor, setborderColor] = useState("black")
   const [error, seterror] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
+  const [promptMsg, setPromptMsg] = useState("Enter your email to reset your password")
+  const [buttonPlaceholder, setButtonPlaceholder] = useState(true)
 
   const emailHandler = (e) => {
     setEmail(e);
   };
 
-  const passHandler = (e) => {
-    setPassword(e);
-  };
+  const onPressHandler = () => navigation.navigate("Login")
 
-  const anyfieldEmpty = () => {
-    if (password == "" || email == "") {
-      return true;
-    }
-    return false;
-  };
+  
 
   const validateEmailFromDataBase = (addr) => {
     const emailList = [
@@ -48,22 +43,14 @@ export default function Login({ navigation }) {
 
   const validateInput = () => {
     console.log(email, password);
-    if (anyfieldEmpty()) {
+    if (email === "") {
       seterror(true);
-      seterrorMsg(`Some fields are empty`);
+      seterrorMsg(`Email field is empty`);
       
-      let field1 = "black"
-      let field2 = "black"
       
-      if (email === ""){
-        field1 = "red"
-      } 
-      if (password === "") {
-        field2 = "red"
-      } 
       
-      setborderColor([field1, field2])
-      console.log("Some fields are empty");
+      setborderColor("red")
+      console.log("Email field is empty");
 
     } else if (!validateEmailFromDataBase(email)) {
       
@@ -71,15 +58,16 @@ export default function Login({ navigation }) {
       
       seterror(true);
       seterrorMsg("Invalid Email. Enter New Email");
-      setborderColor(["red", "black"]);
+      setborderColor("red");
 
     } else {
       
       console.log("ALL GOOD!");
-      
+      setPromptMsg("A new password has been sent to you email")
+      setButtonPlaceholder(false)
       seterrorMsg("");
       seterror(false);
-      setborderColor(["black", "black"]);
+      setborderColor("black");
       
     }
   };
@@ -96,13 +84,13 @@ export default function Login({ navigation }) {
             source={require("./../assets/login.png")}
           />
 
-          {error ? <Text style={styles.error}>{errorMsg}</Text> : <></>}
+          {error ? <Text style={styles.error}>{errorMsg}</Text> : <Text style={styles.prompt}>{promptMsg}</Text>}
 
           <TextField
             style={{ 
               position: "relative", 
               alignSelf: "center",
-              borderColor: borderColor[0]
+              borderColor: borderColor
             }}
             placeholder="Email"
             changeHandler={emailHandler}
@@ -110,32 +98,24 @@ export default function Login({ navigation }) {
             keyboardType={"email-address"}
           />
 
-          <TextField
-            style={{ 
-              position: "relative", 
-              alignSelf: "center", 
-              marginTop: 16,
-              borderColor: borderColor[1]
-            }}
-            placeholder="Password"
-            changeHandler={passHandler}
-            secureTextEntry={true}
-            keyboardType={"default"}
-          />
-          <TouchableOpacity  
-             onPress={() => navigation.navigate("ForgotPassword")}
-          >
-          <Text style = {styles.forgotpassword}>Forgot Password?</Text>
-          </TouchableOpacity>
+          
+          
         </KeyboardAwareScrollView>
         
-        
+        {buttonPlaceholder ? 
+            <TouchableButton
+                buttonposition={styles.buttonposition}
+                title="RESET"
+                onPress={validateInput}
+            ></TouchableButton> : 
+            <TouchableButton
+                buttonposition={styles.buttonposition}
+                title="LOGIN"
+                onPress={onPressHandler}
+            ></TouchableButton>
+        }
 
-        <TouchableButton
-          buttonposition={styles.buttonposition}
-          title="LOGIN"
-          onPress={validateInput}
-        ></TouchableButton>
+        
         <Image
           style={styles.smallcar}
           source={require("./../assets/smallcar.png")}
@@ -179,6 +159,13 @@ const styles = StyleSheet.create({
   },
   error: {
     color: "tomato",
+    alignSelf: "center",
+    position: "relative",
+    marginTop: -40,
+    marginBottom: 16
+  },
+  prompt: {
+    color: "#212121",
     alignSelf: "center",
     position: "relative",
     marginTop: -40,
