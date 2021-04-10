@@ -25,10 +25,7 @@ const Signup = ({ navigation }) => {
     console.log("EMAIL:::", addr, emailList.includes(addr));
     return emailList.includes(addr);
   };
-  const [enableshift, setEnableShift] = useState(false);
-  const handleChange = (e) => {
-    changeHandler(e);
-  };
+  
 
   const emailHandler = (e) => {
     setEmail(e);
@@ -49,8 +46,7 @@ const Signup = ({ navigation }) => {
     return false;
   };
 
-
-  const validateInput = () => {
+  const validateInput = async () => {
     console.log(email, Password, confirmPassword);
     
     if (anyfieldEmpty()) {
@@ -75,14 +71,6 @@ const Signup = ({ navigation }) => {
       setborderColor([field1, field2, field3])
       console.log("Some fields are empty");
 
-    } else if (!validateEmailFromDataBase(email)) {
-      
-      console.log("Invalidate Email");
-      
-      seterror(true);
-      seterrorMsg("Invalid Email. Enter New Email");
-      setborderColor(["red", "black", "black"]);
-
     } else if (Password != confirmPassword) {
       
       seterror(true);
@@ -105,7 +93,40 @@ const Signup = ({ navigation }) => {
       seterrorMsg("");
       seterror(false);
       setborderColor(["black", "black", "black"]);
-      navigation.navigate("SignUp1")
+      
+
+      const details = JSON.stringify({
+        email: email,
+        password: Password
+      })
+
+      try {
+        let response = await fetch('https://carlet.pythonanywhere.com/signup1/',{
+          method: 'post',
+          mode: 'no-cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: details
+        })
+        let responseJson = await response.json()
+        console.log('server response: ', responseJson)
+        
+        if (typeof responseJson.email === "object"){
+          seterrorMsg("Email already exists");
+          seterror(true);
+          navigation.navigate("SignUp1", {email:email})
+
+        } else {
+          navigation.navigate("SignUp1", {email:email})
+        }
+
+      } catch (error) {
+        console.error('server error1: ', error);
+        seterrorMsg("Server error. Please try again");
+        seterror(true);
+      }
 
     }
   };

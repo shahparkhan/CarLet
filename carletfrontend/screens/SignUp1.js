@@ -38,7 +38,7 @@ const Signup = ({ navigation }) => {
     
   }
 
-  const validateInput = () => {
+  const validateInput = async () => {
     console.log(name, phonenumber);
     if (anyfieldEmpty()) {
       seterror(true);
@@ -59,19 +59,67 @@ const Signup = ({ navigation }) => {
       seterrorMsg(`Phone Number should be of 11 digits`);
       setborderColor(["black", "red"])
     } else {
-      console.log("ALl GOOD!");
-      console.log("phone number: ", phonenumber)
-      let newphone = phonenumber
-      newphone = newphone.replace("0","+92")
-      console.log("newphone: ", newphone)
+      // console.log("ALl GOOD!");
+      // console.log("phone number: ", phonenumber)
+      // let newphone = phonenumber
+      // newphone = newphone.replace("0","+92")
+      // console.log("newphone: ", newphone)
 
-      setPhonenumber(newphone)
+      // setPhonenumber(newphone)
       
-      console.log("updated phone number: ", phonenumber)
+      // console.log("updated phone number: ", phonenumber)
+      // seterrorMsg("");
+      // seterror(false);
+      // setborderColor(["black", "black"]);
+      // navigation.navigate("Register")
+
+      console.log("ALl GOOD!");
+      
       seterrorMsg("");
       seterror(false);
-      setborderColor(["black", "black"]);
-      navigation.navigate("Register")
+      setborderColor(["black", "black", "black"]);
+      
+      let namearr = name.split(" ")
+      const Fname = namearr[0]
+      const Lname = namearr.slice(1, namearr.length).join(" ")
+
+      let phonedigits = phonenumber.split("")
+      const phonewithcode = "+92" + phonedigits.slice(1,phonedigits.length).join("")
+
+      console.log("email: ", navigation.getParam('email'))
+      
+      const details = JSON.stringify({
+        email: navigation.getParam('email'),
+        first_name: Fname,
+        last_name: Lname,
+        phone_number:phonewithcode
+      })
+
+      try {
+        let response = await fetch('https://carlet.pythonanywhere.com/signup2/',{
+          method: 'post',
+          mode: 'no-cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: details
+        })
+        let responseJson = await response.json()
+        console.log('server response: ', responseJson)
+        
+        if (responseJson.phone_number === "An account with this phone number already exists"){
+          seterrorMsg("An account with this phone number already exists");
+          seterror(true);
+        } else {
+          navigation.navigate("Welcome")
+        }
+
+      } catch (error) {
+        console.error('server error: ', error);
+        seterrorMsg("Server error. Please try again");
+        seterror(true);
+      }
     }
   };
 
