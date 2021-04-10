@@ -2,7 +2,6 @@ from django.db import models
 from django.conf import settings 
 from django import forms
 from django.contrib.auth.models import User
-
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 
@@ -24,7 +23,7 @@ class CarletUser (models.Model):
     wallet = models.IntegerField(default=0)
     
     def __str__(self):
-      return self.user.email
+      return (str(self.user.email) + " "+str(self.carletuser_id))
 
 
 
@@ -39,8 +38,10 @@ class CarletUser (models.Model):
 #     vehicle_picture3 = models.ImageField(blank = True, null = True)  
 #     vehicle_picture4 = models.ImageField(blank = True, null = True) 
 #     vehicle_picture5 = models.ImageField(blank = True, null = True) 
-#     daily_rate = models.PositiveIntegerField(default =0)
+#     daily_rate = models.PositiveIntegerField(default=0)
 #     vehicle_isVerified = models.BooleanField(default=False)
+#     vehicle_rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
+#     put_up_for_rent = models.BooleanField(default=True)
 
 #     def __str__(self):
 #         return (self.vehicle_name + " " + str(self.vehicle_id) + " " + self.vehicle_user.user.username)
@@ -59,9 +60,9 @@ class CarletUser (models.Model):
 
 # class VehicleLocation(models.Model):
 #     vehicleloc_id = models.OneToOneField(VehicleDetail, on_delete=models.CASCADE, primary_key=True, related_name='vehicleloc_id')
-#     vehicle_street_address = models.TextField(max_length = 300)
-#     vehicle_city = models.CharField(max_length = 50)
-#     vehicle_state = models.CharField(max_length = 50)
+#     vehicle_street_address = models.TextField(max_length = 300,blank = True, null = True)
+#     vehicle_city = models.CharField(max_length = 50,blank = True, null = True)
+#     vehicle_state = models.CharField(max_length = 50,blank = True, null = True)
 #     vehicle_zip = models.CharField(max_length = 50, blank = True, null = True)
 #     vehicle_latitude = models.DecimalField(max_digits=19, decimal_places=4,blank = True, null = True)
 #     vehicle_longitude = models.DecimalField(max_digits=19, decimal_places=4,blank = True, null = True)
@@ -76,10 +77,10 @@ class UserDocument(models.Model):
     doc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_doc_id = models.OneToOneField(CarletUser, on_delete=models.CASCADE, related_name='user_doc_id')
     NIC = models.CharField(max_length = 13, unique= True)
-    NIC_picture = models.ImageField()
+    NIC_picture = models.ImageField(blank = True, null = True)
     picture = models.ImageField(blank = True, null = True)
     driver_license = models.CharField(max_length = 50)
-    driver_license_picture = models.ImageField()
+    driver_license_picture = models.ImageField(blank=True, null=True)
     account_number = models.CharField(max_length = 24)
     picture = models.ImageField(blank=True, null=True)
 
@@ -91,16 +92,16 @@ class UserDocument(models.Model):
 
 # class TripDetail(models.Model):
 #     trip_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     owner_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='owner_id')
+#     # owner_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='owner_id')
 #     renter_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='renter_id')
-#     vehicle_id = models.ForeignKey(VehicleDetail, on_delete=models.CASCADE)
+#     vehicle_trip_id = models.ForeignKey(VehicleDetail, on_delete=models.CASCADE)
 #     pickup_date = models.DateField()
 #     dropoff_date = models.DateField()
 #     duration = models.PositiveIntegerField()
 #     cost = models.PositiveIntegerField()
 
 #     def __str__(self):
-#         return (self.owner_id.user.username + " " + self.owner_id.user.username + " " + str(self.trip_id))
+#         return (self.vehicle_trip_id.vehicle_user.user.username + " "+self.renter_id.user.username +" " + str(self.trip_id))
     
 
 

@@ -25,5 +25,11 @@ urlpatterns = [
     path('login/', csrf_exempt(views.Login.as_view())),
     path('uservalidation/', csrf_exempt(views.UserRegistrationValidation.as_view())),
     path('userregister/', csrf_exempt(views.UserRegistration.as_view())),
-    path('emailcheck/', csrf_exempt(views.ForgetPassword.as_view()))
+    path('forgotpassword/', csrf_exempt(views.ForgetPassword.as_view())),
+    path('changepassword/', csrf_exempt(views.ChangePassword.as_view())),
+    path('checkverification/', csrf_exempt(views.CheckVerification.as_view())),
+    path('checkregistration/', csrf_exempt(views.CheckRegistration.as_view())),
+    path('searchvehicle/', csrf_exempt(views.SearchVehicle.as_view()))
 ]
+
+

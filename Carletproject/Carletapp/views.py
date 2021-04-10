@@ -13,7 +13,6 @@ from rest_framework.authtoken.models import Token
 import smtplib 
 from password_generator import PasswordGenerator
 from email.message import EmailMessage
-# from email_validator import validate_email, EmailNotValidError
 from validate_email import validate_email
 from .models import CarletUser, UserDocument
 import uuid
@@ -55,8 +54,8 @@ class SignUp2(APIView):
 class ForgetPassword(APIView):
     def post(self, request, format=None):
         email = request.data.get("email")
-        EmailAdd = "automatedcarlet@gmail.com" #senders Gmail id over here
-        Pass = "monashmishad" #senders Gmail's Password over here 
+        EmailAdd = "automatedcarlet@gmail.com" 
+        Pass = "monashmishad" 
         try : 
             msg = EmailMessage()
             msg['Subject'] = 'Password Reset' 
@@ -76,10 +75,9 @@ class ForgetPassword(APIView):
 
             msg.set_content('Your password has been rest to: ' + new_password) 
 
-            #### >> Code from here will send the message << ####
-            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp: #Added Gmails SMTP Server
-                smtp.login(EmailAdd,Pass) #This command Login SMTP Library using your GMAIL
-                smtp.send_message(msg) #This Sends the message
+            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp: 
+                smtp.login(EmailAdd,Pass) 
+                smtp.send_message(msg) 
             
             return Response({"Success": "Email has been sent"})
         except: 
@@ -106,10 +104,11 @@ class Login(APIView):
             return Response({"Error": "Username or password is incorrect"}, status = status.HTTP_403_FORBIDDEN)
 
 class UserRegistrationValidation(APIView):
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
-    def post(self,request,format=None):
+    def post(self, request, format=None):
         for attribute in request.data:
             
             if attribute == "nic": #validate unique NIC
@@ -134,10 +133,11 @@ class UserRegistrationValidation(APIView):
                     return Response({"Success": "Valid iban"})
 
 class UserRegistration(APIView):
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self,request, format=None):
+    def post(self, request, format=None):
         doc_uuid = uuid.uuid4()
         user_id = request.data.get('user_id')
         nic = request.data.get('NIC')
@@ -145,7 +145,7 @@ class UserRegistration(APIView):
         driver_license = request.data.get('driver_license')
         driver_license_picture = request.data.get('driver_license_picture')
         account_no = request.data.get('iban')
-        carlet_user = CarletUser.objects.get(pk= user_id)
+        carlet_user = CarletUser.objects.get(pk=user_id)
 
         try:
             user_doc = UserDocument.objects.create(doc_id=doc_uuid, user_doc_id= carlet_user, NIC=nic, NIC_picture=NIC_picture,
@@ -155,7 +155,80 @@ class UserRegistration(APIView):
         except:
             return Response({"Error": "There was some error uploading your registration information. Please try again later"}, status= status.HTTP_400_BAD_REQUEST)
                 
+class CheckVerification(APIView):
 
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post (self, request, format=None):
+        user_id = request.data.get('user_id')
         
+        try:
+            carlet_user = CarletUser.objects.get(pk=user_id)
+            if (carlet_user.isVerified == True):
+                return Response({"Success": "User is Verified"})
+            else:
+                return Response({"Error": "User not verified"}, status= status.HTTP_400_BAD_REQUEST)
+            
+        except:
+            return Response({"Error": "User not Found"} , status= status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class CheckRegistration(APIView):
+    def post (self, request, format=None):
+        user_id = request.data.get('user_id')
+        try:
+            carlet_user = CarletUser.objects.get(pk=user_id)
+            UserDocument.objects.get(user_doc_id = carlet_user)
+            return Response({"Success": "User has Registered"})
+        except:
+            return Response({"Error": "User has not Registered"} , status= status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class ChangePassword(APIView):
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post (self, request, format=None):
+        user_id = request.data.get('user_id')
+        old_password_filled = request.data.get('old_password')
+        new_password_filled = request.data.get('new_password')
+        try:
+            print("hello1")
+            carlet_user = CarletUser.objects.get(pk=user_id)
+            old_password = carlet_user.user.password
+            print("hello2")
+            if old_password != old_password_filled:
+                return Response({"Error": "Incorrect password entered"} , status= status.HTTP_401_UNAUTHORIZED)
+            else:
+                carlet_user.user.password = new_password_filled
+                carlet_user.user.save()
+                return Response({"Success": "Password successfully changed"})
+        except:
+            return Response({"Error": "User not found"} , status= status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class SearchVehicle(APIView):
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request,format=None):
+        pickup_date = request.data.get('pickup_date')
+        dropoff_date = request.data.get('dropoff_date')
+        # filters = request.data.get('filters')
+        model = ""
+        vehicle_type = ""
+        
+                
+        #exclude past history, then get cars not available
+        # try:
+        query1= TripDetail.objects.exclude(dropoff_date__lte=pickup_date).filter(pickup_date__range=[pickup_date,dropoff_date], dropoff_date__range=[pickup_date,dropoff_date])
+        # .values('vehicle_trip_id_id')
+        print(query1.values)
+        # query2 = VehicleDetail.objects.exclude(vehicle_id__in=query1)
+        # print(query2)
+        # if query2 is not None:
+        return Response(query1.values())
+        # else:
+        #     return Response({"Error": "No cars found with this search result"})
+        # except:
+        #     return Response({"Error: No cars found with this search result"})
