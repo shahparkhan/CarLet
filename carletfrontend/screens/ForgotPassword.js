@@ -52,14 +52,6 @@ export default function Login({ navigation }) {
       setborderColor("red")
       console.log("Email field is empty");
 
-    } else if (!validateEmailFromDataBase(email)) {
-      
-      console.log("Invalidate Email");
-      
-      seterror(true);
-      seterrorMsg("Invalid Email. Enter New Email");
-      setborderColor("red");
-
     } else {
       
       console.log("ALL GOOD!");
