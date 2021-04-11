@@ -6,6 +6,8 @@ import TextField from "../assets/components/TextField";
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Register1( {navigation} ) {
 
@@ -42,12 +44,13 @@ export default function Register1( {navigation} ) {
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing:true,
                 aspect:[4,3],
-                quality:1
+                quality:1,
+                base64:true,
             })
-            console.log(result)
+            // console.log(result)
             if (!result.cancelled)
             {
-                setImage(result.uri)
+                setImage(`data:image/jpeg;base64,${result.base64}`)
             }
         } catch (error) {
             console.log("bc", error)
@@ -60,7 +63,7 @@ export default function Register1( {navigation} ) {
         setIban(iban)
     }
 
-    const validateInput = () =>
+    const validateInput = async () =>
     {
         if (iban === `` || image === null)
         {
@@ -87,12 +90,115 @@ export default function Register1( {navigation} ) {
             seterror(true);
             setborderColor("red")
         } else {
-            console.log("ALL GOOD!");
-            console.log("image", image);
+            // console.log("ALL GOOD!");
+            // console.log("image", image);
+            // seterrorMsg("");
+            // seterror(false);
+            // setborderColor("black");
+            // navigation.navigate("Register4")
+
+            // console.log("image", image);
+            
+
+            console.log("ALl GOOD!");
+      
             seterrorMsg("");
             seterror(false);
             setborderColor("black");
-            navigation.navigate("Register4")
+
+
+            let useruuid = ''
+
+            try {
+                useruuid = await AsyncStorage.getItem('@useruuid')
+            
+            } catch (error) {
+                console.error('Failed to get token: ', error)
+            }
+            
+            console.log('userid: ', useruuid)
+            const prevDetails = navigation.getParam('params')
+
+            const details = JSON.stringify({
+                NIC: prevDetails.nic,
+                nic_picture: prevDetails.nicPicture,
+                driver_license: prevDetails.dlicense,
+                driver_license_picture: prevDetails.dlicensePicture,
+                iban: iban,
+                picture: image,
+                user_id: useruuid,
+            })
+
+            console.log("forward these items: ", details)
+
+            const validationDetails = JSON.stringify({
+                iban: iban,
+            })
+            
+            let mytoken = ''
+
+            try {
+                mytoken = await AsyncStorage.getItem('@mytoken')
+            
+            } catch (error) {
+                console.error('Failed to get token: ', error)
+            }
+
+
+            try {
+                let response = await fetch('https://carlet.pythonanywhere.com/uservalidation/',{
+                method: 'post',
+                mode: 'no-cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${mytoken}`
+                },
+                body: validationDetails
+                })
+                let responseJson = await response.json()
+                console.log('server response: ', responseJson)
+                
+                if (responseJson.iban === "This Iban is already registered"){
+                    seterrorMsg("This IBAN is already registered");
+                    seterror(true);
+                } else {
+                    try {
+                        response = await fetch('https://carlet.pythonanywhere.com/userregister/',{
+                        method: 'post',
+                        mode: 'no-cors',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Token ${mytoken}`
+                        },
+                        body: details
+                        })
+                        console.log('server response: ', response)
+                        responseJson = await response.json()
+                        console.log('server response: ', responseJson)
+                        
+                        if (responseJson['Error'] === "There was some error uploading your registration information. Please try again later"){
+                            seterrorMsg("There was some error uploading your registration information. Please try again later");
+                            seterror(true);
+                        } else {
+                            navigation.navigate("Register4")
+                        }
+        
+                    } catch (error) {
+                        console.error('server error: ', error);
+                        // seterrorMsg("Server error. Please try again");
+                        // seterror(true);
+                        navigation.navigate('Register5')
+                    }
+                }
+
+            } catch (error) {
+                console.error('server error: ', error);
+                seterrorMsg("Server error. Please try again");
+                seterror(true);
+            }
+
         }
 
     }
@@ -134,7 +240,7 @@ export default function Register1( {navigation} ) {
             />
             </KeyboardAwareScrollView>
             <TouchableButton
-                title="NEXT"
+                title="REGISTER"
                 onPress={validateInput}
                 buttonposition={styles.buttonposition}>
             </TouchableButton>

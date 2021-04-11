@@ -6,6 +6,8 @@ import TextField from "../assets/components/TextField";
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Register1( {navigation} ) {
 
@@ -42,18 +44,14 @@ export default function Register1( {navigation} ) {
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing:true,
                 aspect:[4,3],
-                quality:1
+                quality:1,
+                base64:true,
             })
-            console.log(result)
-            setImage({
-                uri: result.uri,
-                type: "image/jpeg",
-                name: "photo.jpg",
-
-            })
+            // console.log("rrr", result)
+            setImage(`data:image/jpeg;base64,${result.base64}`)
             if (!result.cancelled)
             {
-                setImage(result.uri)
+                // setImage(result.uri)
             }
         } catch (error) {
             console.log("bc", error)
@@ -68,7 +66,7 @@ export default function Register1( {navigation} ) {
 
     
 
-    const validateInput = () =>
+    const validateInput = async () =>
     {
         if (Nic === `` || image === null)
         {
@@ -95,12 +93,64 @@ export default function Register1( {navigation} ) {
             seterror(true);
             setborderColor("red")
         } else {
-            console.log("ALL GOOD!");
-            console.log("image", image);
+            
+            // console.log("image", image);
+            
+
+            console.log("ALl GOOD!");
+      
             seterrorMsg("");
             seterror(false);
             setborderColor("black");
-            navigation.navigate("Register2")
+
+            const details = {
+                nic: Nic,
+                nicPicture: image,
+            }
+
+            // console.log("forward this: ", details)
+
+            const validationDetails = JSON.stringify({
+                nic: Nic,
+            })
+            
+            let mytoken = ''
+
+            try {
+                mytoken = await AsyncStorage.getItem('@mytoken')
+            
+            } catch (error) {
+                console.error('Failed to get token: ', error)
+            }
+
+
+            try {
+                let response = await fetch('https://carlet.pythonanywhere.com/uservalidation/',{
+                method: 'post',
+                mode: 'no-cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${mytoken}`
+                },
+                body: validationDetails
+                })
+                let responseJson = await response.json()
+                console.log('server response: ', responseJson)
+                
+                if (responseJson.nic === "This NIC number is already registered"){
+                    seterrorMsg("This NIC number is already registered");
+                    seterror(true);
+                } else {
+                    navigation.navigate("Register2", {params: details})
+                }
+
+            } catch (error) {
+                console.error('server error: ', error);
+                seterrorMsg("Server error. Please try again");
+                seterror(true);
+            }
+
         }
 
     }

@@ -16,7 +16,6 @@ import TextField from "../assets/components/TextField";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = React.useState(``);
-  const [password, setPassword] = React.useState(``);
   const [borderColor, setborderColor] = useState("black")
   const [error, seterror] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
@@ -27,39 +26,59 @@ export default function Login({ navigation }) {
     setEmail(e);
   };
 
-  const onPressHandler = () => navigation.navigate("Login")
+  const onPressHandler = () => navigation.goBack()
 
   
-
-  const validateEmailFromDataBase = (addr) => {
-    const emailList = [
-      "ashir1999@gmail.com",
-      "adnan.abbas@lums.com", 
-      "shahparnafeeskhan@gmail.com",
-    ];
-    console.log("EMAIL:::", addr, emailList.includes(addr));
-    return emailList.includes(addr);
-  };
-
-  const validateInput = () => {
-    console.log(email, password);
+  const validateInput = async () => {
+    console.log(email);
     if (email === "") {
       seterror(true);
-      seterrorMsg(`Email field is empty`);
-      
-      
-      
+      seterrorMsg(`Email field is empty`);   
       setborderColor("red")
       console.log("Email field is empty");
 
     } else {
       
       console.log("ALL GOOD!");
-      setPromptMsg("A new password has been sent to you email")
-      setButtonPlaceholder(false)
-      seterrorMsg("");
-      seterror(false);
-      setborderColor("black");
+      
+
+      
+      
+
+      const details = JSON.stringify({
+        email: email
+      })
+
+      try {
+        let response = await fetch('https://carlet.pythonanywhere.com/forgotpassword/',{
+          method: 'post',
+          mode: 'no-cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: details
+        })
+        let responseJson = await response.json()
+        console.log('server response: ', responseJson)
+        
+        if (responseJson.email === "User does not exist"){
+          seterrorMsg("User does not exist");
+          seterror(true);
+
+        } else {
+          setPromptMsg("A new password has been sent to your email")
+          setButtonPlaceholder(false)
+          seterrorMsg("");
+          seterror(false);
+          setborderColor("black");
+        }
+
+      } catch (error) {
+        console.error('server error1: ', error);
+        seterrorMsg("Server error. Please try again");
+        seterror(true);
+      }
       
     }
   };

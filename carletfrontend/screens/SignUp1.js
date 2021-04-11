@@ -59,19 +59,7 @@ const Signup = ({ navigation }) => {
       seterrorMsg(`Phone Number should be of 11 digits`);
       setborderColor(["black", "red"])
     } else {
-      // console.log("ALl GOOD!");
-      // console.log("phone number: ", phonenumber)
-      // let newphone = phonenumber
-      // newphone = newphone.replace("0","+92")
-      // console.log("newphone: ", newphone)
-
-      // setPhonenumber(newphone)
       
-      // console.log("updated phone number: ", phonenumber)
-      // seterrorMsg("");
-      // seterror(false);
-      // setborderColor(["black", "black"]);
-      // navigation.navigate("Register")
 
       console.log("ALl GOOD!");
       

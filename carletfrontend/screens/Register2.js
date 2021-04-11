@@ -6,6 +6,8 @@ import TextField from "../assets/components/TextField";
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Register1({ navigation }) {
 
@@ -42,12 +44,13 @@ export default function Register1({ navigation }) {
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing:true,
                 aspect:[4,3],
-                quality:1
+                quality:1,
+                base64:true,
             })
-            console.log(result)
+            // console.log(result)
             if (!result.cancelled)
             {
-                setImage(result.uri)
+                setImage(`data:image/jpeg;base64,${result.base64}`)
             }
         } catch (error) {
             console.log("bc", error)
@@ -60,7 +63,7 @@ export default function Register1({ navigation }) {
         setDLicense(dLicense)
     }
 
-    const validateInput = () =>
+    const validateInput = async () =>
     {
         if (dLicense === `` || image === null)
         {
@@ -80,12 +83,73 @@ export default function Register1({ navigation }) {
             setborderColor(field);    
             
         } else {
+            // console.log("ALL GOOD!");
+            // console.log("image", image);
+            // seterrorMsg("");
+            // seterror(false);
+            // setborderColor("black");
+            // navigation.navigate("Register3")
+
+            // console.log("image", image);
+            
+
             console.log("ALL GOOD!");
-            console.log("image", image);
+      
             seterrorMsg("");
             seterror(false);
             setborderColor("black");
-            navigation.navigate("Register3")
+
+            const prevDetails = navigation.getParam('params')
+
+            const details = {
+                nic: prevDetails.nic,
+                nicPicture: prevDetails.nicPicture,
+                dlicense: dLicense,
+                dlicensePicture: image,
+            }
+
+            // console.log("forward these: ", details)
+
+            const validationDetails = JSON.stringify({
+                driver_license: dLicense,
+            })
+            
+            let mytoken = ''
+
+            try {
+                mytoken = await AsyncStorage.getItem('@mytoken')
+            
+            } catch (error) {
+                console.error('Failed to get token: ', error)
+            }
+
+
+            try {
+                let response = await fetch('https://carlet.pythonanywhere.com/uservalidation/',{
+                method: 'post',
+                mode: 'no-cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${mytoken}`
+                },
+                body: validationDetails
+                })
+                let responseJson = await response.json()
+                console.log('server response: ', responseJson)
+                
+                if (responseJson.driver_license === "This driver license is already registered"){
+                    seterrorMsg("This driver license is already registered");
+                    seterror(true);
+                } else {
+                    navigation.navigate("Register3", {params: details})
+                }
+
+            } catch (error) {
+                console.error('server error: ', error);
+                seterrorMsg("Server error. Please try again");
+                seterror(true);
+            }
         }
 
     }

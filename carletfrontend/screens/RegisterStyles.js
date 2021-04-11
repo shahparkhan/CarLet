@@ -47,7 +47,6 @@ const RegisterStyles = StyleSheet.create({
         position: "absolute",
         alignSelf:'center',
         top: buttonHeight,
-        marginTop: 10,
     }
 })
 
