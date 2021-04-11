@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings 
+from django.conf import settings
 from django import forms
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
@@ -21,7 +21,7 @@ class CarletUser (models.Model):
     isTempBan = models.BooleanField(default = False)
     tempBan = models.DateField(blank = True, null = True)
     wallet = models.IntegerField(default=0)
-    
+
     def __str__(self):
       return (str(self.user.email) + " "+str(self.carletuser_id))
 
@@ -33,11 +33,11 @@ class CarletUser (models.Model):
 #     vehicle_model = models.CharField(max_length = 50)
 #     vehicle_name = models.CharField(max_length = 50)
 #     vehicle_type = models.CharField(max_length = 50)
-#     vehicle_picture1 = models.ImageField() 
+#     vehicle_picture1 = models.ImageField()
 #     vehicle_picture2 = models.ImageField()
-#     vehicle_picture3 = models.ImageField(blank = True, null = True)  
-#     vehicle_picture4 = models.ImageField(blank = True, null = True) 
-#     vehicle_picture5 = models.ImageField(blank = True, null = True) 
+#     vehicle_picture3 = models.ImageField(blank = True, null = True)
+#     vehicle_picture4 = models.ImageField(blank = True, null = True)
+#     vehicle_picture5 = models.ImageField(blank = True, null = True)
 #     daily_rate = models.PositiveIntegerField(default=0)
 #     vehicle_isVerified = models.BooleanField(default=False)
 #     vehicle_rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
@@ -52,7 +52,7 @@ class CarletUser (models.Model):
 #     reg_papers = models.FileField()
 #     insurance_papers = models.FileField()
 #     tracker_papers = models.FileField()
-    
+
 #     def __str__(self):
 #         return  (self.vehicledoc_id.vehicle_user.user.username + " " +  str(self.vehicledoc_id))
 
@@ -66,7 +66,7 @@ class CarletUser (models.Model):
 #     vehicle_zip = models.CharField(max_length = 50, blank = True, null = True)
 #     vehicle_latitude = models.DecimalField(max_digits=19, decimal_places=4,blank = True, null = True)
 #     vehicle_longitude = models.DecimalField(max_digits=19, decimal_places=4,blank = True, null = True)
-    
+
 #     def __str__(self):
 #         return  (self.vehicleloc_id.vehicle_user.user.username + " "  + str(self.vehicleloc_id))
 
@@ -77,10 +77,10 @@ class UserDocument(models.Model):
     doc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_doc_id = models.OneToOneField(CarletUser, on_delete=models.CASCADE, related_name='user_doc_id')
     NIC = models.CharField(max_length = 13, unique= True)
-    NIC_picture = models.ImageField(blank = True, null = True)
-    picture = models.ImageField(blank = True, null = True)
+    NIC_picture = models.ImageField(blank = True, null = True, upload_to='nic_pictures/')
+    picture = models.ImageField(blank = True, null = True, upload_to='profile_pictures/')
     driver_license = models.CharField(max_length = 50)
-    driver_license_picture = models.ImageField(blank=True, null=True)
+    driver_license_picture = models.ImageField(blank=True, null=True,upload_to='license_pictures/')
     account_number = models.CharField(max_length = 24)
     picture = models.ImageField(blank=True, null=True)
 
@@ -102,7 +102,7 @@ class UserDocument(models.Model):
 
 #     def __str__(self):
 #         return (self.vehicle_trip_id.vehicle_user.user.username + " "+self.renter_id.user.username +" " + str(self.trip_id))
-    
+
 
 
 # class Rating(models.Model):
@@ -119,7 +119,7 @@ class UserDocument(models.Model):
 #     def __str__(self):
 #         return ((self.rater_id.user.username) + " " + self.rated_id.user.username + " " + str(self.rating_id))
 
-    
+
 
 # class Voucher(models.Model):
 #     voucher_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
