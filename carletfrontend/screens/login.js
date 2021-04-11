@@ -10,9 +10,10 @@ import {
   Keyboard,
 } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
+
 
 export default function Login({ navigation }) {
   const [email, setEmail] = React.useState(``);
@@ -20,6 +21,7 @@ export default function Login({ navigation }) {
   const [borderColor, setborderColor] = useState(["black", "black"]);
   const [error, seterror] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
+  const [focus, setFocus] = useState(false)
 
   const emailHandler = (e) => {
     setEmail(e);
@@ -46,7 +48,7 @@ export default function Login({ navigation }) {
     return emailList.includes(addr);
   };
 
-  const validateInput = () => {
+  const validateInput = async () => {
     console.log(email, password);
     if (anyfieldEmpty()) {
       seterror(true);
@@ -65,21 +67,151 @@ export default function Login({ navigation }) {
       setborderColor([field1, field2])
       console.log("Some fields are empty");
 
-    } else if (!validateEmailFromDataBase(email)) {
-      
-      console.log("Invalidate Email");
-      
-      seterror(true);
-      seterrorMsg("Invalid Email. Enter New Email");
-      setborderColor(["red", "black"]);
-
     } else {
       
-      console.log("ALL GOOD!");
+      // console.log("ALL GOOD!");
+      
+      // seterrorMsg("");
+      // seterror(false);
+      // setborderColor(["black", "black"]);
+
+      console.log("ALl GOOD!");
       
       seterrorMsg("");
       seterror(false);
       setborderColor(["black", "black"]);
+      
+
+      const details = JSON.stringify({
+        email: email,
+        password: password
+      })
+
+      try {
+        let response = await fetch('https://carlet.pythonanywhere.com/login/',{
+          method: 'post',
+          mode: 'no-cors',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: details
+        })
+        let responseJson = await response.json()
+        console.log('server response: ', responseJson)
+        
+        if (responseJson['Error']=== "Username or password is incorrect"){
+          seterrorMsg("Username or password is incorrect");
+          seterror(true);
+          // navigation.navigate("SignUp1", {email:email})
+
+        } else {
+          seterrorMsg("");
+          seterror(false);
+          setborderColor(["black", "black"]);
+
+          const useruuid = responseJson.uuid
+          const mytoken = responseJson.token
+
+          try {
+            await AsyncStorage.setItem('@isloggedin', '1')
+            await AsyncStorage.setItem('@mytoken', responseJson.token)
+            await AsyncStorage.setItem('@useruuid', responseJson.uuid)
+          } catch (error) {
+            console.log("AsyncStorage error: ", error)
+          }
+          try {
+            const val = await AsyncStorage.getItem('@isloggedin')
+            console.log("itemmm: ", val)
+          } catch (error) {
+            console.log("AsyncStorage error: ", error)
+          }
+
+          let registercheck = false
+          let verifiedcheck = false
+
+          try {
+      
+            response = await fetch('https://carlet.pythonanywhere.com/checkregistration/',{
+            method: 'post',
+            mode: 'no-cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${mytoken}`
+            },
+            body: JSON.stringify({user_id:useruuid})
+            })
+            responseJson = await response.json()
+            console.log('server response: ', responseJson)
+            
+            if (responseJson.Success === "User has Registered"){
+                try {
+                  await AsyncStorage.setItem('@isregistered', '1')
+                } catch (e) {
+                }
+
+                registercheck = true
+            } else {
+              try {
+                await AsyncStorage.setItem('@isregistered', '0')
+              } catch (e) {
+              }
+            }
+          } catch (error) {
+          }
+
+
+          try {
+      
+            response = await fetch('https://carlet.pythonanywhere.com/checkverification/',{
+            method: 'post',
+            mode: 'no-cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${mytoken}`
+            },
+            body: JSON.stringify({user_id:useruuid})
+            })
+            responseJson = await response.json()
+            console.log('server response: ', responseJson)
+            
+            if (responseJson.Success === "User is Verified"){
+                try {
+                  await AsyncStorage.setItem('@isverified', '1')
+                } catch (e) {
+                }
+
+                verifiedcheck = true
+            } else {
+              try {
+                await AsyncStorage.setItem('@isverified', '0')
+              } catch (e) {
+              }
+            }
+          } catch (error) {
+          }
+
+          if (registercheck) {
+            if (verifiedcheck) {
+              console.log("go home")
+              navigation.navigate('Home')
+            } else {
+              navigation.navigate('Register6')
+            }
+          } else {
+            navigation.navigate('Register')
+          }
+
+
+        }
+
+      } catch (error) {
+        console.error('server error1: ', error);
+        seterrorMsg("Server error. Please try again");
+        seterror(true);
+      }
       
     }
   };
@@ -96,7 +228,7 @@ export default function Login({ navigation }) {
             source={require("./../assets/login.png")}
           />
 
-          {error ? <Text style={styles.error}>{errorMsg}</Text> : <></>}
+          {error ? <Text style={styles.error}>{errorMsg}</Text> : <Text style={styles.error}></Text>}
 
           <TextField
             style={{ 

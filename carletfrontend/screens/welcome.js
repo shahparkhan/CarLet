@@ -1,6 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import TouchableButton from "../assets/components/TouchableButton";
+import RegisterStyles from "./RegisterStyles"
+
+
 export default function Welcome({ navigation }) {
     
     
@@ -20,16 +23,18 @@ export default function Welcome({ navigation }) {
             <Text style = {styles.bodytext}>
                 Our tagline which we haven't thought of yet
             </Text>
-            <TouchableButton
-                buttonposition={styles.buttonposition}
-                title="LOGIN"
-                onPress={() => pressHandler("Login")}
-            ></TouchableButton>
-            <TouchableButton
-                buttonposition={styles.buttonposition}
-                title="SIGNUP"
-                onPress={() => pressHandler("SignUp0")}
-            ></TouchableButton>
+            
+            <View style={{...RegisterStyles.buttonposition, flexDirection:"row", justifyContent:"space-between"}}>
+                <TouchableButton
+                    title="LOGIN"
+                    onPress={() => pressHandler("Login")}
+                ></TouchableButton>
+                <TouchableButton
+                    buttonposition={{position:"relative", marginLeft:16}}
+                    title="SIGNUP"
+                    onPress={() => pressHandler("SignUp0")}
+                ></TouchableButton>
+            </View>
         </View>
     );
 }
