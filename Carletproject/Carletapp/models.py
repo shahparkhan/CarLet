@@ -27,24 +27,24 @@ class CarletUser (models.Model):
 
 
 
-# class VehicleDetail(models.Model):
-#     vehicle_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     vehicle_user = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name='vehicle_user')
-#     vehicle_model = models.CharField(max_length = 50)
-#     vehicle_name = models.CharField(max_length = 50)
-#     vehicle_type = models.CharField(max_length = 50)
-#     vehicle_picture1 = models.ImageField() 
-#     vehicle_picture2 = models.ImageField()
-#     vehicle_picture3 = models.ImageField(blank = True, null = True)  
-#     vehicle_picture4 = models.ImageField(blank = True, null = True) 
-#     vehicle_picture5 = models.ImageField(blank = True, null = True) 
-#     daily_rate = models.PositiveIntegerField(default=0)
-#     vehicle_isVerified = models.BooleanField(default=False)
-#     vehicle_rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
-#     put_up_for_rent = models.BooleanField(default=True)
+class VehicleDetail(models.Model):
+    vehicle_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    vehicle_user = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name='vehicle_user')
+    vehicle_model = models.CharField(max_length = 50)
+    vehicle_name = models.CharField(max_length = 50)
+    vehicle_type = models.CharField(max_length = 50)
+    vehicle_picture1 = models.ImageField() 
+    vehicle_picture2 = models.ImageField()
+    vehicle_picture3 = models.ImageField(blank = True, null = True)  
+    vehicle_picture4 = models.ImageField(blank = True, null = True) 
+    vehicle_picture5 = models.ImageField(blank = True, null = True) 
+    daily_rate = models.PositiveIntegerField(default=0)
+    vehicle_isVerified = models.BooleanField(default=False)
+    vehicle_rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
+    put_up_for_rent = models.BooleanField(default=True)
 
-#     def __str__(self):
-#         return (self.vehicle_name + " " + str(self.vehicle_id) + " " + self.vehicle_user.user.username)
+    def __str__(self):
+        return (self.vehicle_name + " " + str(self.vehicle_id) + " " + self.vehicle_user.user.username)
 
 
 # class VehicleDocument(models.Model):
@@ -77,10 +77,10 @@ class UserDocument(models.Model):
     doc_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_doc_id = models.OneToOneField(CarletUser, on_delete=models.CASCADE, related_name='user_doc_id')
     NIC = models.CharField(max_length = 13, unique= True)
-    NIC_picture = models.ImageField(blank = True, null = True)
-    picture = models.ImageField(blank = True, null = True)
+    NIC_picture = models.ImageField(blank = True, null = True, upload_to='nic_pictures/')
+    picture = models.ImageField(blank = True, null = True, upload_to='profile_pictures/')
     driver_license = models.CharField(max_length = 50)
-    driver_license_picture = models.ImageField(blank=True, null=True)
+    driver_license_picture = models.ImageField(blank=True, null=True, upload_to='license_pictures/')
     account_number = models.CharField(max_length = 24)
     picture = models.ImageField(blank=True, null=True)
 
@@ -90,18 +90,18 @@ class UserDocument(models.Model):
         return (self.user_doc_id.user.email + " " + str(self.doc_id))
 
 
-# class TripDetail(models.Model):
-#     trip_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     # owner_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='owner_id')
-#     renter_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='renter_id')
-#     vehicle_trip_id = models.ForeignKey(VehicleDetail, on_delete=models.CASCADE)
-#     pickup_date = models.DateField()
-#     dropoff_date = models.DateField()
-#     duration = models.PositiveIntegerField()
-#     cost = models.PositiveIntegerField()
+class TripDetail(models.Model):
+    trip_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # owner_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='owner_id')
+    renter_id = models.ForeignKey(CarletUser, on_delete=models.CASCADE, related_name ='renter_id')
+    vehicle_trip_id = models.ForeignKey(VehicleDetail, on_delete=models.CASCADE)
+    pickup_date = models.DateField()
+    dropoff_date = models.DateField()
+    duration = models.PositiveIntegerField()
+    cost = models.PositiveIntegerField()
 
-#     def __str__(self):
-#         return (self.vehicle_trip_id.vehicle_user.user.username + " "+self.renter_id.user.username +" " + str(self.trip_id))
+    def __str__(self):
+        return (self.vehicle_trip_id.vehicle_user.user.username + " "+self.renter_id.user.username +" " + str(self.trip_id))
     
 
 

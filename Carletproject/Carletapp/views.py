@@ -14,7 +14,7 @@ import smtplib
 from password_generator import PasswordGenerator
 from email.message import EmailMessage
 from validate_email import validate_email
-from .models import CarletUser, UserDocument
+from .models import CarletUser, UserDocument, TripDetail, VehicleDetail
 import uuid
 
 # Create your views here.
@@ -154,7 +154,8 @@ class UserRegistration(APIView):
             return Response({"Success": "User Registration Successful"})
         except:
             return Response({"Error": "There was some error uploading your registration information. Please try again later"}, status= status.HTTP_400_BAD_REQUEST)
-                
+
+
 class CheckVerification(APIView):
 
     authentication_classes = [TokenAuthentication]
@@ -174,6 +175,10 @@ class CheckVerification(APIView):
             return Response({"Error": "User not Found"} , status= status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CheckRegistration(APIView):
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def post (self, request, format=None):
         user_id = request.data.get('user_id')
         try:

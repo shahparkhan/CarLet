@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from Carletapp import views
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +32,6 @@ urlpatterns = [
     path('checkverification/', csrf_exempt(views.CheckVerification.as_view())),
     path('checkregistration/', csrf_exempt(views.CheckRegistration.as_view())),
     path('searchvehicle/', csrf_exempt(views.SearchVehicle.as_view()))
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
