@@ -15,29 +15,38 @@ import Register6 from './../screens/Register6'
 import Home from './../screens/Home'
 import PickUpandDropOff from './../screens/PickUpandDropOff'
 import SearchResults1 from './../screens/SearchResults1'
-import Header1 from './../shared/Header'
-import React from 'react'
+import Header1 from './../shared/Header';
+import React from 'react';
 
 
 const signedin = {
     Register6: {
         screen: Register6,
-        navigationOptions: {
-            headerShown: false,
-        },   
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }   
     
     },
     Register5: {
         screen: Register5,
-        navigationOptions: {
-            headerShown: false,
-        },
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
     },
     Register: {
         screen: Register,
-        navigationOptions: {
-            headerShown: false,
-        },
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
     },
     Welcome: {
         screen: Welcome,
@@ -71,91 +80,81 @@ const signedin = {
     },
     Register1: {
         screen: Register1,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     Register2: {
         screen: Register2,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     Register3: {
         screen: Register3,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     Register4: {
         screen: Register4,
-        navigationOptions: {
-            headerShown: false,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
-    Welcome: {
-        screen: Welcome,
-        navigationOptions: {
-            headerShown: false,
-        }
-    },
-    Login: {
-        screen: Login,
-        navigationOptions: {
-            headerShown: false,
-        }
-    },
-    ForgotPassword: {
-        screen: ForgotPassword,
-        navigationOptions: {
-            headerShown: false,
-        }
-    },
-    SignUp0: {
-        screen: SignUp0,
-        navigationOptions: {
-            headerShown: false,
-        }
-    },
-    SignUp1: {
-        screen: SignUp1,
-        navigationOptions: {
-            headerShown: false,
-        }
-    },
+
     Home: {
         screen: Home,
-        navigationOptions: {
-            headerShown: false,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     PickUpandDropOff: {
         screen: PickUpandDropOff,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     SearchResults1: {
         screen: SearchResults1,
-        navigationOptions: {
-            headerShown: false,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     
 }
 
 
-const SignedIn = createStackNavigator(signedin)
+const SignedIn = createStackNavigator(signedin,{
+    defaultNavigationOptions:{
+        headerStyle:{
+            backgroundColor:"#ffc107"
+        }
+    }}
+    )
 
-export default createAppContainer(SignedIn)
+export default SignedIn
 
 
 // const AuthStack = createStackNavigator()
