@@ -16,7 +16,10 @@ import SignedOutNavigator from './routes/SignedOutStack'
 import SignedInNavigator from './routes/SignedInStack'
 import SignedInNavigator2 from './routes/SignedInStack2'
 import SignedInNavigator3 from './routes/SignedInStack3'
-// import DrawerNavigator from './routes/Drawer'
+import DrawerSignedOut from './routes/DrawerSignedOut';
+import DrawerSignedIn from './routes/DrawerSignedIn';
+import DrawerSignedIn2 from './routes/DrawerSignedIn2';
+import DrawerSignedIn3 from './routes/DrawerSignedIn3';
 import { registerRootComponent } from "expo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -188,14 +191,14 @@ export default function App() {
           return (
             <View style={styles.container}>
               <StatusBar backgroundColor="#ffa000" />
-              <SignedInNavigator3 />
+              <DrawerSignedIn3 />
             </View>
           );
         } else {
           return (
             <View style={styles.container}>
               <StatusBar backgroundColor="#ffa000" />
-              <SignedInNavigator2 />
+              <DrawerSignedIn2 />
             </View>
           );
         }
@@ -203,7 +206,7 @@ export default function App() {
         return (
           <View style={styles.container}>
             <StatusBar backgroundColor="#ffa000" />
-            <SignedInNavigator />
+            <DrawerSignedIn />
           </View>
         );
       }
@@ -212,7 +215,7 @@ export default function App() {
       return (
         <View style={styles.container}>
           <StatusBar backgroundColor="#ffa000" />
-          <SignedOutNavigator />
+          <DrawerSignedOut />
         </View>
       );
     }

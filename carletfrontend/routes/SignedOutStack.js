@@ -15,6 +15,8 @@ import Register6 from './../screens/Register6'
 import Home from './../screens/Home'
 import PickUpandDropOff from './../screens/PickUpandDropOff'
 import SearchResults1 from './../screens/SearchResults1'
+import Header1 from './../shared/Header';
+import React from 'react';
 
 const signedout = {
     Welcome: {
@@ -49,70 +51,96 @@ const signedout = {
     },
     Register: {
         screen: Register,
-        navigationOptions: {
-            headerShown: false,
-        },
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
     },
     Register1: {
         screen: Register1,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
+
     },
     Register2: {
         screen: Register2,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     Register3: {
         screen: Register3,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     Register4: {
         screen: Register4,
-        navigationOptions: {
-            headerShown: false,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     Register6: {
         screen: Register6,
-        navigationOptions: {
-            headerShown: false,
-        },
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+
     },
     Register5: {
         screen: Register5,
-        navigationOptions: {
-            headerShown: false,
-        },
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+
     },
     Home: {
         screen: Home,
-        navigationOptions: {
-            headerShown: false,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     PickUpandDropOff: {
         screen: PickUpandDropOff,
-        navigationOptions: {
-            headerShown: true,
-            title: "",
-            headerStyle: {backgroundColor: "#ffc107"}
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
+
     },
     SearchResults1: {
         screen: SearchResults1,
-        navigationOptions: {
-            headerShown: false,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
         }
     },
     
@@ -121,9 +149,14 @@ const signedout = {
 
 
 
-const SignedOut = createStackNavigator(signedout)
+const SignedOut = createStackNavigator(signedout, {
+    defaultNavigationOptions:{
+        headerStyle:{
+            backgroundColor:"#ffc107"
+        }
+    }})
 
-export default createAppContainer(SignedOut)
+export default SignedOut
 
 
 // const AuthStack = createStackNavigator()
