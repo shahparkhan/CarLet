@@ -17,7 +17,7 @@ export default function Register5() {
     }
 
     return (
-        <View style={RegisterStyles.container}>
+        <View style={{...RegisterStyles.container, position:"relative", top:-50}}>
             <Image 
                 style = {RegisterStyles.yellowvector}
                 source={require('./../assets/register5.png')}
@@ -31,7 +31,7 @@ export default function Register5() {
             <TouchableButton
                 title="HOME"
                 onPress={onPressHandler}
-                buttonposition={styles.buttonposition}>
+                buttonposition={RegisterStyles.buttonposition}>
             </TouchableButton>
             <Image
                 style={RegisterStyles.smallcar}

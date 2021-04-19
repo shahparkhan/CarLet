@@ -108,7 +108,7 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <View style={SignUpStyles.viewContainer}>
+    <View style={{...SignUpStyles.viewContainer, position:"relative", top:-50}}>
       <Image
         style={SignUpStyles.yellowvector}
         source={require("./../assets/YellowVector.png")}
@@ -170,6 +170,10 @@ const Home = ({ navigation }) => {
           onPress={logoutHandler}
           buttonposition={RegisterStyles.buttonposition}>
       </TouchableButton>
+      <Image
+          style={RegisterStyles.smallcar}
+          source={require("./../assets/smallcar.png")}
+      />
     </View>
   );
 };

@@ -18,7 +18,7 @@ export default function Register({ navigation }) {
     }
 
     return (
-        <View style={RegisterStyles.container}>
+        <View style={{...RegisterStyles.container, position:"relative", top:-50}}>
             <Image 
                 style = {RegisterStyles.yellowvector}
                 source={require('./../assets/register.png')}
@@ -30,23 +30,17 @@ export default function Register({ navigation }) {
                 Before using the application, you need to register your identification documents.
                 After your documents are authenticated, you will be allowed to rent out cars!
             </Text>
+            
+            <TouchableButton
+                title="REGISTER"
+                onPress={() => navigation.navigate("Register1")}
+                buttonposition={RegisterStyles.buttonposition}    
+            >
+            </TouchableButton>
             <Image
                 style={RegisterStyles.smallcar}
                 source={require("./../assets/smallcar.png")}
             />
-            <View style={{...RegisterStyles.buttonposition, flexDirection:"row", justifyContent:"space-between"}}>
-                <TouchableButton
-                    title="REGISTER"
-                    onPress={() => navigation.navigate("Register1")}
-                    >
-                </TouchableButton>
-                <TouchableButton
-                    title="LOGOUT"
-                    onPress={logoutHandler}
-                    buttonposition={{position:"relative", marginLeft:16}}>
-                </TouchableButton>
-            </View>
-            
 
         </View>
     );

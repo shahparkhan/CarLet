@@ -15,6 +15,7 @@ import Register6 from './../screens/Register6'
 import Home from './../screens/Home'
 import PickUpandDropOff from './../screens/PickUpandDropOff'
 import SearchResults1 from './../screens/SearchResults1'
+import CarDetails from './../screens/CarDetails'
 import Header1 from './../shared/Header';
 import React from 'react';
 
@@ -136,6 +137,15 @@ const signedout = {
     },
     SearchResults1: {
         screen: SearchResults1,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    CarDetails: {
+        screen: CarDetails,
         navigationOptions: ({navigation}) => {
             return{
                 headerLeft: ()=> null,

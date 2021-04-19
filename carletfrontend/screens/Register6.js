@@ -18,7 +18,7 @@ export default function Register6({navigation}) {
     }
 
     return (
-        <View style={RegisterStyles.container}>
+        <View style={{...RegisterStyles.container, position:"relative", top:-50}}>
             <Image 
                 style = {RegisterStyles.yellowvector}
                 source={require('./../assets/register6.png')}

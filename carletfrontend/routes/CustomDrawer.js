@@ -3,52 +3,77 @@ import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,Scrol
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
 import { Entypo,MaterialIcons } from '@expo/vector-icons';
 import { Icon } from 'native-base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function ContentContainer( {navigation} ){
-        return(
-            <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
-                <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
-                    <View style = {{height:164, backgroundColor:"#ffc107"}}>
-                        <Image source={require("./../assets/jenny.jpg")} style = {styles.imageStyle}/>
-                        <Text style = {styles.name}>
-                            Jennifer Conelly
-                        </Text>
-                    </View>
-                    <ScrollView>
+        
+    const logoutHandler = async () => {
+        try {
+          await AsyncStorage.setItem('@isloggedin', '0')
+  
+        } catch (e) {
+            console.log("loggedout error: ", e)
+        }
+        navigation.navigate("Welcome")
+    }
 
-                        <View style = {{height:50}} >
-                            <Text style = {styles.drawerText}> Account Settings </Text >
-                            <MaterialIcons name="settings" size={24} color="black" />
+    return(
+        <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
+            <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
+                <View style = {{height:178, backgroundColor:"#ffc107"}}>
+                    <Image source={require("./../assets/jenny.jpg")} style = {styles.imageStyle}/>
+                    <Text style = {styles.name}>
+                        Jennifer
+                    </Text>
+                </View>
+                <ScrollView>
+                    
+
+                    
+                    <TouchableOpacity onPress = {() => {console.log("pressed")}}>
+                        <View style = {styles.optionStyle} >
+                            <MaterialIcons name="settings" size={24} color="black" style={styles.testIcon}/>
+                            <Text style = {styles.testText}> Account Settings </Text >
                         </View>
+                    </TouchableOpacity>
 
 
 
-                        <TouchableHighlight onPress = {()=>navigation.navigate('Welcome')}>
-                            <View style = {{height:50}} >
-                                <Text style = {styles.drawerText}> Logout </Text >
-                                <MaterialIcons name="logout" size={24} color="black" />
-                            </View>
-                        </TouchableHighlight>
-                    </ScrollView>
-                </TouchableOpacity>
+                    <TouchableOpacity onPress = {logoutHandler}>
+                        <View style = {styles.optionStyle} >
+                            <MaterialIcons name="logout" size={24} color="black" style={styles.testIcon}/>
+                            <Text style = {styles.testText}> Logout </Text >
+                        </View>
+                    </TouchableOpacity>
+
+
+                </ScrollView>
             </TouchableOpacity>
-        )
+        </TouchableOpacity>
+    )
     
 }
 
 
 const styles = StyleSheet.create({
+    optionStyle:{
+        flex:1, 
+        flexDirection: 'row', 
+        'marginTop': 25
+    },
+
     drawerTransparent: {
         flex:1,
         backgroundColor:'transparent'
     },
     imageStyle:{
+        position:"relative",
         height:80,
         width:80,
-        marginTop:40,
-        borderRadius:75,
-        left:16,
+        marginTop: 40,
+        borderRadius:40,
+        marginLeft:16,
     },
     drawer:{
         flex:1,
@@ -56,7 +81,9 @@ const styles = StyleSheet.create({
     },
     name:{
         fontSize: 20,
-        textAlign: 'center',
+        textAlign: 'left',
+        marginLeft: 16,
+        marginTop: 16,
         color: 'white',
         fontFamily:"Nunito-Bold",
     },
@@ -66,6 +93,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'black',
 
+    }, 
+    testIcon: {
+        marginLeft: 16,
+        alignSelf: "center"
+    },
+    testText: {
+        fontFamily:"Nunito-Regular",
+        fontSize: 14,
+        textAlign: 'center',
+        color: 'black',
+        marginLeft:8,
+        alignSelf: "center"
     }
 })
 

@@ -4,6 +4,7 @@ const win = Dimensions.get('window')
 
 const height = (win.width/350)*320
 const buttonHeight = win.height - 104;
+const smallcarheight = win.height -66
 
 const RegisterStyles = StyleSheet.create({
     
@@ -39,9 +40,8 @@ const RegisterStyles = StyleSheet.create({
         width: 40,
         height: 20,
         position: "absolute",
-        top: win.height - 36,
+        top: smallcarheight,
         right: 16,
-        
     },
     buttonposition: {
         position: "absolute",

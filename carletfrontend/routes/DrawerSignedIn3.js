@@ -6,7 +6,7 @@ import {StyleSheet, View, SafeAreaView,Image,ScrollView} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 //import { Header } from 'react-native/Libraries/NewAppScreen';
 import { Container, Content, Text, Header, Left, Body, Title, Right, Icon } from 'native-base';
-import ContentComponent from './customDrawer';
+import ContentComponent from './CustomDrawer';
 import SignedIn3 from './SignedInStack3';
 
 

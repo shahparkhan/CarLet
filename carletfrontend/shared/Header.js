@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet,Text,View,Pressable} from 'react-native';
 import { Entypo, MaterialIcons} from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Header1 ({navigation}){
@@ -10,8 +11,38 @@ export default function Header1 ({navigation}){
         console.log(`menu opened`)
     }
 
-    const goHome = () =>{
-        navigation.navigate("Welcome")
+    const goHome = async () =>{
+        let isverified = false
+        let isregistered = false
+        try {
+            const val1 = await AsyncStorage.getItem('@isverified')
+            if (val1 == '1'){
+                isverified = true
+            }     
+        } catch (e) {
+            console.error('Failed to get verification state')
+        }
+
+
+        try {
+            const val2 = await AsyncStorage.getItem('@isregistered')
+            if (val2 == '1'){
+                isregistered = true
+            } 
+        } catch (e) {
+            console.error('Failed to get registration state')
+        }
+
+          
+        if(isregistered){
+            if (isverified){
+                navigation.navigate('Home')
+            } else{
+                navigation.navigate('Register6')
+            }
+        } else{
+            navigation.navigate('Register')
+        }
     }
     return(
         <View style = {styles.header}>
