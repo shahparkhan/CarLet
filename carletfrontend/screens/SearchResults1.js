@@ -7,37 +7,62 @@ const searchData = [
     key: "1",
     title: "Honda Civic",
     model: "2018",
-    rating: 5,
+    rating: 1,
     location: "DHA PHASE 8",
     rate: 1500,
-    imagesrc: "none",
+    imagesrc: [
+      { url:require('../assets/Civic.png') },
+      { url:require('../assets/icon.png') },
+      { url:require('../assets/jenny.jpg') }
+    ],
+    owner: "Jenny",
+    bio: "Ashir's girlfriend to be",
+    
   },
   {
     key: "2",
     title: "Toyota Corolla",
     model: "2018",
-    rating: 5,
+    rating: 2,
     location: "DHA PHASE 8",
     rate: 1500,
-    imagesrc: "none",
+    imagesrc: [
+      { url:require('../assets/Civic.png') },
+      { url:require('../assets/icon.png') },
+      { url:require('../assets/jenny.jpg') }
+    ],
+    owner: "Jenny",
+    bio: "Ashir's girlfriend to be",
   },
   {
     key: "3",
     title: "Honda City",
     model: "2018",
-    rating: 5,
+    rating: 3,
     location: "DHA PHASE 8",
     rate: 1500,
-    imagesrc: "none",
+    imagesrc: [
+      { url:require('../assets/Civic.png') },
+      { url:require('../assets/icon.png') },
+      { url:require('../assets/jenny.jpg') }
+    ],
+    owner: "Jenny",
+    bio: "Ashir's girlfriend to be",
   },
   {
     key: "4",
     title: "Suzuki Mehran",
     model: "2018",
-    rating: 5,
+    rating: 4,
     location: "DHA PHASE 8",
     rate: 1500,
-    imagesrc: "none",
+    imagesrc: [
+      { url:require('../assets/Civic.png') },
+      { url:require('../assets/icon.png') },
+      { url:require('../assets/jenny.jpg') }
+    ],
+    owner: "Jenny",
+    bio: "Ashir's girlfriend to be",
   },
   {
     key: "5",
@@ -46,14 +71,23 @@ const searchData = [
     rating: 5,
     location: "DHA PHASE 8",
     rate: 1500,
-    imagesrc: "none",
+    imagesrc: [
+      { url:require('../assets/Civic.png') },
+      { url:require('../assets/icon.png') },
+      { url:require('../assets/jenny.jpg') }
+    ],
+    owner: "Jenny",
+    bio: "Ashir's girlfriend to be",
   },
 ];
 
-const SearchResults1 = () => {
+const SearchResults1 = ({navigation}) => {
+  const onPressHandler = async (arr, title, rating, model, location, rate, owner, bio) => {
+      navigation.navigate('CarDetails', {imagesrc:arr, title: title, rating: rating, model: model, location: location, rate: rate, owner: owner, bio: bio})
+  }
   const renderCard = ({ item, index, separators }) => {
     return (
-      <TouchableOpacity onPress={() => console.log("OnPress Called")}>
+      <TouchableOpacity onPress={() => onPressHandler(item.imagesrc, item.title, item.rating, item.model, item.location, item.rate, item.owner, item.bio)}>
         <Card
           key={item.key}
           title={item.title}
@@ -61,7 +95,7 @@ const SearchResults1 = () => {
           model={item.model}
           location={item.location}
           rate={item.rate}
-          imagesrc={item.imagesrc}
+          imagesrc={item.imagesrc[0]}
         />
       </TouchableOpacity>
     );
