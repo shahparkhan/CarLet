@@ -22,7 +22,12 @@ const searchData = [
 
   
   
+  
 const CarDetails = ({navigation}) => {
+
+  const booknowHandler = () => {
+    navigation.navigate("RequestSent")
+  }
 
   const renderCard = ({ item, index, separators }) => {
     console.log("image list", navigation.getParam('imagesrc'))
@@ -61,7 +66,7 @@ const CarDetails = ({navigation}) => {
       <TouchableButton
         buttonposition={styles.buttonposition}
         title="BOOK NOW"
-        onPress={()=>console.log("BOOK NOW pressed")}>
+        onPress={booknowHandler}>
 
       </TouchableButton>
     </View>

@@ -125,7 +125,7 @@ export default function App() {
         if (responseJson.Success === "User is Verified"){
             setVerifiedstate(true);
             try {
-              await AsyncStorage.setItem('@isverfied', '1')
+              await AsyncStorage.setItem('@isverified', '1')
               
             } catch (e) {
             }
