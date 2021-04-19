@@ -16,6 +16,7 @@ export default function Header1 ({navigation}){
         let isregistered = false
         try {
             const val1 = await AsyncStorage.getItem('@isverified')
+            console.log("val1: ", val1)
             if (val1 == '1'){
                 isverified = true
             }     
@@ -26,6 +27,7 @@ export default function Header1 ({navigation}){
 
         try {
             const val2 = await AsyncStorage.getItem('@isregistered')
+            console.log("val2: ", val2)
             if (val2 == '1'){
                 isregistered = true
             } 

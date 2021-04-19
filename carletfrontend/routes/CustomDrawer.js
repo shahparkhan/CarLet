@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView} from 'react-native';
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
-import { Entypo,MaterialIcons } from '@expo/vector-icons';
+import { Entypo,MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Icon } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -35,6 +35,13 @@ export default function ContentContainer( {navigation} ){
                         <View style = {styles.optionStyle} >
                             <MaterialIcons name="settings" size={24} color="black" style={styles.testIcon}/>
                             <Text style = {styles.testText}> Account Settings </Text >
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress = {() => navigation.navigate("RentRequests")}>
+                        <View style = {styles.optionStyle} >
+                            <MaterialCommunityIcons name="bell" size={24} color="black" style={styles.testIcon}/>
+                            <Text style = {styles.testText}> Rent Requests </Text >
                         </View>
                     </TouchableOpacity>
 

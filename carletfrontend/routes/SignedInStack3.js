@@ -16,6 +16,10 @@ import Home from './../screens/Home'
 import PickUpandDropOff from './../screens/PickUpandDropOff'
 import SearchResults1 from './../screens/SearchResults1'
 import CarDetails from './../screens/CarDetails'
+import RequestSent from '../screens/RequestSent'
+import RentRequests from '../screens/RentRequests'
+import SentRequests from '../screens/SentRequests'
+import SentRequestsApproval from '../screens/SentRequestsApproval'
 import Header1 from './../shared/Header'
 import React from 'react'
 
@@ -145,6 +149,42 @@ const signedin = {
     },
     CarDetails: {
         screen: CarDetails,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    RequestSent: {
+        screen: RequestSent,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    RentRequests: {
+        screen: RentRequests,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SentRequests: {
+        screen: SentRequests,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SentRequestsApproval: {
+        screen: SentRequestsApproval,
         navigationOptions: ({navigation}) => {
             return{
                 headerLeft: ()=> null,
