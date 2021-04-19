@@ -3,7 +3,6 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
-from validate_email import validate_email
 from .models import CarletUser
 
 

@@ -7,6 +7,9 @@ from .serializers import UserSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.core.files.base import ContentFile
+from django.contrib.gis.geos import *
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -14,8 +17,7 @@ from rest_framework.authtoken.models import Token
 import smtplib
 from password_generator import PasswordGenerator
 from email.message import EmailMessage
-from validate_email import validate_email
-from .models import CarletUser, UserDocument
+from .models import CarletUser, UserDocument, VehicleDetail, TripDetail, VehicleLocation, VehicleDocument
 import uuid
 import base64
 
@@ -27,6 +29,12 @@ def base64_to_image(base64_string):
     return ContentFile(base64.b64decode(imgstr), name=uuid.uuid4().hex + "." + ext)
 
 # Create your views here.
+
+def image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        image_data = base64.b64encode(image_file.read()).decode('utf-8')
+
+    return image_data
 
 class SignUp1(APIView):
 
@@ -222,27 +230,133 @@ class ChangePassword(APIView):
 
 class SearchVehicle(APIView):
 
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     def post(self,request,format=None):
         pickup_date = request.data.get('pickup_date')
         dropoff_date = request.data.get('dropoff_date')
+        user_latitude = float(request.data.get('latitude'))
+        user_longitude = float(request.data.get('longitude'))
         # filters = request.data.get('filters')
         model = ""
         vehicle_type = ""
-
-
+        
+                
         #exclude past history, then get cars not available
         # try:
-        query1= TripDetail.objects.exclude(dropoff_date__lte=pickup_date).filter(pickup_date__range=[pickup_date,dropoff_date], dropoff_date__range=[pickup_date,dropoff_date])
-        # .values('vehicle_trip_id_id')
-        print(query1.values)
-        # query2 = VehicleDetail.objects.exclude(vehicle_id__in=query1)
-        # print(query2)
+        # query1 = TripDetail.objects.filter(dropoff_date__lte=pickup_date).values('vehicle_trip_id')
+        query2 = TripDetail.objects.filter(dropoff_date__gte=pickup_date).filter(pickup_date__lte=pickup_date).values('vehicle_trip_id')
+        query3 = TripDetail.objects.filter(pickup_date__range=[pickup_date, dropoff_date],dropoff_date__range=[pickup_date, dropoff_date] ).values('vehicle_trip_id')
+        query4 = VehicleDetail.objects.exclude(vehicle_id__in=query2).exclude(vehicle_id__in=query3)
+        locs = VehicleLocation.objects.filter(vehicleloc_id__in=query4)
+
+
+
+        distance = 20000 
+        ref_location = Point(user_latitude, user_longitude)
+        locs = locs.filter(point_location__distance_lte=(ref_location, D(m=distance))).annotate(distance=Distance("point_location", ref_location)).order_by("distance")
+        
+        print("HERE")
+
+        result = []
+        for loc in locs:
+            resp = {}
+            resp["vehicle_street_address"] = loc.vehicle_street_address
+            resp["vehicle_city"] = loc.vehicle_city
+            resp["vehicle_state"] = loc.vehicle_state
+            resp["vehicle_latitude"] = loc.vehicle_latitude
+            resp["vehicle_longitude"] = loc.vehicle_longitude
+            resp["phone_number"] = str(loc.vehicleloc_id.vehicle_user.phone_number)
+            resp["first_name"] = loc.vehicleloc_id.vehicle_user.user.first_name
+            resp["last_name"] = loc.vehicleloc_id.vehicle_user.user.last_name
+            resp["owner_rating"] = loc.vehicleloc_id.vehicle_user.rating
+            resp["vehicle_name"] = loc.vehicleloc_id.vehicle_name
+            resp["vehicle_model"] = loc.vehicleloc_id.vehicle_model
+            resp["vehicle_type"] = loc.vehicleloc_id.vehicle_type
+            resp["vehicle_picture1"] = image_to_base64(loc.vehicleloc_id.vehicle_picture1.path)
+            resp["vehicle_picture2"] = image_to_base64(loc.vehicleloc_id.vehicle_picture2.path)
+            try:
+                resp["vehicle_picture3"] = image_to_base64(loc.vehicleloc_id.vehicle_picture3.path)
+            except:
+                resp["vehicle_picture3"] = ""
+
+            try:
+                resp["vehicle_picture4"] = image_to_base64(loc.vehicleloc_id.vehicle_picture4.path)
+            except:
+                resp["vehicle_picture4"] = ""
+            try:
+                resp["vehicle_picture5"] = image_to_base64(loc.vehicleloc_id.vehicle_picture5.path)
+            except:
+                resp["vehicle_picture5"] = ""
+
+            resp["daily_rate"] = loc.vehicleloc_id.daily_rate
+            resp["vehicle_rating"] = loc.vehicleloc_id.vehicle_rating
+            result.append(resp)
+
+        
+            
+
+        # print(query4.values())
         # if query2 is not None:
-        return Response(query1.values())
+        return Response(result)
         # else:
         #     return Response({"Error": "No cars found with this search result"})
         # except:
         #     return Response({"Error: No cars found with this search result"})
+
+class VehicleRegistration(APIView):
+
+    def post(self,request,format=None):
+        vehicle_id = uuid.uuid4()
+        vehicle_name = request.data.get('vehicle_name')
+        vehicle_model = request.data.get('vehicle_model')
+        vehicle_type = request.data.get('vehicle_type')
+        daily_rate = request.data.get('daily_rate')
+        license_plate = request.data.get('license_plate')
+        vehicle_picture1 = base64_to_image(request.data.get('vehicle_picture1'))
+        vehicle_picture2 = base64_to_image(request.data.get('vehicle_picture2'))
+        vehicle_picture3 = request.data.get('vehicle_picture3')
+        vehicle_picture4 = request.data.get('vehicle_picture4')
+        vehicle_picture5 = request.data.get('vehicle_picture5')
+        
+        
+        reg_papers = base64_to_image(request.data.get('reg_papers'))
+        insurance_papers = base64_to_image(request.data.get('insurance_papers'))
+        tracker_papers = base64_to_image(request.data.get('tracker_papers'))
+
+        try:
+            vehicle_detail = VehicleDetail.objects.create(vehicle_id=vehicle_id, vehicle_name=vehicle_name, vehicle_model=vehicle_model, vehicle_type=vehicle_type,
+                                                    daily_rate=daily_rate, license_plate=license_plate, vehicle_picture1=vehicle_picture1,vehicle_picture2=vehicle_picture2 )
+
+            if vehicle_picture3 is not None:
+                vehicle_picture3 = base64_to_image(vehicle_picture3)
+                vehicle_detail.vehicle_picture3 = vehicle_picture3
+                vehicle_detail.save()
+
+            if vehicle_picture4 is not None:
+                vehicle_picture4 = base64_to_image(vehicle_picture4)
+                vehicle_detail.vehicle_picture4 = vehicle_picture4
+                vehicle_detail.save()
+            
+            if vehicle_picture5 is not None:
+                vehicle_picture5 = base64_to_image(vehicle_picture5)
+                vehicle_detail.vehicle_picture5 = vehicle_picture5
+                vehicle_detail.save()
+               
+            vehicle_doc = VehicleDocument.objects.create(vehicledoc_id = vehicle_detail, reg_papers=reg_papers, insurance_papers=insurance_papers, tracker_papers=tracker_papers)
+            return Response({"Success": "Vehicle Registration Successful"})
+        
+        except:
+            return Response({"Error": "There was some error uploading your registration information. Please try again later"}, status= status.HTTP_400_BAD_REQUEST)
+
+
+def VehicleDetailValidation(APIView):
+
+    def post(self,request,format=None):
+        license_plate = request.data.get('license_plate')
+        if VehicleDetail.objects.filter(license_plate__iexact=license_plate).exists():
+            return Response({"license_plate": "Vehicle with this license plate is already registered"}, status= status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"Success": "Valid license plate number"})
+
