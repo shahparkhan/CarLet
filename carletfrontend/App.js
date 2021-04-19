@@ -7,157 +7,131 @@ import Welcome from "./screens/Welcome";
 import Login from "./screens/Login";
 import SignUp1 from "./screens/SignUp1/";
 import SignUp0 from "./screens/SignUp0/";
-import Register from './screens/Register'
-import Register1 from './screens/Register1'
-import Register4 from './screens/Register4'
-import Register5 from './screens/Register5'
-import Register6 from './screens/Register6'
-import SignedOutNavigator from './routes/SignedOutStack'
-import SignedInNavigator from './routes/SignedInStack'
-import SignedInNavigator2 from './routes/SignedInStack2'
-import SignedInNavigator3 from './routes/SignedInStack3'
-import DrawerSignedOut from './routes/DrawerSignedOut';
-import DrawerSignedIn from './routes/DrawerSignedIn';
-import DrawerSignedIn2 from './routes/DrawerSignedIn2';
-import DrawerSignedIn3 from './routes/DrawerSignedIn3';
+import Register from "./screens/Register";
+import Register1 from "./screens/Register1";
+import Register4 from "./screens/Register4";
+import Register5 from "./screens/Register5";
+import Register6 from "./screens/Register6";
+import SignedOutNavigator from "./routes/SignedOutStack";
+import SignedInNavigator from "./routes/SignedInStack";
+import SignedInNavigator2 from "./routes/SignedInStack2";
+import SignedInNavigator3 from "./routes/SignedInStack3";
+import DrawerSignedOut from "./routes/DrawerSignedOut";
+import DrawerSignedIn from "./routes/DrawerSignedIn";
+import DrawerSignedIn2 from "./routes/DrawerSignedIn2";
+import DrawerSignedIn3 from "./routes/DrawerSignedIn3";
 import { registerRootComponent } from "expo";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [email, setEmail] = React.useState(``);
   const [password, setPassword] = React.useState(``);
   const [fontLoaded, setFontsLoaded] = useState(false);
 
-
   const [loginstate, setLoginstate] = useState(false);
   const [registeredstate, setRegisteredstate] = useState(false);
   const [verifiedstate, setVerifiedstate] = useState(false);
 
   const getFonts = async () => {
-    
     // try {
     //   await AsyncStorage.setItem('@isloggedin', '0')
 
     // } catch (e) {
     // }
     try {
-      await AsyncStorage.setItem('@isverified', '0')
-
-    } catch (e) {
-    }
+      await AsyncStorage.setItem("@isverified", "0");
+    } catch (e) {}
     try {
-      await AsyncStorage.setItem('@isregistered', '0')
+      await AsyncStorage.setItem("@isregistered", "0");
+    } catch (e) {}
 
-    } catch (e) {
-    }
-
-
-    let useruuid = ''
-    let mytoken = ''
-    let gotuuid = false
+    let useruuid = "";
+    let mytoken = "";
+    let gotuuid = false;
 
     try {
-      useruuid = await AsyncStorage.getItem('@useruuid')
-      gotuuid = true
+      useruuid = await AsyncStorage.getItem("@useruuid");
+      gotuuid = true;
     } catch (e) {
-      console.error('Failed to get uuid')
+      console.error("Failed to get uuid");
     }
 
     try {
-      mytoken = await AsyncStorage.getItem('@mytoken')
+      mytoken = await AsyncStorage.getItem("@mytoken");
     } catch (e) {
-      console.error('Failed to get token')
+      console.error("Failed to get token");
     }
 
-    
-    if (gotuuid){
+    if (gotuuid) {
       try {
-      
-        let response = await fetch('https://carlet.pythonanywhere.com/checkregistration/',{
-        method: 'post',
-        mode: 'no-cors',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${mytoken}`
-        },
-        body: JSON.stringify({user_id:useruuid})
-        })
-        let responseJson = await response.json()
-        console.log('server response: ', responseJson)
-        
-        if (responseJson.Success === "User has Registered"){
-            setRegisteredstate(true);
-            try {
-              await AsyncStorage.setItem('@isregistered', '1')
-              
-            } catch (e) {
-            }
+        let response = await fetch(
+          "https://carlet.pythonanywhere.com/checkregistration/",
+          {
+            method: "post",
+            mode: "no-cors",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Token ${mytoken}`,
+            },
+            body: JSON.stringify({ user_id: useruuid }),
+          }
+        );
+        let responseJson = await response.json();
+        console.log("server response: ", responseJson);
+
+        if (responseJson.Success === "User has Registered") {
+          setRegisteredstate(true);
+          try {
+            await AsyncStorage.setItem("@isregistered", "1");
+          } catch (e) {}
         } else {
           try {
-            await AsyncStorage.setItem('@isregistered', '0')
-            
-          } catch (e) {
-          }
+            await AsyncStorage.setItem("@isregistered", "0");
+          } catch (e) {}
         }
-      } catch (error) {
-
-      }
-
+      } catch (error) {}
 
       try {
-      
-        response = await fetch('https://carlet.pythonanywhere.com/checkverification/',{
-        method: 'post',
-        mode: 'no-cors',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${mytoken}`
-        },
-        body: JSON.stringify({user_id:useruuid})
-        })
-        responseJson = await response.json()
-        console.log('server response: ', responseJson)
-        
-        if (responseJson.Success === "User is Verified"){
-            setVerifiedstate(true);
-            try {
-              await AsyncStorage.setItem('@isverfied', '1')
-              
-            } catch (e) {
-            }
+        response = await fetch(
+          "https://carlet.pythonanywhere.com/checkverification/",
+          {
+            method: "post",
+            mode: "no-cors",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Token ${mytoken}`,
+            },
+            body: JSON.stringify({ user_id: useruuid }),
+          }
+        );
+        responseJson = await response.json();
+        console.log("server response: ", responseJson);
+
+        if (responseJson.Success === "User is Verified") {
+          setVerifiedstate(true);
+          try {
+            await AsyncStorage.setItem("@isverfied", "1");
+          } catch (e) {}
         } else {
           try {
-            await AsyncStorage.setItem('@isverified', '0')
-            
-          } catch (e) {
-          }
+            await AsyncStorage.setItem("@isverified", "0");
+          } catch (e) {}
         }
-      } catch (error) {
-
-      }
-
-
+      } catch (error) {}
     }
-    
 
-      
-    
     try {
-      const val = await AsyncStorage.getItem('@isloggedin')
-      if (val === '1'){
-        console.log("ALREADY LOGGED IN")
-        setLoginstate(true)
+      const val = await AsyncStorage.getItem("@isloggedin");
+      if (val === "1") {
+        console.log("ALREADY LOGGED IN");
+        setLoginstate(true);
       }
-
-
     } catch (e) {
-      console.error('Failed to save name.')
+      console.error("Failed to save name.");
     }
-    
+
     return Font.loadAsync({
       "Nunito-Black": require("./shared/fonts/Nunito-Black.ttf"),
       "Nunito-BlackItalic": require("./shared/fonts/Nunito-BlackItalic.ttf"),
@@ -176,7 +150,6 @@ export default function App() {
     });
   };
 
-
   const submitEmail = (val) => {
     setEmail(val);
   };
@@ -185,7 +158,7 @@ export default function App() {
   };
 
   if (fontLoaded) {
-    if (loginstate){
+    if (loginstate) {
       if (registeredstate) {
         if (verifiedstate) {
           return (
@@ -210,7 +183,6 @@ export default function App() {
           </View>
         );
       }
-      
     } else {
       return (
         <View style={styles.container}>
@@ -219,7 +191,6 @@ export default function App() {
         </View>
       );
     }
-
   } else {
     return (
       <AppLoading

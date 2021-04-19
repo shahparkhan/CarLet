@@ -9,25 +9,29 @@ import {
   StyleSheet,
 } from "react-native";
 
-const TextField = ({ placeholder, changeHandler, style, secureTextEntry, keyboardType }) => {
+const TextField = ({
+  placeholder,
+  changeHandler,
+  style,
+  secureTextEntry,
+  keyboardType,
+}) => {
   const [enableshift, setEnableShift] = useState(false);
   const handleChange = (e) => {
     changeHandler(e);
   };
 
   return (
-    
-      <TextInput
-        style={{ ...styles.default, ...style }}
-        placeholder={placeholder}
-        onChangeText={handleChange}
-        onFocus={() => {
-          setEnableShift(true);
-        }}
-        secureTextEntry={secureTextEntry}
-        keyboardType={keyboardType}
-      />
-    
+    <TextInput
+      style={{ ...styles.default, ...style }}
+      placeholder={placeholder}
+      onChangeText={handleChange}
+      onFocus={() => {
+        setEnableShift(true);
+      }}
+      secureTextEntry={secureTextEntry}
+      keyboardType={keyboardType}
+    />
   );
 };
 
@@ -35,7 +39,6 @@ const win = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   default: {
-    
     borderWidth: 1,
     borderColor: "#212121",
     padding: 16,
