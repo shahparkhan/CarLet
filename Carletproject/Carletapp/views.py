@@ -31,8 +31,11 @@ def base64_to_image(base64_string):
 # Create your views here.
 
 def image_to_base64(image_path):
+    print(image_path)
     with open(image_path, "rb") as image_file:
         image_data = base64.b64encode(image_file.read()).decode('utf-8')
+        #data:image/png;base64, 
+        image_data = "data:image/" + image_path.split('.')[-1] + ";base64," + image_data
 
     return image_data
 
@@ -238,9 +241,7 @@ class SearchVehicle(APIView):
         dropoff_date = request.data.get('dropoff_date')
         user_latitude = float(request.data.get('latitude'))
         user_longitude = float(request.data.get('longitude'))
-        # filters = request.data.get('filters')
-        model = ""
-        vehicle_type = ""
+        filters = request.data.get('filters')
         
                 
         #exclude past history, then get cars not available
@@ -249,6 +250,27 @@ class SearchVehicle(APIView):
         query2 = TripDetail.objects.filter(dropoff_date__gte=pickup_date).filter(pickup_date__lte=pickup_date).values('vehicle_trip_id')
         query3 = TripDetail.objects.filter(pickup_date__range=[pickup_date, dropoff_date],dropoff_date__range=[pickup_date, dropoff_date] ).values('vehicle_trip_id')
         query4 = VehicleDetail.objects.exclude(vehicle_id__in=query2).exclude(vehicle_id__in=query3)
+
+        if query4 is not None:
+            for key in filters:
+                if key == "None":        
+                    pass
+                if key == "vehicle_type":
+                    query4 = query4.filter(vehicle_type=filters[key])
+                    if not query4:
+                        return Response({"Error": "No cars found with this search result"})
+                if key == "price":
+                    query4 = query4.filter(daily_rate__lte=filters[key])
+                    if not query4:
+                        return Response({"Error": "No cars found with this search result"})
+                if key == "rating":
+                    query4 = query4.filter(vehicle_rating__gte=filters[key])
+                    if not query4:
+                        return Response({"Error": "No cars found with this search result"})
+        else:
+            return Response({"Error": "No cars found with this search result"})
+
+
         locs = VehicleLocation.objects.filter(vehicleloc_id__in=query4)
 
 
@@ -257,7 +279,7 @@ class SearchVehicle(APIView):
         ref_location = Point(user_latitude, user_longitude)
         locs = locs.filter(point_location__distance_lte=(ref_location, D(m=distance))).annotate(distance=Distance("point_location", ref_location)).order_by("distance")
         
-        print("HERE")
+        # print("HERE")
 
         result = []
         for loc in locs:
@@ -276,6 +298,7 @@ class SearchVehicle(APIView):
             resp["vehicle_type"] = loc.vehicleloc_id.vehicle_type
             resp["vehicle_picture1"] = image_to_base64(loc.vehicleloc_id.vehicle_picture1.path)
             resp["vehicle_picture2"] = image_to_base64(loc.vehicleloc_id.vehicle_picture2.path)
+            resp["vehicle_id"] = loc.vehicleloc_id.vehicle_id
             try:
                 resp["vehicle_picture3"] = image_to_base64(loc.vehicleloc_id.vehicle_picture3.path)
             except:
@@ -351,7 +374,7 @@ class VehicleRegistration(APIView):
             return Response({"Error": "There was some error uploading your registration information. Please try again later"}, status= status.HTTP_400_BAD_REQUEST)
 
 
-def VehicleDetailValidation(APIView):
+class VehicleDetailValidation(APIView):
 
     def post(self,request,format=None):
         license_plate = request.data.get('license_plate')
