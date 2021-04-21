@@ -44,6 +44,7 @@ class VehicleDetail(models.Model):
     vehicle_isVerified = models.BooleanField(default=False)
     vehicle_rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
     put_up_for_rent = models.BooleanField(default=True)
+    rating_counter = models.IntegerField(default=1)
     license_plate = models.CharField(max_length = 50, default="abcd")
 
     def __str__(self):
@@ -52,9 +53,9 @@ class VehicleDetail(models.Model):
 
 class VehicleDocument(models.Model):
     vehicledoc_id = models.OneToOneField(VehicleDetail, on_delete=models.CASCADE, primary_key=True)
-    reg_papers = models.FileField()
-    insurance_papers = models.FileField()
-    tracker_papers = models.FileField()
+    reg_papers = models.ImageField(blank = True, null = True, upload_to='reg_papers/')
+    insurance_papers = models.ImageField(blank = True, null = True, upload_to='insurance_papers/')
+    tracker_papers = models.ImageField(blank = True, null = True, upload_to='tracker_papers/')
 
     def __str__(self):
         return  (self.vehicledoc_id.vehicle_user.user.username + " " +  str(self.vehicledoc_id))
@@ -103,6 +104,7 @@ class TripDetail(models.Model):
     dropoff_date = models.DateField()
     duration = models.PositiveIntegerField()
     cost = models.PositiveIntegerField()
+    booking_confirm = models.BooleanField(default=False)
 
     def __str__(self):
         return (self.vehicle_trip_id.vehicle_user.user.username + " "+self.renter_id.user.username +" " + str(self.trip_id))

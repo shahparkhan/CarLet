@@ -7,7 +7,6 @@ dj-database-url==0.5.0
 Django==3.1.7
 django-extensions==3.1.1
 django-filter==2.4.0
-django-heroku==0.3.1
 django-iban-field==0.8
 django-phonenumber-field==5.0.0
 djangorestframework==3.12.4
@@ -22,12 +21,10 @@ MarkupSafe==1.1.1
 marshmallow==3.11.1
 phonenumbers==8.12.20
 Pillow==8.1.2
-psycopg2==2.8.6
-psycopg2-binary==2.8.6
 Pygments==2.8.1
 PySocks==1.7.1
 pytz==2021.1
-random-password-generator==2.1.2
+random-password-generator==2.1.0
 requests==2.25.1
 requests-toolbelt==0.9.1
 six==1.15.0
