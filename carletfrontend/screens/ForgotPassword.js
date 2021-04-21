@@ -50,7 +50,7 @@ export default function Login({ navigation }) {
       })
 
       try {
-        let response = await fetch('https://carlet.pythonanywhere.com/forgotpassword/',{
+        let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/forgotpassword/',{
           method: 'post',
           mode: 'no-cors',
           headers: {

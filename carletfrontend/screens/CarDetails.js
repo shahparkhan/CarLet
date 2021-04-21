@@ -49,7 +49,7 @@ const CarDetails = ({navigation}) => {
           
           owner={navigation.getParam('owner')}
           bio={navigation.getParam('bio')}
-          ownerImage={navigation.getParam('imagesrc')[2]}
+          ownerImage={navigation.getParam('owner_picture')}
         />
         <CarDetailsCard4
           

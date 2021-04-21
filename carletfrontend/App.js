@@ -75,7 +75,7 @@ export default function App() {
     if (gotuuid){
       try {
       
-        let response = await fetch('https://carlet.pythonanywhere.com/checkregistration/',{
+        let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/checkregistration/',{
         method: 'post',
         mode: 'no-cors',
         headers: {
@@ -109,7 +109,7 @@ export default function App() {
 
       try {
       
-        response = await fetch('https://carlet.pythonanywhere.com/checkverification/',{
+        response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/checkverification/',{
         method: 'post',
         mode: 'no-cors',
         headers: {

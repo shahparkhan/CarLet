@@ -84,7 +84,7 @@ const Signup = ({ navigation }) => {
       })
 
       try {
-        let response = await fetch('https://carlet.pythonanywhere.com/signup2/',{
+        let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/signup2/',{
           method: 'post',
           mode: 'no-cors',
           headers: {
