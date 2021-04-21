@@ -5,10 +5,10 @@ import TouchableButton from "../assets/components/TouchableButton";
 import RegisterStyles from "./RegisterStyles";
   
 
-const SentRequestsApproval = ({navigation}) => {
+const SentRequestsPayment = ({navigation}) => {
 
-  const booknowHandler = () => {
-    navigation.navigate("RequestSent")
+  const onPressHandler = () => {
+    navigation.navigate('CautionPrompt', {title: 'Payment', successBody: 'The amount was successfully paid!', errorBody: 'There was some error with the transaction. Please try again later.'})
   }
 
   
@@ -16,6 +16,8 @@ const SentRequestsApproval = ({navigation}) => {
   return (
     <View>
       <ScrollView>
+
+      
       <Text style={styles.heading}>
         {navigation.getParam('status')}
       </Text>
@@ -30,6 +32,13 @@ const SentRequestsApproval = ({navigation}) => {
           status={navigation.getParam('status')}
         >
         </SentRequestCard1>
+        <TouchableButton
+            title="PAY"
+            buttonposition = {styles.buttonposition}
+            onPress={onPressHandler}
+        >
+
+        </TouchableButton>
         </ScrollView>
         <Image
                 style={styles.smallcar}
@@ -46,8 +55,8 @@ const height = (win.width / 350) * 320;
 
 const styles = StyleSheet.create({
   buttonposition:{
-    position: "absolute",
-    top: buttonHeight,
+    position:"relative", 
+    marginTop:16
   },
   heading: {
     position: 'relative',
@@ -67,5 +76,5 @@ smallcar : {
 },
 })
   
-export default SentRequestsApproval;
+export default SentRequestsPayment;
   

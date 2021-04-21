@@ -1,6 +1,6 @@
 import React from "react";
 import { FlatList, TouchableOpacity, Text } from "react-native";
-import Card from "../assets/components/SentRequestCard";
+import Card from "../assets/components/ReceivedRequestCard";
 
 const searchData = [
   {
@@ -8,8 +8,8 @@ const searchData = [
     title: "Honda Civic",
     model: "2018",
     rating: 1,
-    location: "DHA PHASE 8",
-    rate: 1500,
+    requester: "Dua Lipa",
+    rate: "15000",
     pickupdate: "15/2/2021",
     dropoffdate: "25/2/2021",
     status: "Dropoff Done"
@@ -20,9 +20,9 @@ const searchData = [
     title: "Honda Civic",
     model: "2018",
     rating: 1,
-    location: "DHA PHASE 8",
-    rate: 1500,
+    requester: "Dua Lipa",
     pickupdate: "15/2/2021",
+    rate: "15000",
     dropoffdate: "25/2/2021",
     status: "Approval Pending"
   },
@@ -31,8 +31,8 @@ const searchData = [
     title: "Honda Civic",
     model: "2018",
     rating: 1,
-    location: "DHA PHASE 8",
-    rate: 1500,
+    requester: "Dua Lipa",
+    rate: "15000",
     pickupdate: "15/2/2021",
     dropoffdate: "25/2/2021",
     status: "In Progress"
@@ -42,8 +42,8 @@ const searchData = [
     title: "Honda Civic",
     model: "2018",
     rating: 1,
-    location: "DHA PHASE 8",
-    rate: 1500,
+    requester: "Dua Lipa",
+    rate: "15000",
     pickupdate: "15/2/2021",
     dropoffdate: "25/2/2021",
     status: "Payment Pending"
@@ -53,8 +53,8 @@ const searchData = [
     title: "Honda Civic",
     model: "2018",
     rating: 1,
-    location: "DHA PHASE 8",
-    rate: 1500,
+    requester: "Dua Lipa",
+    rate: "15000",
     pickupdate: "15/2/2021",
     dropoffdate: "25/2/2021",
     status: "Payment Done"
@@ -62,32 +62,32 @@ const searchData = [
 ];
 
 const SentRequests = ({navigation}) => {
-  const onPressHandler = async (title, rating, model, location, rate, pickupdate, dropoffdate, status) => {
+  const onPressHandler = async (title, rating, model, requester, pickupdate, dropoffdate, status, rate) => {
       if (status === "Approval Pending") {
-        navigation.navigate('SentRequestsApproval', {title: title, rating: rating, model: model, location: location, rate: rate, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status}) 
+        navigation.navigate('ReceivedRequestsApproval', {title: title, rating: rating, model: model, requester: requester, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status, rate:rate}) 
       } 
       if (status === "Payment Pending"){
-        navigation.navigate('SentRequestsPayment', {title: title, rating: rating, model: model, location: location, rate: rate, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status}) 
+        navigation.navigate('ReceivedRequestsPayment', {title: title, rating: rating, model: model, requester: requester, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status, rate:rate}) 
       }
       if (status === "Payment Done"){
-        navigation.navigate('SentRequestsPayment2', {title: title, rating: rating, model: model, location: location, rate: rate, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status}) 
+        navigation.navigate('ReceivedRequestsPayment', {title: title, rating: rating, model: model, requester: requester, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status, rate:rate}) 
       }
       if (status === "In Progress"){
-        navigation.navigate('SentRequestsInprogress', {title: title, rating: rating, model: model, location: location, rate: rate, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status}) 
+        navigation.navigate('ReceivedRequestsPayment', {title: title, rating: rating, model: model, requester: requester, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status, rate:rate}) 
       }
       if (status === "Dropoff Done"){
-        navigation.navigate('SentRequestsDropoff', {title: title, rating: rating, model: model, location: location, rate: rate, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status}) 
+        navigation.navigate('ReceivedRequestsDropoff', {title: title, rating: rating, model: model, requester: requester, pickupdate: pickupdate, dropoffdate: dropoffdate, status:status, rate:rate}) 
       }
   }
   const renderCard = ({ item, index, separators }) => {
     return (
-      <TouchableOpacity onPress={() => onPressHandler(item.title, item.rating, item.model, item.location, item.rate, item.pickupdate, item.dropoffdate, item.status)}>
+      <TouchableOpacity onPress={() => onPressHandler(item.title, item.rating, item.model, item.requester, item.pickupdate, item.dropoffdate, item.status, item.rate)}>
         <Card
           key={item.key}
           title={item.title}
           rating={item.rating}
           model={item.model}
-          location={item.location}
+          requester={item.requester}
           rate={item.rate}
           status={item.status}
         />

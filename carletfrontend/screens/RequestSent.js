@@ -22,11 +22,7 @@ export default function RequestSent({navigation}) {
             <Text style = {RegisterStyles.bodytext}>
                 Now you will have to wait for owners approval
             </Text>
-            <TouchableButton
-                title="HOME"
-                onPress={onPressHandler}
-                buttonposition={RegisterStyles.buttonposition}>
-            </TouchableButton>
+            
             <Image
                 style={RegisterStyles.smallcar}
                 source={require("./../assets/smallcar.png")}

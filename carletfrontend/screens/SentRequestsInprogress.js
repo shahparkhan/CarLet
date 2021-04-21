@@ -5,7 +5,7 @@ import TouchableButton from "../assets/components/TouchableButton";
 import RegisterStyles from "./RegisterStyles";
   
 
-const SentRequestsApproval = ({navigation}) => {
+const SentRequestsInprogress = ({navigation}) => {
 
   const booknowHandler = () => {
     navigation.navigate("RequestSent")
@@ -67,5 +67,5 @@ smallcar : {
 },
 })
   
-export default SentRequestsApproval;
+export default SentRequestsInprogress;
   
