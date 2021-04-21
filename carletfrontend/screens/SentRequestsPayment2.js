@@ -5,7 +5,7 @@ import TouchableButton from "../assets/components/TouchableButton";
 import RegisterStyles from "./RegisterStyles";
   
 
-const SentRequestsApproval = ({navigation}) => {
+const SentRequestsPayment2 = ({navigation}) => {
 
   const booknowHandler = () => {
     navigation.navigate("RequestSent")
@@ -16,6 +16,8 @@ const SentRequestsApproval = ({navigation}) => {
   return (
     <View>
       <ScrollView>
+
+      
       <Text style={styles.heading}>
         {navigation.getParam('status')}
       </Text>
@@ -30,6 +32,12 @@ const SentRequestsApproval = ({navigation}) => {
           status={navigation.getParam('status')}
         >
         </SentRequestCard1>
+        <TouchableButton
+            title="VIEW BILL"
+            buttonposition = {{position:"relative", marginTop:16}}
+        >
+
+        </TouchableButton>
         </ScrollView>
         <Image
                 style={styles.smallcar}
@@ -67,5 +75,5 @@ smallcar : {
 },
 })
   
-export default SentRequestsApproval;
+export default SentRequestsPayment2;
   

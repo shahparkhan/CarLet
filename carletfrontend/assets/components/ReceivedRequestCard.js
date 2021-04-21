@@ -3,23 +3,23 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import { Rating } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Card = ({ title, rating, model, location, rate, status }) => {
+const Card = ({ title, rating, model, requester,status }) => {
   return (
     <View style={styles.shadow}>
       <View style={styles.card}>
        <View style={styles.firstView}>
          <Text style={styles.title}>{title} </Text>
-         <View style={styles.rating}>
-          <Text style={styles.ratingText}>{rating} </Text>
-          <MaterialIcons name="star" size={24} color="#FFC107" style={styles.ratingStar}/>
-         </View>
+         
        </View>
        <View style={styles.secondView}>
         <Text style={styles.modelText}>{model} </Text>
        </View>
        <View style={styles.thirdView}>
-         <Text style={styles.location}>{location} </Text>
-         <Text style={styles.rate}>{rate}/day</Text>
+         <Text style={styles.requester}>Requested by: {requester}</Text>
+         <View style={styles.rating}>
+          <Text style={styles.ratingText}>{rating} </Text>
+          <MaterialIcons name="star" size={24} color="#FFC107" style={styles.ratingStar}/>
+         </View>
        </View>
        <View style={styles.fourthView}>
            <Text style={styles.rate}>Status: {status}</Text>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     
     borderRadius: 16
   },
-  location:{
+  requester:{
     fontFamily: "Nunito-Regular",
     fontSize: 16,
     color: "#212121",

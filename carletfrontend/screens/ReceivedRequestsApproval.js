@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, Image, Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
-import SentRequestCard1 from "../assets/components/SentRequestCard1";
+import ReceivedRequestCard1 from "../assets/components/ReceivedRequestCard1";
 import TouchableButton from "../assets/components/TouchableButton";
 import RegisterStyles from "./RegisterStyles";
   
 
-const SentRequestsApproval = ({navigation}) => {
+const ReceivedRequestsApproval = ({navigation}) => {
 
-  const booknowHandler = () => {
-    navigation.navigate("RequestSent")
+  const onPressHandler = () => {
+    navigation.navigate('CautionPrompt', {title: 'Approval', successBody: 'The rent request was successfully approved!', errorBody: 'There was some error with the approval. Please try again later.'})
   }
 
   
@@ -19,17 +19,23 @@ const SentRequestsApproval = ({navigation}) => {
       <Text style={styles.heading}>
         {navigation.getParam('status')}
       </Text>
-        <SentRequestCard1
+        <ReceivedRequestCard1
           title={navigation.getParam('title')}
           rating={navigation.getParam('rating')}
           model={navigation.getParam('model')}
-          location={navigation.getParam('location')}
-          rate={navigation.getParam('rate')}
+          requester={navigation.getParam('requester')}
           pickupdate={navigation.getParam('pickupdate')}
           dropoffdate={navigation.getParam('dropoffdate')}
           status={navigation.getParam('status')}
+          rate={navigation.getParam('rate')}
         >
-        </SentRequestCard1>
+        </ReceivedRequestCard1>
+        <TouchableButton
+            title="APPROVE"
+            buttonposition={styles.buttonposition}
+            onPress={onPressHandler}
+        >
+        </TouchableButton>
         </ScrollView>
         <Image
                 style={styles.smallcar}
@@ -46,8 +52,8 @@ const height = (win.width / 350) * 320;
 
 const styles = StyleSheet.create({
   buttonposition:{
-    position: "absolute",
-    top: buttonHeight,
+    position:"relative", 
+    marginTop:16
   },
   heading: {
     position: 'relative',
@@ -67,5 +73,5 @@ smallcar : {
 },
 })
   
-export default SentRequestsApproval;
+export default ReceivedRequestsApproval;
   

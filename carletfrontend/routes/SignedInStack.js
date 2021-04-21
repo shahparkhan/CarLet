@@ -20,6 +20,19 @@ import RequestSent from '../screens/RequestSent'
 import RentRequests from '../screens/RentRequests'
 import SentRequests from '../screens/SentRequests'
 import SentRequestsApproval from '../screens/SentRequestsApproval'
+import SentRequestsPayment from '../screens/SentRequestsPayment'
+import SentRequestsPayment2 from '../screens/SentRequestsPayment2'
+import SentRequestsInprogress from '../screens/SentRequestsInprogress'
+import SentRequestsDropoff from '../screens/SentRequestsDropoff'
+import SentRequestsRating from '../screens/SentRequestsRating'
+import ReceivedRequests from '../screens/ReceivedRequests'
+import ReceivedRequestsApproval from '../screens/ReceivedRequestsApproval'
+import ReceivedRequestsPayment from '../screens/ReceivedRequestsPayment'
+import ReceivedRequestsDropoff from '../screens/ReceivedRequestsDropoff'
+import ReceivedRequestsRating from '../screens/ReceivedRequestsRating'
+import SuccessPrompt from '../screens/SuccessPrompt'
+import ErrorPrompt from '../screens/ErrorPrompt'
+import CautionPrompt from '../screens/CautionPrompt'
 import Header1 from './../shared/Header';
 import React from 'react';
 
@@ -199,6 +212,123 @@ const signedin = {
     },
     SentRequestsApproval: {
         screen: SentRequestsApproval,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SentRequestsPayment: {
+        screen: SentRequestsPayment,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SentRequestsPayment2: {
+        screen: SentRequestsPayment2,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SentRequestsInprogress: {
+        screen: SentRequestsInprogress,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SentRequestsDropoff: {
+        screen: SentRequestsDropoff,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SentRequestsRating: {
+        screen: SentRequestsRating,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    SuccessPrompt: {
+        screen: SuccessPrompt,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    ErrorPrompt: {
+        screen: ErrorPrompt,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    CautionPrompt: {
+        screen: CautionPrompt,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    ReceivedRequests: {
+        screen: ReceivedRequests,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    ReceivedRequestsApproval: {
+        screen: ReceivedRequestsApproval,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    ReceivedRequestsPayment: {
+        screen: ReceivedRequestsPayment,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    ReceivedRequestsDropoff: {
+        screen: ReceivedRequestsDropoff,
+        navigationOptions: ({navigation}) => {
+            return{
+                headerLeft: ()=> null,
+                headerTitle: () => <Header1 navigation = {navigation}/>,
+            }   
+        }
+    },
+    ReceivedRequestsRating: {
+        screen: ReceivedRequestsRating,
         navigationOptions: ({navigation}) => {
             return{
                 headerLeft: ()=> null,

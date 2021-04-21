@@ -3,41 +3,42 @@ import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import TouchableButton from "../assets/components/TouchableButton";
 import RegisterStyles from "./RegisterStyles";
 
-export default function RentRequests({navigation}) {
+export default function CautionPrompt({navigation}) {
 
-    const onSentHandler = () => {
+    const onYesHandler = () => {
         
-        navigation.navigate('SentRequests')
+        navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
+        // navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+
     }
-    const onReceivedHandler = () => {
+    const onNoHandler = () => {
         
-        navigation.navigate('ReceivedRequests')
+        navigation.goBack()
     }
 
     return (
         <View style={{...RegisterStyles.container, position:"relative", top:-50}}>
             <Image 
                 style = {RegisterStyles.yellowvector}
-                source={require('./../assets/rentrequestsvector.png')}
+                source={require('./../assets/cautionyellowvector.png')}
             />
             <Text style = {RegisterStyles.registertext}>
-                Rent Request
+                {navigation.getParam('title')}
             </Text>
             <Text style = {RegisterStyles.bodytext}>
-                Explore the rent requests you have sent and received
+                Are you sure you want to proceed?
             </Text>
             <View style={styles.buttonposition}>
                 <TouchableButton
-                    title="SENT"
-                    onPress={onSentHandler}>
+                    title="YES"
+                    onPress={onYesHandler}>
                 </TouchableButton>
                 <TouchableButton
-                    title="RECEIVED"
-                    onPress={onReceivedHandler}
+                    title="NO"
+                    onPress={onNoHandler}
                     buttonposition={{marginLeft: 16}}>
                 </TouchableButton>
             </View>
-            
             
         </View>
     );

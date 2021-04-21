@@ -165,11 +165,7 @@ const Home = ({ navigation }) => {
         <MaterialIcons name="search" size={32} color={IconColor} />
       </Pressable>
 
-      <TouchableButton
-          title="LOGOUT"
-          onPress={logoutHandler}
-          buttonposition={RegisterStyles.buttonposition}>
-      </TouchableButton>
+      
       <Image
           style={RegisterStyles.smallcar}
           source={require("./../assets/smallcar.png")}
