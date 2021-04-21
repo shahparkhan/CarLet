@@ -2,106 +2,51 @@ import React from "react";
 import { FlatList, TouchableOpacity } from "react-native";
 import Card from "../assets/components/Card";
 
-const searchData = [
-  {
-    key: "1",
-    title: "Honda Civic",
-    model: "2018",
-    rating: 1,
-    location: "DHA PHASE 8",
-    rate: 1500,
-    imagesrc: [
-      { url:require('../assets/Civic.png') },
-      { url:require('../assets/icon.png') },
-      { url:require('../assets/jenny.jpg') }
-    ],
-    owner: "Jenny",
-    bio: "Ashir's girlfriend to be",
-    
-  },
-  {
-    key: "2",
-    title: "Toyota Corolla",
-    model: "2018",
-    rating: 2,
-    location: "DHA PHASE 8",
-    rate: 1500,
-    imagesrc: [
-      { url:require('../assets/Civic.png') },
-      { url:require('../assets/icon.png') },
-      { url:require('../assets/jenny.jpg') }
-    ],
-    owner: "Jenny",
-    bio: "Ashir's girlfriend to be",
-  },
-  {
-    key: "3",
-    title: "Honda City",
-    model: "2018",
-    rating: 3,
-    location: "DHA PHASE 8",
-    rate: 1500,
-    imagesrc: [
-      { url:require('../assets/Civic.png') },
-      { url:require('../assets/icon.png') },
-      { url:require('../assets/jenny.jpg') }
-    ],
-    owner: "Jenny",
-    bio: "Ashir's girlfriend to be",
-  },
-  {
-    key: "4",
-    title: "Suzuki Mehran",
-    model: "2018",
-    rating: 4,
-    location: "DHA PHASE 8",
-    rate: 1500,
-    imagesrc: [
-      { url:require('../assets/Civic.png') },
-      { url:require('../assets/icon.png') },
-      { url:require('../assets/jenny.jpg') }
-    ],
-    owner: "Jenny",
-    bio: "Ashir's girlfriend to be",
-  },
-  {
-    key: "5",
-    title: "Honda Civic",
-    model: "2018",
-    rating: 5,
-    location: "DHA PHASE 8",
-    rate: 1500,
-    imagesrc: [
-      { url:require('../assets/Civic.png') },
-      { url:require('../assets/icon.png') },
-      { url:require('../assets/jenny.jpg') }
-    ],
-    owner: "Jenny",
-    bio: "Ashir's girlfriend to be",
-  },
-];
+
 
 const SearchResults1 = ({navigation}) => {
-  const onPressHandler = async (arr, title, rating, model, location, rate, owner, bio) => {
-      navigation.navigate('CarDetails', {imagesrc:arr, title: title, rating: rating, model: model, location: location, rate: rate, owner: owner, bio: bio})
+  const searchData = navigation.getParam('results')
+  console.log("search data: ", searchData)
+  const onPressHandler = async (arr, title, rating, model, location, rate, owner_fname, owner_lname, bio, owner_picture) => {
+    const owner = `${owner_fname} ${owner_lname}`   
+    navigation.navigate('CarDetails', {imagesrc:arr, title: title, rating: rating, model: model, location: location, rate: rate, owner: owner, bio: bio, owner_picture: owner_picture})
   }
   const renderCard = ({ item, index, separators }) => {
     return (
-      <TouchableOpacity onPress={() => onPressHandler(item.imagesrc, item.title, item.rating, item.model, item.location, item.rate, item.owner, item.bio)}>
+      <TouchableOpacity onPress={() => {
+          let pictures = []
+          if (item.vehicle_picture1 != ""){
+            pictures.push({url: item.vehicle_picture1})
+          }
+          if (item.vehicle_picture2 != ""){
+            pictures.push({url: item.vehicle_picture2})
+          }
+          if (item.vehicle_picture3 != ""){
+            pictures.push({url: item.vehicle_picture3})
+          }
+          if (item.vehicle_picture4 != ""){
+            pictures.push({url: item.vehicle_picture4})
+          }
+          if (item.vehicle_picture5 != ""){
+            pictures.push({url: item.vehicle_picture5})
+          }
+          onPressHandler(pictures, item.vehicle_name, item.vehicle_rating, item.vehicle_model, item.vehicle_street_address, item.daily_rate, item.first_name,item.last_name, "item.bio", item.picture)
+
+        }}>
         <Card
-          key={item.key}
-          title={item.title}
-          rating={item.rating}
-          model={item.model}
-          location={item.location}
-          rate={item.rate}
-          imagesrc={item.imagesrc[0]}
+          key={item.vehicle_id}
+          title={item.vehicle_name}
+          rating={item.vehicle_rating}
+          model={item.vehicle_model}
+          location={item.vehicle_street_address}
+          rate={item.daily_rate}
+          imagesrc={item.vehicle_picture1}
         />
       </TouchableOpacity>
     );
   };
 
-  return <FlatList data={searchData} renderItem={renderCard}></FlatList>;
+  return <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.vehicle_id}></FlatList>;
 };
 
 export default SearchResults1;
