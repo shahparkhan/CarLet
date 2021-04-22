@@ -14,7 +14,7 @@ import smtplib
 from password_generator import PasswordGenerator
 from email.message import EmailMessage
 from validate_email import validate_email
-from .models import CarletUser, UserDocument, TripDetail, VehicleDetail, VehicleLocation
+from .models import CarletUser, VehicleDetail, VehicleDocument, UserDocument, TripDetail, VehicleLocation, VehicleDocument, Wallet
 import uuid
 import base64
 # from django.contrib.gis.geos import *
@@ -154,7 +154,7 @@ class UserRegistration(APIView):
         try:
             user_doc = UserDocument.objects.create(doc_id=doc_uuid, user_doc_id= carlet_user, NIC=nic, NIC_picture=NIC_picture,
                                                   driver_license= driver_license, driver_license_picture=driver_license_picture, account_number=account_no)
-        
+            wallet = Wallet.objects.create(user=carlet_user, amount=0, payment_amount=0)
             return Response({"Success": "User Registration Successful"})
         except:
             return Response({"Error": "There was some error uploading your registration information. Please try again later"}, status= status.HTTP_400_BAD_REQUEST)
@@ -217,8 +217,8 @@ class ChangePassword(APIView):
 
 class SearchVehicle(APIView):
 
-      # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self,request,format=None):
         pickup_date = request.data.get('pickup_date')
@@ -226,30 +226,36 @@ class SearchVehicle(APIView):
         user_latitude = float(request.data.get('latitude'))
         user_longitude = float(request.data.get('longitude'))
         filters = request.data.get('filters')
-        # filters = request.data.get('filters')
-        model = ""
-        vehicle_type = ""
-     
-        query2 = TripDetail.objects.filter(dropoff_date__gte=pickup_date).filter(pickup_date__lte=pickup_date).values('vehicle_trip_id')
-        query3 = TripDetail.objects.filter(pickup_date__range=[pickup_date, dropoff_date],dropoff_date__range=[pickup_date, dropoff_date] ).values('vehicle_trip_id')
-        query4 = VehicleDetail.objects.exclude(vehicle_id__in=query2).exclude(vehicle_id__in=query3) 
         
+                
+        #exclude past history, then get cars not available
+        # try:
+        # query1 = TripDetail.objects.filter(dropoff_date__lte=pickup_date).values('vehicle_trip_id')
+        # query2 = TripDetail.objects.filter(dropoff_date__gte=pickup_date).filter(pickup_date__lte=pickup_date).values('vehicle_trip_id')
+        # query3 = TripDetail.objects.filter(pickup_date__range=[pickup_date, dropoff_date],dropoff_date__range=[pickup_date, dropoff_date] ).values('vehicle_trip_id')
+        query2 = TripDetail.objects.filter(dropoff_date__gte=pickup_date).filter(pickup_date__lte=pickup_date).filter(booking_confirm=True).values('vehicle_trip_id')
+        query3 = TripDetail.objects.filter(pickup_date__range=[pickup_date, dropoff_date],dropoff_date__range=[pickup_date, dropoff_date] ).filter(booking_confirm=True).values('vehicle_trip_id')
+        query4 = VehicleDetail.objects.exclude(vehicle_id__in=query2).exclude(vehicle_id__in=query3).filter(put_up_for_rent=True)
+
         if query4 is not None:
-                for key in filters:
-                    if key == "None":        
-                        pass
-                    if key == "vehicle_type":
-                        query4 = query4.filter(vehicle_type=filters[key])
-                        if not query4:
-                            return Response({"Error": "No cars found with this search result"})
-                    if key == "price":
-                        query4 = query4.filter(daily_rate__lte=filters[key])
-                        if not query4:
-                            return Response({"Error": "No cars found with this search result"})
-                    if key == "rating":
-                        query4 = query4.filter(vehicle_rating__lte=filters[key])
-                        if not query4:
-                            return Response({"Error": "No cars found with this search result"})
+            for key in filters:
+                if key == "None":        
+                    pass
+                if key == "vehicle_type":
+                    query4 = query4.filter(vehicle_type=filters[key])
+                    if not query4:
+                        return Response({"Error": "No cars found with this search result"})
+                if key == "price":
+                    query4 = query4.filter(daily_rate__lte=filters[key])
+                    if not query4:
+                        return Response({"Error": "No cars found with this search result"})
+                if key == "rating":
+                    query4 = query4.filter(vehicle_rating__gte=filters[key])
+                    if not query4:
+                        return Response({"Error": "No cars found with this search result"})
+        else:
+            return Response({"Error": "No cars found with this search result"})
+
 
         locs = VehicleLocation.objects.filter(vehicleloc_id__in=query4)
 
@@ -259,12 +265,11 @@ class SearchVehicle(APIView):
         ref_location = Point(user_latitude, user_longitude)
         locs = locs.filter(point_location__distance_lte=(ref_location, D(m=distance))).annotate(distance=Distance("point_location", ref_location)).order_by("distance")
         
-        print("HERE")
+        # print("HERE")
 
         result = []
         for loc in locs:
             resp = {}
-            resp["vehicle_id"] = loc.vehicleloc_id.vehicle_id
             resp["vehicle_street_address"] = loc.vehicle_street_address
             resp["vehicle_city"] = loc.vehicle_city
             resp["vehicle_state"] = loc.vehicle_state
@@ -277,19 +282,22 @@ class SearchVehicle(APIView):
             resp["vehicle_name"] = loc.vehicleloc_id.vehicle_name
             resp["vehicle_model"] = loc.vehicleloc_id.vehicle_model
             resp["vehicle_type"] = loc.vehicleloc_id.vehicle_type
-            resp["vehicle_picture1"] = image_to_base64(loc.vehicleloc_id.vehicle_picture1.path)
-            resp["vehicle_picture2"] = image_to_base64(loc.vehicleloc_id.vehicle_picture2.path)
+            resp["vehicle_picture1"] = path_splitting(loc.vehicleloc_id.vehicle_picture1.path)
+            resp["vehicle_picture2"] = path_splitting(loc.vehicleloc_id.vehicle_picture2.path)
+            resp["vehicle_id"] = loc.vehicleloc_id.vehicle_id
+            docs = UserDocument.objects.get(user_doc_id = loc.vehicleloc_id.vehicle_user)
+            resp["picture"] = path_splitting(docs.picture.path)
             try:
-                resp["vehicle_picture3"] = image_to_base64(loc.vehicleloc_id.vehicle_picture3.path)
+                resp["vehicle_picture3"] = path_splitting(loc.vehicleloc_id.vehicle_picture3.path)
             except:
                 resp["vehicle_picture3"] = ""
 
             try:
-                resp["vehicle_picture4"] = image_to_base64(loc.vehicleloc_id.vehicle_picture4.path)
+                resp["vehicle_picture4"] = path_splitting(loc.vehicleloc_id.vehicle_picture4.path)
             except:
                 resp["vehicle_picture4"] = ""
             try:
-                resp["vehicle_picture5"] = image_to_base64(loc.vehicleloc_id.vehicle_picture5.path)
+                resp["vehicle_picture5"] = path_splitting(loc.vehicleloc_id.vehicle_picture5.path)
             except:
                 resp["vehicle_picture5"] = ""
 
@@ -297,7 +305,16 @@ class SearchVehicle(APIView):
             resp["vehicle_rating"] = loc.vehicleloc_id.vehicle_rating
             result.append(resp)
 
-        return Response(result)
+        
+            
+
+        # print(query4.values())
+        # if query2 is not None:
+        return Response({"Success": result})
+        # else:
+        #     return Response({"Error": "No cars found with this search result"})
+        # except:
+        #     return Response({"Error: No cars found with this search result"})
 
 class VehicleRegistration(APIView):
 
@@ -345,7 +362,7 @@ class VehicleRegistration(APIView):
             return Response({"Error": "There was some error uploading your registration information. Please try again later"}, status= status.HTTP_400_BAD_REQUEST)
 
 
-def VehicleDetailValidation(APIView):
+class VehicleDetailValidation(APIView):
 
     def post(self,request,format=None):
         license_plate = request.data.get('license_plate')
@@ -354,7 +371,27 @@ def VehicleDetailValidation(APIView):
         else:
             return Response({"Success": "Valid license plate number"})
 
-def RequestVehicle(APIView):
+
+class RaterReviewVehicle(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        trip_id = request.data.get('trip_id')
+        rating = int(request.data.get('rating'))
+        # user_id = request.data.get('user_id')
+
+        try:
+            trip = TripDetail.objects.get(pk=trip_id)
+            vehicle = VehicleDetail.objects.get(pk=trip.vehicle_trip_id.vehicle_id)
+            vehicle.rating_counter = vehicle.rating_counter + 1
+            vehicle.vehicle_rating = (vehicle.vehicle_rating*(vehicle.rating_counter - 1) + rating)/vehicle.rating_counter
+            vehicle.save()
+            return Response({"Success": "Vehicle Rated"})
+        except:
+            return Response({"Error": "An error occured"},  status=status.HTTP_400_BAD_REQUEST)
+
+class RequestVehicle(APIView):
     def post(self, request, format=None):
         trip_id = uuid.uuid4()
         renter_id = request.data.get('user_id')
@@ -369,7 +406,7 @@ def RequestVehicle(APIView):
         except:
             return Response({"Error": "An error occured"})
 
-def ApproveRequest(APIView):
+class ApproveRequest(APIView):
     def post(Self, request, format=None):
         trip_id = request.data.get('trip_id')
         try:
@@ -379,3 +416,125 @@ def ApproveRequest(APIView):
             return Response({"Success": "Booking Confirmed"})
         except:
             return Response({"Error": "An error occured"})
+
+class SentRentRequest(APIView):
+    def post(self,request, format=None):
+        user_id = request.data.get('user_id')
+        
+        try:
+            user = CarletUser.objects.get(pk=user_id)
+            query1 = TripDetail.objects.filter(renter_id=user)
+            result = []
+            for trips in query1:
+                resp = {}
+                resp['trip_id'] = trips.trip_id
+                resp['vehicle_name'] = trips.vehicle_trip_id.vehicle_name
+                resp['vehicle_model'] = trips.vehicle_trip_id.vehicle_model
+                loc = VehicleLocation.objects.get(pk=trips.vehicle_trip_id)
+                resp['vehicle_street_address'] = loc.vehicle_street_address
+                resp['vehicle_city'] = loc.vehicle_city
+                resp['vehicle_state'] = loc.vehicle_state
+                resp['rating'] = trips.vehicle_trip_id.vehicle_rating
+                resp['daily_rate'] = trips.vehicle_trip_id.daily_rate
+                if (trips.booking_confirm and trips.payment and trips.dropoff_date < datetime.today().date()):
+                    resp['status'] = "Dropoff Done"
+                elif (trips.booking_confirm and trips.payment):
+                    resp['status'] = "Payment Done"
+                elif (trips.booking_confirm and not (trips.payment)):
+                    resp['status'] = "Payment Pending"
+                elif (not (trips.booking_confirm)):
+                    if trips.dropoff_date < datetime.today().date():
+                        continue 
+                    resp['status'] = "Approval Pending"
+                result.append(resp)
+            
+            return Response({"Success": "", "result" : result})
+        except:
+            return Response({"Error": "An error occured"},status=status.HTTP_400_BAD_REQUEST)
+
+class RecvRentRequest(APIView):
+    def post(self,request, format=None):
+        user_id = request.data.get('user_id')
+
+        try:
+            user = CarletUser.objects.get(pk=user_id)
+            vehicles = VehicleDetail.objects.filter(vehicle_user=user).values('vehicle_id')
+            print(vehicles)
+            query1 = TripDetail.objects.filter(vehicle_trip_id__in=vehicles)
+            print(query1)
+
+            result = []
+            for trips in query1:
+                resp = {}
+                resp['trip_id'] = trips.trip_id
+                resp['vehicle_name'] = trips.vehicle_trip_id.vehicle_name
+                resp['vehicle_model'] = trips.vehicle_trip_id.vehicle_model
+                resp['rating'] = trips.renter_id.user_rating
+                resp['first_name'] = trips.renter_id.user.first_name
+                resp['last_name'] = trips.renter_id.user.last_name
+                resp['status'] = trips.booking_confirm
+                        
+                if (trips.booking_confirm and trips.payment and trips.dropoff_date < datetime.today().date()):
+                    resp['status'] = "Dropoff Done"
+                elif (trips.booking_confirm and trips.payment):
+                    resp['status'] = "Payment Done"
+                elif (trips.booking_confirm and not (trips.payment)):
+                    resp['status'] = "Payment Pending"
+                elif (not (trips.booking_confirm)):
+                    if trips.dropoff_date < datetime.today().date():
+                        continue 
+                    resp['status'] = "Approval Pending"
+                
+                result.append(resp)
+            return Response({"Success": "", "result" : result})
+            
+        except:
+            return Response({"Error": "An error occured"},status=status.HTTP_400_BAD_REQUEST)
+
+class GenerateReceipt(APIView):
+    def post(self, request, format=None):
+        user_id = request.data.get('user_id')
+        amount = request.data.get('amount')
+        carlet_user = CarletUser.objects.get(pk=user_id)
+        email = carlet_user.user.email
+        EmailAdd = "automatedcarlet@gmail.com" 
+        Pass = "monashmishad" 
+        try : 
+            msg = EmailMessage()
+            msg['Subject'] = 'Payment Voucher' 
+            msg['From'] = EmailAdd
+            msg['To'] = email
+            try:
+                wallet = Wallet.objects.get(pk=carlet_user)
+                wallet.payment_amount = int(amount)
+                wallet.payment_approved = False
+                wallet.proof_of_payment = None
+                wallet.save()
+            except:
+                return Response({"Error": "An error occured"}, status=status.HTTP_400_BAD_REQUEST)
+
+            msg.set_content('This email serves as your payment voucher to topup your CarLet wallet.\n Please make a transfer to the following bank details:\n IBAN:123456789101112 \n Amount: '+ str(amount)) 
+
+            with smtplib.SMTP_SSL('smtp.gmail.com',465) as smtp: 
+                smtp.login(EmailAdd,Pass) 
+                smtp.send_message(msg) 
+            
+            return Response({"Success": "Voucher has been sent"})
+        except: 
+            return Response({"Failed": "Voucher not sent"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class UploadReceipt(APIView):
+    def post(self, request, format=None):
+        user_id = request.data.get('user_id')
+        proof_of_payment = request.data.get('proof_of_payment') 
+
+        try:
+            carlet_user = CarletUser.objects.get(pk=user_id)
+            wallet = Wallet.objects.get(pk=carlet_user)
+            wallet.proof_of_payment = proof_of_payment
+            wallet.save()
+            return Response({"Success": "Receipt has been uploaded"})
+        except: 
+            return Response({"Error": "An error occured"}, status=status.HTTP_400_BAD_REQUEST)

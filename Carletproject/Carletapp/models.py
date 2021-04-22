@@ -20,7 +20,8 @@ class CarletUser (models.Model):
     permanentBan = models.BooleanField(default = False)
     isTempBan = models.BooleanField(default = False)
     tempBan = models.DateField(blank = True, null = True)
-    wallet = models.IntegerField(default=0)
+    rating_counter = models.PositiveIntegerField(default=1)
+    rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
     
     def __str__(self):
             return (str(self.user.email) +" - " +str(self.user.first_name) +" " +str(self.user.last_name))
@@ -43,6 +44,8 @@ class VehicleDetail(models.Model):
     vehicle_isVerified = models.BooleanField(default=False)
     vehicle_rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
     put_up_for_rent = models.BooleanField(default=True)
+    rating_counter = models.IntegerField(default=1)
+    license_plate = models.CharField(max_length = 50, default="abcd")
 
     def __str__(self):
         return (self.vehicle_name + " " + str(self.vehicle_id) + " " + self.vehicle_user.user.username)
@@ -100,11 +103,18 @@ class TripDetail(models.Model):
     dropoff_date = models.DateField()
     duration = models.PositiveIntegerField()
     cost = models.PositiveIntegerField()
-    booking_confirm = models.BooleanField()
+    booking_confirm = models.BooleanField(default=False)
+    payment = models.BooleanField(default=False)
 
     def __str__(self):
         return (self.vehicle_trip_id.vehicle_user.user.username + " rented to "+self.renter_id.user.username +" " + str(self.trip_id))
-    
+
+class Wallet(models.Model):
+    user = models.OneToOneField(CarletUser,on_delete=models.CASCADE, primary_key=True )
+    amount = models.PositiveIntegerField(default=0)
+    proof_of_payment = models.ImageField(blank = True, null = True, upload_to='proof_of_payment/')
+    payment_amount = models.PositiveIntegerField(default=0)
+    payment_approved = models.BooleanField(default=False)  
 
 
 # class Rating(models.Model):
