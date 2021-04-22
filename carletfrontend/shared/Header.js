@@ -7,7 +7,7 @@ import { CommonActions } from '@react-navigation/native'
 export default function Header1 ({navigation}){
 
     const openMenu = () =>{
-        navigation.openDrawer()
+        navigation.openDrawer({pic:"gggg"})
         console.log(`menu opened`)
     }
 

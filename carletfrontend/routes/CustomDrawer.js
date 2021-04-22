@@ -1,43 +1,49 @@
-import React,{Component, useState, useEffect} from 'react';
+import React,{Component, useState, useEffect, useLayoutEffect, useContext} from 'react';
 import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView} from 'react-native';
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
 import { Entypo,MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Icon } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Context from './../shared/context'
 
 
 export default function ContentContainer( {navigation} ){
-    const [profilepic, setProfilepic] = useState({uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'})
-    const [profilename, setProfilename] = useState('Carlet User')
+    // const [profilepic, setProfilepic] = useState({uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'})
+    // const [profilename, setProfilename] = useState('Carlet User')
     
-    useEffect(() => {
-        // if(!props.fetched) {
-        //     props.fetchRules();
-        // }
-        // console.log('mount it!');
-        const profilepictureandname = async () => {
-            try {
-                let pic = await AsyncStorage.getItem('@profilepicture')
-                console.log("pic: ", pic)
-                setProfilepic({uri:pic})
+    const {profilepic, profilename} = useContext(Context)
+
+    // useEffect(() => {
+    //     // if(!props.fetched) {
+    //     //     props.fetchRules();
+    //     // }
+    //     // console.log('mount it!');
+    //     const profilepictureandname = async () => {
+            
+    //         try {
+    //             let pic = await AsyncStorage.getItem('@profilepicture')
+    //             console.log("pic: ", pic)
+    //             setProfilepic({uri:pic})
         
-            } catch (e) {
-                console.log("loggedout error: ", e)
-            }
-            try {
-                let name = await AsyncStorage.getItem('@profilename')
-                console.log("name: ", name)
-                setProfilename(name)
+    //         } catch (e) {
+    //             console.log("loggedout error: ", e)
+    //         }
+    //         try {
+    //             let name = await AsyncStorage.getItem('@profilename')
+    //             console.log("name: ", name)
+    //             setProfilename(name)
         
-            } catch (e) {
-                console.log("loggedout error: ", e)
-            }
+    //         } catch (e) {
+    //             console.log("loggedout error: ", e)
+    //         }
     
             
-        }
-        profilepictureandname()
+    //     }
+    //     profilepictureandname()
         
-      }, []);
+    //   },[]);
+
+    
 
     const logoutHandler = async () => {
         try {
@@ -63,7 +69,7 @@ export default function ContentContainer( {navigation} ){
     return(
         <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
             <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
-                <View style = {{height:178, backgroundColor:"#ffc107"}}>
+                <View style = {{justifyContent:"flex-start", backgroundColor:"#ffc107"}}>
                     <Image source={profilepic} style = {styles.imageStyle}/>
                     <Text style = {styles.name}>
                         {profilename}
@@ -129,10 +135,12 @@ const styles = StyleSheet.create({
         backgroundColor:'white'
     },
     name:{
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'left',
         marginLeft: 16,
         marginTop: 16,
+        marginBottom: 16,
+        width:"50%",
         color: 'white',
         fontFamily:"Nunito-Bold",
     },

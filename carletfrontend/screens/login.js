@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useContext} from "react";
 import {
   Text,
   StyleSheet,
@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
+import Context from './../shared/context'
 
 
 export default function Login({ navigation }) {
@@ -22,6 +23,7 @@ export default function Login({ navigation }) {
   const [error, seterror] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
   const [focus, setFocus] = useState(false)
+  const {profilepic, profilename, actions} = useContext(Context)
 
   const emailHandler = (e) => {
     setEmail(e);
@@ -126,7 +128,9 @@ export default function Login({ navigation }) {
             await AsyncStorage.setItem('@mytoken', responseJson.token)
             await AsyncStorage.setItem('@useruuid', responseJson.uuid)
             await AsyncStorage.setItem('@profilepicture', profilepicture)
+            actions({type:'setProfilepic', payload:{uri:profilepicture}})
             await AsyncStorage.setItem('@profilename', profilename)
+            actions({type:'setProfilename', payload:profilename})
           } catch (error) {
             console.log("AsyncStorage error: ", error)
           }

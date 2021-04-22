@@ -8,7 +8,7 @@ import RegisterStyles from "./RegisterStyles";
 const SentRequestsDropoff = ({navigation}) => {
 
   const onPressHandler = () => {
-    navigation.navigate('SentRequestsRating')
+    navigation.navigate('SentRequestsRating', {trip_id: navigation.getParam('trip_id'), token: navigation.getParam('token')})
   }
 
   

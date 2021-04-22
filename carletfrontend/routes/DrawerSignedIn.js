@@ -10,6 +10,7 @@ import ContentComponent from './CustomDrawer';
 import SignedIn from './SignedInStack';
 
 
+
 const drawers = {
     Logout:{
         screen:SignedIn
