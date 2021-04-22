@@ -33,6 +33,10 @@ export default function ContentContainer({ navigation }) {
     navigation.navigate("RegisterVehicle1");
   };
 
+  const goToWallet = () => {
+    navigation.navigate("Wallet1");
+  };
+
   return (
     <TouchableOpacity activeOpacity={1} style={styles.drawerTransparent}>
       <TouchableOpacity activeOpacity={1} style={styles.drawer}>
@@ -47,12 +51,24 @@ export default function ContentContainer({ navigation }) {
           <TouchableOpacity onPress={goToAccountSettings}>
             <View style={styles.optionStyle}>
               <MaterialIcons
-                name="settings"
+                name="directions-car"
                 size={24}
                 color="black"
                 style={styles.testIcon}
               />
               <Text style={styles.testText}> Register Vehicle </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={goToWallet}>
+            <View style={styles.optionStyle}>
+              <MaterialIcons
+                name="account-balance-wallet"
+                size={24}
+                color="black"
+                style={styles.testIcon}
+              />
+              <Text style={styles.testText}> Wallet </Text>
             </View>
           </TouchableOpacity>
 

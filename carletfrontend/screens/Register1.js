@@ -115,7 +115,7 @@ export default function Register1({ navigation }) {
 
       try {
         let response = await fetch(
-          "https://carlet.pythonanywhere.com/uservalidation/",
+          "http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/uservalidation/",
           {
             method: "post",
             mode: "no-cors",

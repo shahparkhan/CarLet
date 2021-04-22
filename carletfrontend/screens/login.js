@@ -178,7 +178,7 @@ export default function Login({ navigation }) {
             console.log('server response: ', responseJson)
             
             if (responseJson.Success === "User is Verified"){
-                try {
+              try {
                   await AsyncStorage.setItem('@isverified', '1')
                 } catch (e) {
                 }

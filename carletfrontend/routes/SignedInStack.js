@@ -19,6 +19,13 @@ import CarDetails from "./../screens/CarDetails";
 import Header1 from "./../shared/Header";
 import React from "react";
 import RegisterVehicle1 from "./../screens/RegisterVehicle1";
+import RegisterVehicle2 from "./../screens/RegisterVehicle2";
+import RegisterVehicle3 from "./../screens/RegisterVehicle3";
+import RegisterVehicle4 from "./../screens/RegisterVehicle4";
+import Wallet1 from "./../screens/Wallet1";
+import Wallet2 from "./../screens/Wallet2";
+import Wallet3 from "./../screens/Wallet3";
+
 const signedin = {
   Register: {
     screen: Register,
@@ -169,6 +176,54 @@ const signedin = {
       headerStyle: { backgroundColor: "#ffc107" },
     },
   },
+  RegisterVehicle2: {
+    screen: RegisterVehicle2,
+    navigationOptions: {
+      headerShown: true,
+      title: "",
+      headerStyle: { backgroundColor: "#ffc107" },
+    },
+  },
+  RegisterVehicle3: {
+    screen: RegisterVehicle3,
+    navigationOptions: {
+      headerShown: true,
+      title: "",
+      headerStyle: { backgroundColor: "#ffc107" },
+    },
+  },
+  RegisterVehicle4: {
+    screen: RegisterVehicle4,
+    navigationOptions: {
+      headerShown: true,
+      title: "",
+      headerStyle: { backgroundColor: "#ffc107" },
+    },
+  },
+  Wallet1: {
+    screen: Wallet1,
+    navigationOptions: {
+      headerShown: true,
+      title: "",
+      headerStyle: { backgroundColor: "#ffc107" },
+    },
+  },
+  Wallet2: {
+    screen: Wallet2,
+    navigationOptions: {
+      headerShown: true,
+      title: "",
+      headerStyle: { backgroundColor: "#ffc107" },
+    },
+  },
+  Wallet3: {
+    screen: Wallet3,
+    navigationOptions: {
+      headerShown: true,
+      title: "",
+      headerStyle: { backgroundColor: "#ffc107" },
+    },
+  },
 };
 
 const SignedIn = createStackNavigator(signedin, {
@@ -180,12 +235,3 @@ const SignedIn = createStackNavigator(signedin, {
 });
 
 export default SignedIn;
-
-// const AuthStack = createStackNavigator()
-
-// export default createAppContainer(createSwitchNavigator({
-//     SignedIn: SignedIn,
-//     SignedOut: SignedOut,
-// },{
-//     initialRouteName: loginstatus ? "SignedIn" : "SignedOut"
-// }))
