@@ -1,3 +1,4 @@
+
 import React,{Component, useState, useEffect, useLayoutEffect, useContext} from 'react';
 import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView} from 'react-native';
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
@@ -110,8 +111,8 @@ export default function ContentContainer( {navigation} ){
     
 }
 
-
 const styles = StyleSheet.create({
+
     optionStyle:{
         flex:1, 
         flexDirection: 'row', 
