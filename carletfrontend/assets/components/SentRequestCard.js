@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    height: 175,
+    flex:1,
+    justifyContent:"flex-start",
     width: "100%",
   },
   image: {
@@ -109,6 +110,9 @@ const styles = StyleSheet.create({
     position:"relative",
     marginTop: 8,
     marginLeft: 8,
+    marginBottom: 8,
+    width:"65%",
+    
   },
   rate:{
     fontFamily: "Nunito-Regular",
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
     position:"relative",
     marginTop: 8,
     marginRight: 8,
+    marginBottom: 8,
   },
   fourthView:{
     flex:1,

@@ -22,10 +22,15 @@ import DrawerSignedIn2 from './routes/DrawerSignedIn2';
 import DrawerSignedIn3 from './routes/DrawerSignedIn3';
 import { registerRootComponent } from "expo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalState  from './shared/globalStates'
+import Context from './shared/context'
+
+
 
 
 
 export default function App() {
+  const store = globalState()
   const [email, setEmail] = React.useState(``);
   const [password, setPassword] = React.useState(``);
   const [fontLoaded, setFontsLoaded] = useState(false);
@@ -189,34 +194,42 @@ export default function App() {
       if (registeredstate) {
         if (verifiedstate) {
           return (
+            <Context.Provider value={store}>
             <View style={styles.container}>
               <StatusBar backgroundColor="#ffa000" />
               <DrawerSignedIn3 />
             </View>
+            </Context.Provider>
           );
         } else {
           return (
+            <Context.Provider value={store}>
             <View style={styles.container}>
               <StatusBar backgroundColor="#ffa000" />
               <DrawerSignedIn2 />
             </View>
+            </Context.Provider>
           );
         }
       } else {
         return (
+          <Context.Provider value={store}>
           <View style={styles.container}>
             <StatusBar backgroundColor="#ffa000" />
             <DrawerSignedIn />
           </View>
+          </Context.Provider>
         );
       }
       
     } else {
       return (
+        <Context.Provider value={store}>
         <View style={styles.container}>
           <StatusBar backgroundColor="#ffa000" />
           <DrawerSignedOut />
         </View>
+        </Context.Provider>
       );
     }
 
