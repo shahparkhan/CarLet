@@ -101,9 +101,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#212121",
     // paddingLeft: 3,
+    width:"70%",
+    justifyContent:"flex-start"
   },
   rate: {
     fontFamily: "Nunito-Light",
     color: "#212121",
+    
+    
   },
 });
