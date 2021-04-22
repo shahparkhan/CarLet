@@ -77,13 +77,16 @@ const PickUpandDropOff = ({navigation}) => {
       setErrorMsg("");
       setBorderColor("#21212");
       let mytoken = ''
+      let myuuid = ''
+      // useruuid
 
       try {
           mytoken = await AsyncStorage.getItem('@mytoken')
+          myuuid = await AsyncStorage.getItem('@useruuid')
           console.log("token: ", mytoken)
       
       } catch (error) {
-          console.error('Failed to get token: ', error)
+          console.error('Failed to get token/uuid: ', error)
       }
 
       const searchdetails = JSON.stringify({
@@ -110,12 +113,7 @@ const PickUpandDropOff = ({navigation}) => {
           console.log("here2")
           console.log('server response: ', responseJson)
           
-          // if (responseJson.driver_license === "This driver license is already registered"){
-          //     seterrorMsg("This driver license is already registered");
-          //     seterror(true);
-          // } else {
-          //     navigation.navigate("Register3", {params: details})
-          // }
+          
 
       } catch (error) {
           console.error('server error: ', error);
@@ -126,7 +124,7 @@ const PickUpandDropOff = ({navigation}) => {
       if (responseJson['Success'] != undefined){
         console.log("BORDER COLOR", BorderColor);
         console.log("before sending ", responseJson['Success']);
-        navigation.navigate("SearchResults1", {results: responseJson['Success']})
+        navigation.navigate("SearchResults1", {results: responseJson['Success'], djangopickup: sendpickup, djangodropoff: senddropoff,pickupdate: pickUpDate, dropoffdate: DropoffDate, uuid: myuuid, token: mytoken})
       } else if (responseJson['Error'] != undefined) {
         setErrorMsg(responseJson['Error']);
         setError(true);

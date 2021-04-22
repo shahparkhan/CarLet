@@ -26,7 +26,18 @@ const searchData = [
 const CarDetails = ({navigation}) => {
 
   const booknowHandler = () => {
-    navigation.navigate("RequestSent")
+    const apiBody = JSON.stringify({
+      user_id: navigation.getParam('uuid'),
+      vehicle_id: navigation.getParam('vehicle_id'),
+      pickup_date: navigation.getParam('pickup'),
+      dropoff_date: navigation.getParam('dropoff'),
+      duration: navigation.getParam('duration'),
+      cost: navigation.getParam('cost'),
+    })
+
+    // console.log({title:"Book Now", successBody:"The vehicle has been successfully booked!", errorBody: "There was some error while booking the vehicle. Please try again later.", apiLink: "http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/requestvehicle/", apiBody:apiBody, token: navigation.getParam('token')})
+
+    navigation.navigate("CautionPrompt", {title:"Book Now", successBody:"The vehicle has been successfully booked!", errorBody: "There was some error while booking the vehicle. Please try again later.", apiLink: "http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/requestvehicle/", apiBody:apiBody, token: navigation.getParam('token')})
   }
 
   const renderCard = ({ item, index, separators }) => {

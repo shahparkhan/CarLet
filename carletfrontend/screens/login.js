@@ -109,6 +109,14 @@ export default function Login({ navigation }) {
           seterrorMsg("");
           seterror(false);
           setborderColor(["black", "black"]);
+          let profilepicture
+          if (responseJson.picture != undefined){
+            profilepicture = responseJson.picture
+          } else {
+            profilepicture = ""
+          }
+          
+          let profilename = `${responseJson.first_name} ${responseJson.last_name}`
 
           const useruuid = responseJson.uuid
           const mytoken = responseJson.token
@@ -117,6 +125,8 @@ export default function Login({ navigation }) {
             await AsyncStorage.setItem('@isloggedin', '1')
             await AsyncStorage.setItem('@mytoken', responseJson.token)
             await AsyncStorage.setItem('@useruuid', responseJson.uuid)
+            await AsyncStorage.setItem('@profilepicture', profilepicture)
+            await AsyncStorage.setItem('@profilename', profilename)
           } catch (error) {
             console.log("AsyncStorage error: ", error)
           }

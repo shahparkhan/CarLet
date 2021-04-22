@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     alignItems:"center",
     marginTop:8,
-    marginBottom:8
+    marginBottom:8,
+    
 
   },
   ownerText:{
@@ -96,7 +97,8 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginLeft: 18,
     flex:1,
-    justifyContent:"flex-start"
+    justifyContent:"flex-start",
+    marginRight:8
   },
   thirdView:{
     flex:1,

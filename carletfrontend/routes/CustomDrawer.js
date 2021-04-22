@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React,{Component, useState, useEffect} from 'react';
 import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView} from 'react-native';
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
 import { Entypo,MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -7,7 +7,38 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function ContentContainer( {navigation} ){
+    const [profilepic, setProfilepic] = useState({uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'})
+    const [profilename, setProfilename] = useState('Carlet User')
+    
+    useEffect(() => {
+        // if(!props.fetched) {
+        //     props.fetchRules();
+        // }
+        // console.log('mount it!');
+        const profilepictureandname = async () => {
+            try {
+                let pic = await AsyncStorage.getItem('@profilepicture')
+                console.log("pic: ", pic)
+                setProfilepic({uri:pic})
         
+            } catch (e) {
+                console.log("loggedout error: ", e)
+            }
+            try {
+                let name = await AsyncStorage.getItem('@profilename')
+                console.log("name: ", name)
+                setProfilename(name)
+        
+            } catch (e) {
+                console.log("loggedout error: ", e)
+            }
+    
+            
+        }
+        profilepictureandname()
+        
+      }, []);
+
     const logoutHandler = async () => {
         try {
           await AsyncStorage.setItem('@isloggedin', '0')
@@ -18,13 +49,24 @@ export default function ContentContainer( {navigation} ){
         navigation.navigate("Welcome")
     }
 
+    // const profilepicture = async () => {
+    //     try {
+    //         pic = await AsyncStorage.getItem('@profilepicture')
+    
+    //     } catch (e) {
+    //         console.log("loggedout error: ", e)
+    //     }
+
+    //     return {uri:pic}
+    // }
+
     return(
         <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
             <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
                 <View style = {{height:178, backgroundColor:"#ffc107"}}>
-                    <Image source={require("./../assets/jenny.jpg")} style = {styles.imageStyle}/>
+                    <Image source={profilepic} style = {styles.imageStyle}/>
                     <Text style = {styles.name}>
-                        Jennifer
+                        {profilename}
                     </Text>
                 </View>
                 <ScrollView>

@@ -5,10 +5,34 @@ import RegisterStyles from "./RegisterStyles";
 
 export default function CautionPrompt({navigation}) {
 
-    const onYesHandler = () => {
+    const onYesHandler = async () => {
         
-        navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
-        // navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+        let responseJson
+        let mytoken = navigation.getParam('token')
+        try {
+            let response = await fetch(navigation.getParam('apiLink'),{
+            method: 'post',
+            mode: 'no-cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${mytoken}`
+            },
+            body: navigation.getParam('apiBody')
+            })
+            responseJson = await response.json()
+            console.log('server response: ', responseJson)
+            if (responseJson['Success'] != undefined) {
+                navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
+            } else {
+                navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+            }
+            
+            
+        } catch (error) {
+            console.error('server error: ', error);
+            
+        }
 
     }
     const onNoHandler = () => {
