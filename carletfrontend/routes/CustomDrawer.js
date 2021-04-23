@@ -1,10 +1,12 @@
-import React,{Component,useEffect,useState} from 'react';
+
+import React,{Component,useEffect,useState,useLayoutEffect, useContext} from 'react';
 import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView, Modal} from 'react-native';
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
 import { Entypo,MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Icon } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Context from './../shared/context';
 import { FlatList } from 'react-native-gesture-handler';
 
 
@@ -83,6 +85,45 @@ export default function ContentContainer( {navigation} ){
     }
 
 
+
+export default function ContentContainer( {navigation} ){
+    // const [profilepic, setProfilepic] = useState({uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'})
+    // const [profilename, setProfilename] = useState('Carlet User')
+    
+    const {profilepic, profilename} = useContext(Context)
+
+    // useEffect(() => {
+    //     // if(!props.fetched) {
+    //     //     props.fetchRules();
+    //     // }
+    //     // console.log('mount it!');
+    //     const profilepictureandname = async () => {
+            
+    //         try {
+    //             let pic = await AsyncStorage.getItem('@profilepicture')
+    //             console.log("pic: ", pic)
+    //             setProfilepic({uri:pic})
+        
+    //         } catch (e) {
+    //             console.log("loggedout error: ", e)
+    //         }
+    //         try {
+    //             let name = await AsyncStorage.getItem('@profilename')
+    //             console.log("name: ", name)
+    //             setProfilename(name)
+        
+    //         } catch (e) {
+    //             console.log("loggedout error: ", e)
+    //         }
+    
+            
+    //     }
+    //     profilepictureandname()
+        
+    //   },[]);
+
+    
+
     const logoutHandler = async () => {
         try {
           await AsyncStorage.setItem('@isloggedin', '0')
@@ -97,6 +138,7 @@ export default function ContentContainer( {navigation} ){
     return(
         <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
             <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
+
                 <View style = {{height:178, backgroundColor:"#ffc107"}}>
                     <ModalPopUp visible = {visible}>
                         <View style = {{alignItems:'center'}}>
@@ -107,7 +149,7 @@ export default function ContentContainer( {navigation} ){
                             </View>
                         </View>
                         <View style = {{alignItems:'center'}}>
-                        <Image source={require("./../assets/dua.jpg")} style = {{height:150,width:150,marginVertical:10,borderRadius:50}}/>
+                        <Image source={profilepic} style = {{height:150,width:150,marginVertical:10,borderRadius:50}}/>
                         </View>
 
                         <TouchableOpacity onPress = {PickImage}>
@@ -118,10 +160,10 @@ export default function ContentContainer( {navigation} ){
                         </TouchableOpacity>
                     </ModalPopUp>
                     <TouchableOpacity onPress = {()=> setVisible(true) }>
-                    <Image source={require("./../assets/dua.jpg")} style = {styles.imageStyle}/>
+                    <Image source={profilepic} style = {styles.imageStyle}/>
                     </TouchableOpacity>
                     <Text style = {styles.name}>
-                        Dua Lipa
+                      {profilename}
                     </Text>
                 </View>
                 <ScrollView>
@@ -158,8 +200,8 @@ export default function ContentContainer( {navigation} ){
     
 }
 
-
 const styles = StyleSheet.create({
+
     optionStyle:{
         flex:1, 
         flexDirection: 'row', 
@@ -204,10 +246,12 @@ const styles = StyleSheet.create({
         backgroundColor:'white'
     },
     name:{
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'left',
         marginLeft: 16,
         marginTop: 16,
+        marginBottom: 16,
+        width:"50%",
         color: 'white',
         fontFamily:"Nunito-Bold",
     },

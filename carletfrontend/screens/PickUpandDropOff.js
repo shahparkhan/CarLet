@@ -5,6 +5,8 @@ import TouchableButton from "../assets/components/TouchableButton";
 import SignUpStyles from "./SignUpStyles";
 // import CalendarPicker from "react-native-calendar-picker";
 import Calendar from "../assets/components/Calendar";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import SearchBar from "react-native-elements/dist/searchbar/SearchBar-ios";
 
 const PickUpandDropOff = ({navigation}) => {
   const [pickUpDate, setpickUpDate] = useState("");
@@ -43,13 +45,25 @@ const PickUpandDropOff = ({navigation}) => {
   };
   
 
-  const onSearch = () => {
+  const onSearch = async () => {
     //search from data base
+    console.log(`longitude ${navigation.getParam('longitude')} latitude ${navigation.getParam('latitude')}`)
     console.log(`Searching from ${pickUpDate} to ${DropoffDate}`);
     let pickup = pickUpDate;
+    // let sendpickup = pickup.replace("/", "-")
+    // sendpickup = sendpickup.replace("/","-")
     pickup = pickup.split("/");
+    let sendpickup = `${pickup[2]}-${pickup[1]}-${pickup[0]}`
     let dropoff = DropoffDate;
+    // let senddropoff = dropoff.replace("/","-")
+    // senddropoff = senddropoff.replace("/","-")
     dropoff = dropoff.split("/");
+    let senddropoff = `${dropoff[2]}-${dropoff[1]}-${dropoff[0]}`
+
+    console.log("send these ", sendpickup, " ", senddropoff)
+
+
+    
 
     if (parseInt(pickup[0]) >= parseInt(dropoff[0])) {
       setError(true);
@@ -62,9 +76,60 @@ const PickUpandDropOff = ({navigation}) => {
       setError(false);
       setErrorMsg("");
       setBorderColor("#21212");
+      let mytoken = ''
+      let myuuid = ''
+      // useruuid
 
-      console.log("BORDER COLOR", BorderColor);
-      navigation.navigate("SearchResults1")
+      try {
+          mytoken = await AsyncStorage.getItem('@mytoken')
+          myuuid = await AsyncStorage.getItem('@useruuid')
+          console.log("token: ", mytoken)
+      
+      } catch (error) {
+          console.error('Failed to get token/uuid: ', error)
+      }
+
+      const searchdetails = JSON.stringify({
+        pickup_date: sendpickup,
+        dropoff_date: senddropoff,
+        latitude: navigation.getParam('latitude'),
+        longitude: navigation.getParam('longitude'),
+        filters: {None:"hello"}
+      })
+      let responseJson
+      try {
+          let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/searchvehicle/',{
+          method: 'post',
+          mode: 'no-cors',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${mytoken}`
+          },
+          body: searchdetails
+          })
+          console.log("here: ")
+          responseJson = await response.json()
+          console.log("here2")
+          console.log('server response: ', responseJson)
+          
+          
+
+      } catch (error) {
+          console.error('server error: ', error);
+          setErrorMsg("Server error. Please try again");
+          setError(true);
+      }
+
+      if (responseJson['Success'] != undefined){
+        console.log("BORDER COLOR", BorderColor);
+        console.log("before sending ", responseJson['Success']);
+        navigation.navigate("SearchResults1", {results: responseJson['Success'], djangopickup: sendpickup, djangodropoff: senddropoff,pickupdate: pickUpDate, dropoffdate: DropoffDate, uuid: myuuid, token: mytoken})
+      } else if (responseJson['Error'] != undefined) {
+        setErrorMsg(responseJson['Error']);
+        setError(true);
+      }
+      
     }
   };
 

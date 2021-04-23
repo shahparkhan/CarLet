@@ -22,10 +22,15 @@ import DrawerSignedIn2 from './routes/DrawerSignedIn2';
 import DrawerSignedIn3 from './routes/DrawerSignedIn3';
 import { registerRootComponent } from "expo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalState  from './shared/globalStates'
+import Context from './shared/context'
+
+
 
 
 
 export default function App() {
+  const store = globalState()
   const [email, setEmail] = React.useState(``);
   const [password, setPassword] = React.useState(``);
   const [fontLoaded, setFontsLoaded] = useState(false);
@@ -75,7 +80,7 @@ export default function App() {
     if (gotuuid){
       try {
       
-        let response = await fetch('https://carlet.pythonanywhere.com/checkregistration/',{
+        let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/checkregistration/',{
         method: 'post',
         mode: 'no-cors',
         headers: {
@@ -109,7 +114,7 @@ export default function App() {
 
       try {
       
-        response = await fetch('https://carlet.pythonanywhere.com/checkverification/',{
+        response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/checkverification/',{
         method: 'post',
         mode: 'no-cors',
         headers: {
@@ -189,34 +194,42 @@ export default function App() {
       if (registeredstate) {
         if (verifiedstate) {
           return (
+            <Context.Provider value={store}>
             <View style={styles.container}>
               <StatusBar backgroundColor="#ffa000" />
               <DrawerSignedIn3 />
             </View>
+            </Context.Provider>
           );
         } else {
           return (
+            <Context.Provider value={store}>
             <View style={styles.container}>
               <StatusBar backgroundColor="#ffa000" />
               <DrawerSignedIn2 />
             </View>
+            </Context.Provider>
           );
         }
       } else {
         return (
+          <Context.Provider value={store}>
           <View style={styles.container}>
             <StatusBar backgroundColor="#ffa000" />
             <DrawerSignedIn />
           </View>
+          </Context.Provider>
         );
       }
       
     } else {
       return (
+        <Context.Provider value={store}>
         <View style={styles.container}>
           <StatusBar backgroundColor="#ffa000" />
           <DrawerSignedOut />
         </View>
+        </Context.Provider>
       );
     }
 

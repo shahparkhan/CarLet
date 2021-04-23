@@ -4,6 +4,7 @@ import { Rating } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const Card = ({ owner, bio, ownerImage }) => {
+  console.log("ownerImage: ", ownerImage)
   return (
     <View style={styles.shadow}>
       <View style={styles.card}>
@@ -12,13 +13,13 @@ const Card = ({ owner, bio, ownerImage }) => {
 
        </View>
        <View style={styles.secondView}>
-       <Image source={ownerImage.url} style={styles.image} />
+       <Image source={{uri: ownerImage}} style={styles.image} />
         <Text style={styles.ownerText}>{owner}</Text>
         
        </View>
-       <View style={styles.thirdView}>
+       {/* <View style={styles.thirdView}>
         <Text style={styles.bioText}>{bio}</Text>
-       </View>
+       </View> */}
        
       </View>
     </View>
@@ -39,7 +40,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    height: 175,
+    flex:1,
+    justifyContent: "flex-start",
     width: "100%",
   },
   image: {
@@ -81,7 +83,11 @@ const styles = StyleSheet.create({
   secondView:{
     flex:1,
     flexDirection:"row",
-    alignItems:"center"
+    alignItems:"center",
+    marginTop:8,
+    marginBottom:8,
+    
+
   },
   ownerText:{
     fontFamily: "Nunito-Bold",
@@ -90,6 +96,9 @@ const styles = StyleSheet.create({
     position:"relative",
     marginTop: 0,
     marginLeft: 18,
+    flex:1,
+    justifyContent:"flex-start",
+    marginRight:8
   },
   thirdView:{
     flex:1,

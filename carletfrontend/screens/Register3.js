@@ -146,7 +146,7 @@ export default function Register1( {navigation} ) {
 
 
             try {
-                let response = await fetch('https://carlet.pythonanywhere.com/uservalidation/',{
+                let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/uservalidation/',{
                 method: 'post',
                 mode: 'no-cors',
                 headers: {
@@ -164,7 +164,7 @@ export default function Register1( {navigation} ) {
                     seterror(true);
                 } else {
                     try {
-                        response = await fetch('https://carlet.pythonanywhere.com/userregister/',{
+                        response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/userregister/',{
                         method: 'post',
                         mode: 'no-cors',
                         headers: {

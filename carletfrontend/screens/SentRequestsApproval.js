@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Image, Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { ScrollView, Image, Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import SentRequestCard1 from "../assets/components/SentRequestCard1";
 import TouchableButton from "../assets/components/TouchableButton";
 import RegisterStyles from "./RegisterStyles";
@@ -15,7 +15,7 @@ const SentRequestsApproval = ({navigation}) => {
 
   return (
     <View>
-      
+      <ScrollView>
       <Text style={styles.heading}>
         {navigation.getParam('status')}
       </Text>
@@ -30,7 +30,7 @@ const SentRequestsApproval = ({navigation}) => {
           status={navigation.getParam('status')}
         >
         </SentRequestCard1>
-      
+        </ScrollView>
         <Image
                 style={styles.smallcar}
                 source={require("./../assets/smallcar.png")}

@@ -17,17 +17,14 @@ const Home = ({ navigation }) => {
 
   const [Region, setRegion] = useState({ latitude: 0, longitude: 0 });
   const [HasPermission, setHasPermission] = useState(false);
-  const [LocationResult, setLocationResult] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
+  const [LocationResult, setLocationResult] = useState({coords:{longitude: 0, latitude:0}});
   const [Geocode, setGeocode] = useState();
-
+  
   useEffect(() => {
-    getGeocodeAsync = async (location) => {
-      let geocode = await Location.reverseGeocodeAsync(location);
-      setGeocode(geocode);
-    };
+    // getGeocodeAsync = async (location) => {
+    //   let geocode = await Location.reverseGeocodeAsync(location);
+    //   setGeocode(geocode);
+    // };
 
     const getUserLocation = async () => {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -37,33 +34,47 @@ const Home = ({ navigation }) => {
         setHasPermission(true);
       }
 
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Highest,
-      });
-      const { latitude, longitude } = location.coords;
-      setLocationResult(location);
+      
 
       try {
-        getGeocodeAsync({ latitude, longitude });
+        let location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+        // const { latitude, longitude } = location.coords;
+        setLocationResult(location);
+        // getGeocodeAsync({ latitude, longitude });
         // Center the map on the location we just fetched.
+        // lat = location.coords.latitude
+        // long = location.coords.longitude
         console.log(
           `coords`,
           {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-          },
-          Region
+          }
         );
-        setRegion({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-        getUserLocation();
+        // setRegion({
+        //   latitude: location.coords.latitude,
+        //   longitude: location.coords.longitude,
+        // });
+        
       } catch (error) {
         console.log(error);
       }
     };
+    getUserLocation();
   }, [HasPermission, Region]);
+
+  let long
+  let lat
+
+  if (LocationResult.coords.latitude != 0) {
+    long = LocationResult.coords.longitude
+    lat = LocationResult.coords.latitude
+  }
+  
+
+
 
   const logoutHandler = async () => {
       try {
@@ -81,7 +92,7 @@ const Home = ({ navigation }) => {
       latitude: newPlace["latitude"],
       longitude: newPlace["longitude"],
     };
-    // console.log(coordinates);
+    console.log(coordinates);
     setRegion(coordinates);
   };
 
@@ -98,7 +109,9 @@ const Home = ({ navigation }) => {
   const searchFromBackEnd = () => {
     console.log("CLICKED", Querry);
     setIconColor("grey");
-    navigation.navigate('PickUpandDropOff')
+    
+    console.log("before sending ", long," ", lat)
+    navigation.navigate('PickUpandDropOff', {longitude: long, latitude: lat})
   };
 
   const goToInitialRegion = () => {
@@ -141,8 +154,8 @@ const Home = ({ navigation }) => {
           loadingEnabled={true}
           onRegionChange={regionChange}
           initialRegion={{
-            latitude: Region["latitude"],
-            longitude: Region["longitude"],
+            latitude: LocationResult.coords.latitude,
+            longitude: LocationResult.coords.longitude,
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
           }}
@@ -165,11 +178,7 @@ const Home = ({ navigation }) => {
         <MaterialIcons name="search" size={32} color={IconColor} />
       </Pressable>
 
-      <TouchableButton
-          title="LOGOUT"
-          onPress={logoutHandler}
-          buttonposition={RegisterStyles.buttonposition}>
-      </TouchableButton>
+      
       <Image
           style={RegisterStyles.smallcar}
           source={require("./../assets/smallcar.png")}

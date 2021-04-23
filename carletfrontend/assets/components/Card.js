@@ -8,7 +8,7 @@ const Card = ({ title, rating, model, location, rate, imagesrc }) => {
   return (
     <View style={styles.shadow}>
       <View style={styles.card}>
-        <Image source={imagesrc.url} style={styles.image} />
+        <Image source={{uri:imagesrc}} style={styles.image} />
         <View style={styles.bottomText}>
           <View style={styles.titleRating}>
             <Text style={styles.title}>{title}</Text>
@@ -101,9 +101,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#212121",
     // paddingLeft: 3,
+    width:"70%",
+    justifyContent:"flex-start"
   },
   rate: {
     fontFamily: "Nunito-Light",
     color: "#212121",
+    
+    
   },
 });

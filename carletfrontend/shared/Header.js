@@ -2,12 +2,12 @@ import React from 'react';
 import {StyleSheet,Text,View,Pressable} from 'react-native';
 import { Entypo, MaterialIcons} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { CommonActions } from '@react-navigation/native'
 
 export default function Header1 ({navigation}){
 
     const openMenu = () =>{
-        navigation.openDrawer()
+        navigation.openDrawer({pic:"gggg"})
         console.log(`menu opened`)
     }
 
@@ -39,6 +39,15 @@ export default function Header1 ({navigation}){
         if(isregistered){
             if (isverified){
                 navigation.navigate('Home')
+               
+                // navigation.dispatch(
+                //     CommonActions.reset({
+                //       index: 1,
+                //       routes: [
+                //         { name: 'Home' },
+                //       ],
+                //     })
+                //   );
             } else{
                 navigation.navigate('Register6')
             }

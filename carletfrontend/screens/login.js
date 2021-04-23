@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useContext} from "react";
 import {
   Text,
   StyleSheet,
@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
+import Context from './../shared/context'
 
 
 export default function Login({ navigation }) {
@@ -22,6 +23,7 @@ export default function Login({ navigation }) {
   const [error, seterror] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
   const [focus, setFocus] = useState(false)
+  const {profilepic, profilename, actions} = useContext(Context)
 
   const emailHandler = (e) => {
     setEmail(e);
@@ -88,7 +90,7 @@ export default function Login({ navigation }) {
       })
 
       try {
-        let response = await fetch('https://carlet.pythonanywhere.com/login/',{
+        let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/login/',{
           method: 'post',
           mode: 'no-cors',
           headers: {
@@ -109,6 +111,14 @@ export default function Login({ navigation }) {
           seterrorMsg("");
           seterror(false);
           setborderColor(["black", "black"]);
+          let profilepicture
+          if (responseJson.picture != undefined){
+            profilepicture = responseJson.picture
+          } else {
+            profilepicture = ""
+          }
+          
+          let profilename = `${responseJson.first_name} ${responseJson.last_name}`
 
           const useruuid = responseJson.uuid
           const mytoken = responseJson.token
@@ -117,6 +127,10 @@ export default function Login({ navigation }) {
             await AsyncStorage.setItem('@isloggedin', '1')
             await AsyncStorage.setItem('@mytoken', responseJson.token)
             await AsyncStorage.setItem('@useruuid', responseJson.uuid)
+            await AsyncStorage.setItem('@profilepicture', profilepicture)
+            actions({type:'setProfilepic', payload:{uri:profilepicture}})
+            await AsyncStorage.setItem('@profilename', profilename)
+            actions({type:'setProfilename', payload:profilename})
           } catch (error) {
             console.log("AsyncStorage error: ", error)
           }
@@ -132,7 +146,7 @@ export default function Login({ navigation }) {
 
           try {
       
-            response = await fetch('https://carlet.pythonanywhere.com/checkregistration/',{
+            response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/checkregistration/',{
             method: 'post',
             mode: 'no-cors',
             headers: {
@@ -164,7 +178,7 @@ export default function Login({ navigation }) {
 
           try {
       
-            response = await fetch('https://carlet.pythonanywhere.com/checkverification/',{
+            response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/checkverification/',{
             method: 'post',
             mode: 'no-cors',
             headers: {
