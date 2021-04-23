@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   Pressable,
+  Alert,
 } from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import * as ImagePicker from "expo-image-picker";
@@ -52,6 +53,39 @@ const RegisterVehicle4 = ({ navigation }) => {
     }
   };
 
+  const deleteimage = (index) => {
+    let pics = [...Pics];
+    pics[index] = {
+      uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
+    };
+    setPics(pics);
+  };
+
+  const deleteAlert = (index) => {
+    return Alert.alert(
+      `Delete?`,
+      "",
+      [
+        {
+          text: "yes",
+          onPress: () => deleteimage(index),
+          style: "cancel",
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () =>
+          Alert.alert(
+            "This alert was dismissed by tapping outside of the alert dialog."
+          ),
+      }
+    );
+  };
+
   const onSubmit = () => {
     if (ImageCount < 2) {
       setError("Please upload atleast 2 images");
@@ -62,34 +96,51 @@ const RegisterVehicle4 = ({ navigation }) => {
 
   return (
     <View style={styles.mainview}>
-      <Text style={styles.mainheading}>Pictures</Text>
+      <Text style={styles.mainheading}>Edit Pictures</Text>
 
-      <Text style={styles.instruction}>Click on an image to upload it</Text>
+      <Text style={styles.instruction}>
+        Click on an image to edit. Press and hold to delete
+      </Text>
       <Text style={styles.error}>{Error}</Text>
       <View style={styles.imagebox}>
         <View style={styles.imageboxTop}>
-          <Pressable onPress={() => pickImage(0)}>
+          <Pressable
+            onLongPress={() => deleteAlert(0)}
+            onPress={() => pickImage(0)}
+          >
             <Image source={Pics[0]} style={styles.imagestyle} />
           </Pressable>
-          <Pressable onPress={() => pickImage(1)}>
+          <Pressable
+            onLongPress={() => deleteAlert(1)}
+            onPress={() => pickImage(1)}
+          >
             <Image source={Pics[1]} style={styles.imagestyle} />
           </Pressable>
-          <Pressable onPress={() => pickImage(2)}>
+          <Pressable
+            onLongPress={() => deleteAlert(2)}
+            onPress={() => pickImage(2)}
+          >
             <Image source={Pics[2]} style={styles.imagestyle} />
           </Pressable>
         </View>
         <View style={styles.imageboxBottom}>
-          <Pressable onPress={() => pickImage(3)}>
+          <Pressable
+            onLongPress={() => deleteAlert(3)}
+            onPress={() => pickImage(3)}
+          >
             <Image source={Pics[3]} style={styles.imagestyle} />
           </Pressable>
-          <Pressable onPress={() => pickImage(4)}>
+          <Pressable
+            onLongPress={() => deleteimage(4)}
+            onPress={() => pickImage(4)}
+          >
             <Image source={Pics[4]} style={styles.imagestyle} />
           </Pressable>
         </View>
       </View>
 
       <TouchableButton
-        title="SUBMIT"
+        title="DONE"
         onPress={onSubmit}
         buttonposition={styles.buttonposition}
       />

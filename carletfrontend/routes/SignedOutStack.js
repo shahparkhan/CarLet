@@ -33,15 +33,16 @@ import ReceivedRequestsRating from "../screens/ReceivedRequestsRating";
 import SuccessPrompt from "../screens/SuccessPrompt";
 import ErrorPrompt from "../screens/ErrorPrompt";
 import CautionPrompt from "../screens/CautionPrompt";
-import AccountSettings from '../screens/AccountSettings'
-import EditProfile from '../screens/EditProfile'
-import YourVehicles from '../screens/YourVehicles'
-import EditVehicle from '../screens/EditVehicle'
-import EditVehicleGeneral from '../screens/EditVehicleGeneral';
-import EditVehicleDocs from '../screens/EditVehicleDocs';
-import VehicleDocsGeneral from '../screens/VehicleDocsGeneral';
-import AccountMenu from '../screens/AccountMenu';
-import ChangePassword from '../screens/ChangePassword';
+import AccountSettings from "../screens/AccountSettings";
+import EditProfile from "../screens/EditProfile";
+import YourVehicles from "../screens/YourVehicles";
+import EditVehicle from "../screens/EditVehicle";
+import EditVehicleGeneral from "../screens/EditVehicleGeneral";
+import EditVehicleDocs from "../screens/EditVehicleDocs";
+import EditVehiclePics from "../screens/EditVehiclePics";
+import VehicleDocsGeneral from "../screens/VehicleDocsGeneral";
+import AccountMenu from "../screens/AccountMenu";
+import ChangePassword from "../screens/ChangePassword";
 import Header1 from "./../shared/Header";
 import React from "react";
 import RegisterVehicle1 from "./../screens/RegisterVehicle1";
@@ -76,6 +77,7 @@ const signedout = {
     navigationOptions: {
       headerShown: false,
     },
+  },
   SignUp1: {
     screen: SignUp1,
     navigationOptions: {
@@ -217,89 +219,98 @@ const signedout = {
       };
     },
   },
-    
-    AccountSettings: {
-        screen: AccountSettings,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
-    },
-    EditProfile: {
-        screen: EditProfile,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
-    },
-    YourVehicles: {
-        screen: YourVehicles,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
-    },
-    EditVehicle: {
-        screen: EditVehicle,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
-    },
-    EditVehicleGeneral: {
-        screen: EditVehicleGeneral,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
-    },
-    EditVehicleDocs: {
-        screen: EditVehicleDocs,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
-    },
-    VehicleDocsGeneral: {
-        screen: VehicleDocsGeneral,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
-    },
 
-    AccountMenu: {
-        screen: AccountMenu,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
+  AccountSettings: {
+    screen: AccountSettings,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
-    ChangePassword: {
-        screen: ChangePassword,
-        navigationOptions: ({navigation}) => {
-            return{
-                headerLeft: ()=> null,
-                headerTitle: () => <Header1 navigation = {navigation}/>,
-            }   
-        }
+  },
+  EditProfile: {
+    screen: EditProfile,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
+  },
+  YourVehicles: {
+    screen: YourVehicles,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  EditVehicle: {
+    screen: EditVehicle,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  EditVehicleGeneral: {
+    screen: EditVehicleGeneral,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  EditVehiclePics: {
+    screen: EditVehiclePics,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  EditVehicleDocs: {
+    screen: EditVehicleDocs,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  VehicleDocsGeneral: {
+    screen: VehicleDocsGeneral,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+
+  AccountMenu: {
+    screen: AccountMenu,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  ChangePassword: {
+    screen: ChangePassword,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
 
   SentRequestsPayment: {
     screen: SentRequestsPayment,
@@ -420,58 +431,65 @@ const signedout = {
   },
   RegisterVehicle1: {
     screen: RegisterVehicle1,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   RegisterVehicle2: {
     screen: RegisterVehicle2,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   RegisterVehicle3: {
     screen: RegisterVehicle3,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   RegisterVehicle4: {
     screen: RegisterVehicle4,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   Wallet1: {
     screen: Wallet1,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   Wallet2: {
     screen: Wallet2,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   Wallet3: {
     screen: Wallet3,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
 };
