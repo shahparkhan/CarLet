@@ -39,6 +39,11 @@ def image_to_base64(image_path):
 
     return image_data
 
+def path_splitting(path):
+    temp = path.split('media')
+    path = "http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/media" + temp[1]
+    return path
+
 class SignUp1(APIView):
 
     def post(self,request, format=None):
@@ -243,10 +248,8 @@ class SearchVehicle(APIView):
         user_longitude = float(request.data.get('longitude'))
         filters = request.data.get('filters')
         
-                
-        #exclude past history, then get cars not available
-        # try:
-        # query1 = TripDetail.objects.filter(dropoff_date__lte=pickup_date).values('vehicle_trip_id')
+
+
         query2 = TripDetail.objects.filter(dropoff_date__gte=pickup_date).filter(pickup_date__lte=pickup_date).values('vehicle_trip_id')
         query3 = TripDetail.objects.filter(pickup_date__range=[pickup_date, dropoff_date],dropoff_date__range=[pickup_date, dropoff_date] ).values('vehicle_trip_id')
         query4 = VehicleDetail.objects.exclude(vehicle_id__in=query2).exclude(vehicle_id__in=query3)
@@ -296,20 +299,22 @@ class SearchVehicle(APIView):
             resp["vehicle_name"] = loc.vehicleloc_id.vehicle_name
             resp["vehicle_model"] = loc.vehicleloc_id.vehicle_model
             resp["vehicle_type"] = loc.vehicleloc_id.vehicle_type
-            resp["vehicle_picture1"] = image_to_base64(loc.vehicleloc_id.vehicle_picture1.path)
-            resp["vehicle_picture2"] = image_to_base64(loc.vehicleloc_id.vehicle_picture2.path)
+            # resp["vehicle_picture1"] = image_to_base64(loc.vehicleloc_id.vehicle_picture1.path)
+            # resp["vehicle_picture2"] = image_to_base64(loc.vehicleloc_id.vehicle_picture2.path)
+            resp["vehicle_picture1"] = path_splitting(loc.vehicleloc_id.vehicle_picture1.path)
+            resp["vehicle_picture2"] = path_splitting(loc.vehicleloc_id.vehicle_picture2.path)
             resp["vehicle_id"] = loc.vehicleloc_id.vehicle_id
             try:
-                resp["vehicle_picture3"] = image_to_base64(loc.vehicleloc_id.vehicle_picture3.path)
+                resp["vehicle_picture3"] = path_splitting(loc.vehicleloc_id.vehicle_picture3.path)
             except:
                 resp["vehicle_picture3"] = ""
 
             try:
-                resp["vehicle_picture4"] = image_to_base64(loc.vehicleloc_id.vehicle_picture4.path)
+                resp["vehicle_picture4"] = path_splitting(loc.vehicleloc_id.vehicle_picture4.path)
             except:
                 resp["vehicle_picture4"] = ""
             try:
-                resp["vehicle_picture5"] = image_to_base64(loc.vehicleloc_id.vehicle_picture5.path)
+                resp["vehicle_picture5"] = path_splitting(loc.vehicleloc_id.vehicle_picture5.path)
             except:
                 resp["vehicle_picture5"] = ""
 
@@ -352,17 +357,17 @@ class VehicleRegistration(APIView):
             vehicle_detail = VehicleDetail.objects.create(vehicle_id=vehicle_id, vehicle_name=vehicle_name, vehicle_model=vehicle_model, vehicle_type=vehicle_type,
                                                     daily_rate=daily_rate, license_plate=license_plate, vehicle_picture1=vehicle_picture1,vehicle_picture2=vehicle_picture2 )
 
-            if vehicle_picture3 is not None:
+            if vehicle_picture3 != "":
                 vehicle_picture3 = base64_to_image(vehicle_picture3)
                 vehicle_detail.vehicle_picture3 = vehicle_picture3
                 vehicle_detail.save()
 
-            if vehicle_picture4 is not None:
+            if vehicle_picture4 != "":
                 vehicle_picture4 = base64_to_image(vehicle_picture4)
                 vehicle_detail.vehicle_picture4 = vehicle_picture4
                 vehicle_detail.save()
             
-            if vehicle_picture5 is not None:
+            if vehicle_picture5 != "":
                 vehicle_picture5 = base64_to_image(vehicle_picture5)
                 vehicle_detail.vehicle_picture5 = vehicle_picture5
                 vehicle_detail.save()
@@ -374,6 +379,7 @@ class VehicleRegistration(APIView):
             return Response({"Error": "There was some error uploading your registration information. Please try again later"}, status= status.HTTP_400_BAD_REQUEST)
 
 
+
 class VehicleDetailValidation(APIView):
 
     def post(self,request,format=None):
@@ -383,3 +389,220 @@ class VehicleDetailValidation(APIView):
         else:
             return Response({"Success": "Valid license plate number"})
 
+
+class ProfileAccountSetting(APIView):
+    
+    def patch(self,request, pk, format=None):
+        carlet_id = uuid.UUID(pk)
+        carlet_user = CarletUser.objects.get(pk=carlet_id)
+        user = User.objects.get(username=carlet_user.user.username)        
+
+        for attribute in request.data:
+            
+            if attribute == "name":
+                name = request.data.get('name')
+                name = name.split(" ")
+                user.first_name = name[0]
+                try:
+                    user.last_name = name[1]
+                except:
+                    user.last_name = ""
+                user.save()
+                return Response({"Success": "Name updated"})
+            
+            if attribute == "phone_number":
+                phone_number = request.data.get('phone_number')
+                
+                if CarletUser.objects.filter(phone_number__iexact=phone_number).exists():
+                    return Response({"phone_number": "An account with this phone number already exists"}, status=status.HTTP_400_BAD_REQUEST)
+                
+                carlet_user.phone_number = phone_number
+                carlet_user.save()
+                return Response({"Success": "Phone number updated"})
+            
+            if attribute == "profile_picture":
+                profile_picture = base64_to_image(request.data.get('profile_picture'))
+                user_doc = UserDocument.objects.get(user_doc_id=carlet_user)
+                user_doc.picture = profile_picture
+                user_doc.save()
+                return Response({"Success": "Profile picture updated"})
+
+            if attribute == "email":
+                email = request.data.get('email')
+                if User.objects.filter(email__iexact=email).exists():
+                    return Response({"phone_number": "An account with this email already exists"}, status=status.HTTP_400_BAD_REQUEST)
+                
+                user.email = email
+                user.save()
+                return Response({"Success": "Email updated"})
+            
+            if attribute == "password":
+                password = request.data.get('password')
+                user.password = password
+                user.save()
+                return Response({"Success": "Password updated"})
+
+class UserVehicleList(APIView):
+
+    def get(self,request, pk, format=None):
+        carlet_id = uuid.UUID(pk)
+        carlet_user = CarletUser.objects.get(pk=carlet_id)
+        user_vehicles = VehicleDetail.objects.filter(vehicle_user=carlet_user)
+        if user_vehicles.exists():
+            result = []
+            vehicle_list = user_vehicles
+            for vehicle in user_vehicles:
+                detail = {}
+                detail['vehicle_id'] = vehicle.vehicle_id
+                detail['vehicle_name'] = vehicle.vehicle_name
+                detail['vehicle_model'] = vehicle.vehicle_model
+                result.append(detail)
+
+            return Response({"Success": result})
+        else:
+            return Response({"Error": "There are no vehicles registered by you."})
+
+
+class VehicleSetting(APIView):
+
+    def patch(self,request, pk, format=None):
+        pk = uuid.UUID(pk)
+        vehicle = VehicleDetail.objects.get(pk=pk)
+        vehicle_documents = VehicleDocument.objects.get(pk=vehicle)
+        for attribute in request.data:
+
+            if attribute == "vehicle_name":
+                vehicle_name = request.data.get("vehicle_name")
+                vehicle.vehicle_name = vehicle_name
+                vehicle.save()
+                return Response({"Success": "Vehicle name updated"})
+            
+            if attribute == "vehicle_model":
+                vehicle_model = request.data.get("vehicle_model")
+                vehicle.vehicle_model = vehicle_model
+                vehicle.save()
+                return Response({"Success": "Vehicle model updated"})
+
+            if attribute == "vehicle_type":
+                vehicle_type = request.data.get("vehicle_type")
+                vehicle.vehicle_type = vehicle_type
+                vehicle.save()
+                return Response({"Success": "Vehicle type updated"})
+            
+            if attribute == "rate":
+                daily_rate = request.data.get("rate")
+                vehicle.daily_rate = daily_rate
+                vehicle.save()
+                return Response({"Success": "Vehicle rate updated"})
+
+            if attribute == "vehicle_picture1":
+                vehicle_picture1 = base64_to_image(request.data.get("vehicle_picture1"))
+                vehicle.vehicle_picture1 = vehicle_picture1
+                vehicle.save()
+                return Response({"Success": "Vehicle picture1 updated"})
+            
+            
+            if attribute == "vehicle_picture2":
+                vehicle_picture2 = base64_to_image(request.data.get("vehicle_picture2"))
+                vehicle.vehicle_picture2 = vehicle_picture2
+                vehicle.save()
+                return Response({"Success": "Vehicle picture2 updated"})
+            
+            if attribute == "vehicle_picture3":
+                vehicle_picture3 = base64_to_image(request.data.get("vehicle_picture3"))
+                vehicle.vehicle_picture3 = vehicle_picture3
+                vehicle.save()
+                return Response({"Success": "Vehicle picture3 updated"})
+            
+            if attribute == "vehicle_picture4":
+                vehicle_picture4 = base64_to_image(request.data.get("vehicle_picture4"))
+                vehicle.vehicle_picture4 = vehicle_picture4
+                vehicle.save()
+                return Response({"Success": "Vehicle picture4 updated"})
+            
+            if attribute == "vehicle_picture5":
+                vehicle_picture5 = base64_to_image(request.data.get("vehicle_picture5"))
+                vehicle.vehicle_picture5 = vehicle_picture5
+                vehicle.save()
+                return Response({"Success": "Vehicle picture5 updated"})
+                
+            if attribute == "reg_papers":
+                reg_papers = request.data.get('reg_papers')
+                vehicle_documents.reg_papers = reg_papers
+                vehicle_documents.save()
+                return Response({"Success": "Registration papers updated"})
+            
+            if attribute == "insurance_papers":
+                insurance_papers = request.data.get('insurance_papers')
+                vehicle_documents.insurance_papers = insurance_papers
+                vehicle_documents.save()
+                return Response({"Success": "Insurance papers updated"})
+            
+            if attribute == "tracker_papers":
+                tracker_papers = request.data.get('tracker_papers')
+                vehicle_documents.tracker_papers = tracker_papers
+                vehicle_documents.save()
+                return Response({"Success": "Tracker papers updated"})
+
+
+
+class TripHistory(APIView):
+
+    def get(self,request, pk, format=None):
+        carlet_id = uuid.UUID(pk)
+        carlet_user = CarletUser.objects.get(pk=carlet_id)
+        by_you = TripDetail.objects.filter(renter_id=carlet_user).filter(booking_confirm=True).filter(payment=True).filter(rating_done_renter=True)
+        
+        history = {}
+        if by_you.exists():
+            result = []
+            for trip in by_you:
+                vehicle = trip.vehicle_trip_id
+                vehicle_location = VehicleLocation.objects.get(vehicleloc_id=vehicle)
+                vehicle_owner = vehicle.vehicle_user
+                detail = {}
+                detail['vehicle_name'] = vehicle.vehicle_name
+                detail['vehicle_model'] = vehicle.vehicle_model
+                detail['vehicle_type'] = vehicle.vehicle_type
+                detail['daily_rate'] = vehicle.daily_rate
+                detail['vehicle_address'] = vehicle_location.vehicle_street_address
+                detail['vehicle_owner_name'] = vehicle_owner.user.first_name + " " + vehicle_owner.user.last_name
+                detail['vehicle_owner_rating'] = vehicle_owner.rating
+                detail['pickup_date'] = trip.pickup_date
+                detail['dropoff_date'] = trip.dropoff_date
+                detail['trip_amount'] = trip.duration * vehicle.daily_rate
+                result.append(detail)
+            history['by_you'] = result
+        else:
+            history["by_you"] = "No cars rented by you"
+
+        user_vehicles = VehicleDetail.objects.filter(vehicle_user=carlet_user)        
+        if user_vehicles.exists:
+            result = []
+            for vehicle in user_vehicles:
+                #vehicle_location = VehicleLocation.objects.get(vehicleloc_id=vehicle)
+                from_you = TripDetail.objects.filter(vehicle_trip_id=vehicle).filter(booking_confirm=True).filter(payment=True).filter(rating_done_owner=True)
+                if from_you.exists():
+                    for trip in from_you:
+                        vehicle_renter = trip.renter_id
+                        detail = {}
+                        detail['vehicle_name'] = vehicle.vehicle_name
+                        detail['vehicle_model'] = vehicle.vehicle_model
+                        detail['vehicle_type'] = vehicle.vehicle_type
+                        detail['daily_rate'] = vehicle.daily_rate
+                        #detail['vehicle_address'] = vehicle_location.vehicle_street_address
+                        detail['vehicle_renter_name'] = vehicle_renter.user.first_name + " " + vehicle_renter.user.last_name
+                        detail['vehicle_renter_rating'] = vehicle_renter.rating
+                        detail['pickup_date'] = trip.pickup_date
+                        detail['dropoff_date'] = trip.dropoff_date
+                        detail['trip_amount'] = trip.duration * vehicle.daily_rate
+                        result.append(detail)
+                        history['from_you'] = result
+                else:
+                    continue
+            if result == []:
+                history["from_you"] = "No cars owned by you"
+        else:
+            history["from_you"] = "No cars owned by you"
+
+        return Response(history)

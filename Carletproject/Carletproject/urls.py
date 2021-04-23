@@ -33,7 +33,12 @@ urlpatterns = [
     path('checkregistration/', csrf_exempt(views.CheckRegistration.as_view())),
     path('searchvehicle/', csrf_exempt(views.SearchVehicle.as_view())),
     path('registervehicle/', csrf_exempt(views.VehicleRegistration.as_view())),
-    path('licensevalidation/', csrf_exempt(views.VehicleDetailValidation.as_view()))
+    path('licensevalidation/', csrf_exempt(views.VehicleDetailValidation.as_view())),
+    path('accountsetting/<str:pk>/', csrf_exempt(views.ProfileAccountSetting.as_view())),
+    path('uservehicle/<str:pk>/', csrf_exempt(views.UserVehicleList.as_view())),
+    path('vehiclesetting/<str:pk>/', csrf_exempt(views.VehicleSetting.as_view())),
+    path('triphistory/<str:pk>/', csrf_exempt(views.TripHistory.as_view())),
+    
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
