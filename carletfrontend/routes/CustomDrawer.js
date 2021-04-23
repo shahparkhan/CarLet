@@ -1,31 +1,33 @@
+import React, { useEffect, useState, useContext } from "react";
 
-import React,{Component,useEffect,useState,useLayoutEffect, useContext} from 'react';
-import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView, Modal} from 'react-native';
-import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
-import { Entypo,MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
-import { Icon } from 'native-base';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Context from './../shared/context';
-import { FlatList } from 'react-native-gesture-handler';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Modal,
+} from "react-native";
 
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Context from "./../shared/context";
 
+const ModalPopUp = ({ visible, children }) => {
+  const [showModal, setShowModal] = useState(visible);
 
-
-const ModalPopUp = ({visible,children}) =>{
-    const [showModal, setShowModal] = useState(visible)
-
-    useEffect(() => {
-        toggleModal();
-    }, [visible])
-    const toggleModal = () =>{
-        if (visible){
-            setShowModal(true)
-        }
-        else{
-            setShowModal(false)
-        }
+  useEffect(() => {
+    toggleModal();
+  }, [visible]);
+  const toggleModal = () => {
+    if (visible) {
+      setShowModal(true);
+    } else {
+      setShowModal(false);
     }
+
     return(
         <Modal transparent visible={showModal} >
             <View style = {styles.modalBackground}>
@@ -88,18 +90,18 @@ export default function ContentContainer( {navigation} ){
 
     
 
-    const logoutHandler = async () => {
-        try {
-          await AsyncStorage.setItem('@isloggedin', '0')
-  
-        } catch (e) {
-            console.log("loggedout error: ", e)
-        }
-        navigation.navigate("Welcome")
+
+
+  const logoutHandler = async () => {
+    try {
+      await AsyncStorage.setItem("@isloggedin", "0");
+    } catch (e) {
+      console.log("loggedout error: ", e);
     }
+    navigation.navigate("Welcome");
+  };
 
-
-    return(
+  return(
         <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
             <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
 
@@ -201,7 +203,6 @@ export default function ContentContainer( {navigation} ){
             </TouchableOpacity>
         </TouchableOpacity>
     )
-    
 }
 
 const styles = StyleSheet.create({
@@ -291,23 +292,3 @@ const styles = StyleSheet.create({
         justifyContent:"flex-start"
     }
 })
-
-
-
-
-
-// function Sidebar({...props}){
-
-//     return(
-//         <DrawerContentScrollView {...props}>
-//             <DrawerItemList {...props}/>
-
-//             <DrawerItem 
-//             label = "Account Settings" 
-//             icon ={()=> <MaterialIcons name="settings" size={24} color="black" />}
-//             onPress = {(()=>props.navigation.navigate('Logout')) }  />
-
-
-//         </DrawerContentScrollView>
-//     );
-// }
