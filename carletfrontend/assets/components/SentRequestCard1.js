@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import { Rating } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Card = ({ title, rating, model, location, rate, pickupdate, dropoffdate, status }) => {
+const Card = ({ title, rating, model, location, rate, pickupdate, dropoffdate, status, cost }) => {
   return (
     <View style={styles.shadow}>
       <View style={styles.card}>
@@ -32,10 +32,10 @@ const Card = ({ title, rating, model, location, rate, pickupdate, dropoffdate, s
         <Text style={{...styles.modelText, marginRight:8}}>{dropoffdate}</Text>
        </View>
        <View style={styles.thirdView}>
-           <Text style={styles.title}>Rate</Text>
+           <Text style={styles.title}>Total Cost</Text>
        </View>
        <View style={styles.secondView}>
-        <Text style={styles.modelText}>{rate}/day</Text>
+        <Text style={styles.modelText}>{cost}.00 </Text>
        </View>
        
       </View>

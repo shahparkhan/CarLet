@@ -124,11 +124,22 @@ export default function Login({ navigation }) {
           const mytoken = responseJson.token
 
           try {
+            console.log("walletamount ", (responseJson.wallet_amount).toString())
             await AsyncStorage.setItem('@isloggedin', '1')
             await AsyncStorage.setItem('@mytoken', responseJson.token)
             await AsyncStorage.setItem('@useruuid', responseJson.uuid)
             await AsyncStorage.setItem('@profilepicture', profilepicture)
-            actions({type:'setProfilepic', payload:{uri:profilepicture}})
+            await AsyncStorage.setItem('@walletamount', (responseJson.wallet_amount).toString())
+            if (profilepicture == "" || profilepicture == null) {
+              
+            } else {
+             actions({type:'setProfilepic', payload:{uri:profilepicture}})
+            }
+            if (responseJson.wallet_amount == "" || responseJson.wallet_amount == null) {
+              
+            } else {
+             actions({type:'setWalletamount', payload:(responseJson.wallet_amount).toString()})
+            }
             await AsyncStorage.setItem('@profilename', profilename)
             actions({type:'setProfilename', payload:profilename})
           } catch (error) {

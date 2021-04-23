@@ -30,6 +30,7 @@ const globalState = () => {
         console.log("here");
         setLocationState(location);
 
+
         console.log(`coords`, {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
