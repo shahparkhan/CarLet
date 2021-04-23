@@ -28,6 +28,8 @@ const SentRequestsApproval = ({navigation}) => {
           pickupdate={navigation.getParam('pickupdate')}
           dropoffdate={navigation.getParam('dropoffdate')}
           status={navigation.getParam('status')}
+          cost={navigation.getParam('cost')}
+
         >
         </SentRequestCard1>
         </ScrollView>

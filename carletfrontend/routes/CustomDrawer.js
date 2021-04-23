@@ -42,6 +42,8 @@ export default function ContentContainer( {navigation} ){
     const [visible,setVisible] = useState(false);
     const [image,setImage] = useState(null);
 
+    const {profilepic, profilename, walletamount} = useContext(Context)
+
     useEffect(()=>
     {
         async function fetchData(){
@@ -71,7 +73,7 @@ export default function ContentContainer( {navigation} ){
                 quality:1,
                 base64:true,
             })
-            // console.log("rrr", result)
+            console.log("rrr", result)
             setImage(`data:image/jpeg;base64,${result.base64}`)
             if (!result.cancelled)
             {
@@ -83,44 +85,6 @@ export default function ContentContainer( {navigation} ){
         
         
     }
-
-
-
-export default function ContentContainer( {navigation} ){
-    // const [profilepic, setProfilepic] = useState({uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'})
-    // const [profilename, setProfilename] = useState('Carlet User')
-    
-    const {profilepic, profilename} = useContext(Context)
-
-    // useEffect(() => {
-    //     // if(!props.fetched) {
-    //     //     props.fetchRules();
-    //     // }
-    //     // console.log('mount it!');
-    //     const profilepictureandname = async () => {
-            
-    //         try {
-    //             let pic = await AsyncStorage.getItem('@profilepicture')
-    //             console.log("pic: ", pic)
-    //             setProfilepic({uri:pic})
-        
-    //         } catch (e) {
-    //             console.log("loggedout error: ", e)
-    //         }
-    //         try {
-    //             let name = await AsyncStorage.getItem('@profilename')
-    //             console.log("name: ", name)
-    //             setProfilename(name)
-        
-    //         } catch (e) {
-    //             console.log("loggedout error: ", e)
-    //         }
-    
-            
-    //     }
-    //     profilepictureandname()
-        
-    //   },[]);
 
     
 
@@ -139,7 +103,7 @@ export default function ContentContainer( {navigation} ){
         <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
             <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
 
-                <View style = {{height:178, backgroundColor:"#ffc107"}}>
+                <View style = {{justifyContent: "flex-start", backgroundColor:"#ffc107"}}>
                     <ModalPopUp visible = {visible}>
                         <View style = {{alignItems:'center'}}>
                             <View style = {styles.header}>
@@ -162,9 +126,23 @@ export default function ContentContainer( {navigation} ){
                     <TouchableOpacity onPress = {()=> setVisible(true) }>
                     <Image source={profilepic} style = {styles.imageStyle}/>
                     </TouchableOpacity>
-                    <Text style = {styles.name}>
-                      {profilename}
-                    </Text>
+                    
+                    
+                        <Text style = {styles.name}>
+                            {profilename}
+                        </Text>
+                        
+                        <View style={styles.walletstyle}>
+                            <Image
+                                source = {require('./../assets/wallet.png')}
+                                style = {styles.walletImage}>
+                            </Image>
+                            
+                            <Text style = {styles.name}>
+                                {walletamount}
+                            </Text>
+                        </View>
+                    
                 </View>
                 <ScrollView>
                     
@@ -180,6 +158,32 @@ export default function ContentContainer( {navigation} ){
                         <View style = {styles.optionStyle} >
                             <MaterialCommunityIcons name="bell" size={24} color="black" style={styles.testIcon}/>
                             <Text style = {styles.testText}> Rent Requests </Text >
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("RegisterVehicle1")}
+                    >
+                        <View style={styles.optionStyle}>
+                        <MaterialIcons
+                            name="directions-car"
+                            size={24}
+                            color="black"
+                            style={styles.testIcon}
+                        />
+                        <Text style={styles.testText}> Register Vehicle </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.navigate("Wallet3")}>
+                        <View style={styles.optionStyle}>
+                        <MaterialIcons
+                            name="account-balance-wallet"
+                            size={24}
+                            color="black"
+                            style={styles.testIcon}
+                        />
+                        <Text style={styles.testText}> Wallet </Text>
                         </View>
                     </TouchableOpacity>
 
@@ -249,11 +253,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'left',
         marginLeft: 16,
-        marginTop: 16,
-        marginBottom: 16,
-        width:"50%",
+        marginRight: 16,
+        marginTop: 8,
         color: 'white',
         fontFamily:"Nunito-Bold",
+        justifyContent:"flex-start"
     },
     drawerText:{
         fontFamily:"Nunito-Bold",
@@ -273,6 +277,18 @@ const styles = StyleSheet.create({
         color: 'black',
         marginLeft:8,
         alignSelf: "center"
+    },
+    walletstyle:{
+        flexDirection:"row",
+        justifyContent:"flex-start",
+        marginBottom: 16,
+    },
+    walletImage:{
+        height:24,
+        width:24,
+        marginLeft:16,
+        marginTop: 8,
+        justifyContent:"flex-start"
     }
 })
 

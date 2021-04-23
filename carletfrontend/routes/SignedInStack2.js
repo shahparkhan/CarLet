@@ -421,58 +421,65 @@ const signedin = {
   },
   RegisterVehicle1: {
     screen: RegisterVehicle1,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   RegisterVehicle2: {
     screen: RegisterVehicle2,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   RegisterVehicle3: {
     screen: RegisterVehicle3,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   RegisterVehicle4: {
     screen: RegisterVehicle4,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   Wallet1: {
     screen: Wallet1,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   Wallet2: {
     screen: Wallet2,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
   Wallet3: {
     screen: Wallet3,
-    navigationOptions: {
-      headerShown: true,
-      title: "",
-      headerStyle: { backgroundColor: "#ffc107" },
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
     },
   },
 };

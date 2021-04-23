@@ -62,9 +62,58 @@ export default function RentRequests({navigation}) {
         
         
     }
-    const onReceivedHandler = () => {
+    const onReceivedHandler = async () => {
+        let mytoken = ''
+        let myuuid = ''
+        // useruuid
+
+        try {
+            mytoken = await AsyncStorage.getItem('@mytoken')
+            myuuid = await AsyncStorage.getItem('@useruuid')
+            console.log("token: ", mytoken)
+            console.log("uuid: ", myuuid)
         
-        navigation.navigate('ReceivedRequests')
+        } catch (error) {
+            console.error('Failed to get token/uuid: ', error)
+        }
+
+        const sentrequestsdetails = JSON.stringify({
+            user_id: myuuid
+        })
+        let responseJson
+        try {
+            let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/rcvrentrequest/',{
+            method: 'post',
+            mode: 'no-cors',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${mytoken}`
+            },
+            body: sentrequestsdetails
+            })
+            console.log("here: ")
+            responseJson = await response.json()
+            console.log("here2")
+            console.log('server response: ', responseJson)
+            if (responseJson['Success'] != undefined){
+                // console.log("BORDER COLOR", BorderColor);
+                // console.log("before sending ", responseJson['Success']);
+                // navigation.navigate("SearchResults1", {results: responseJson['Success'], djangopickup: sendpickup, djangodropoff: senddropoff,pickupdate: pickUpDate, dropoffdate: DropoffDate, uuid: myuuid, token: mytoken})
+                navigation.navigate('ReceivedRequests', {result:responseJson['result']})
+            } else if (responseJson['Error'] != undefined) {
+                // setErrorMsg(responseJson['Error']);
+                // setError(true);
+            }
+            
+
+        } catch (error) {
+            console.error('server error: ', error);
+            // setErrorMsg("Server error. Please try again");
+            // setError(true);
+        }
+
+        // navigation.navigate('ReceivedRequests')
     }
 
     return (

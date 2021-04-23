@@ -8,7 +8,12 @@ import RegisterStyles from "./RegisterStyles";
 const SentRequestsPayment = ({navigation}) => {
 
   const onPressHandler = () => {
-    navigation.navigate('CautionPrompt', {title: 'Payment', successBody: 'The amount was successfully paid!', errorBody: 'There was some error with the transaction. Please try again later.'})
+    const mytoken = navigation.getParam('token')
+    const apiLink = 'http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/payment/'
+    const apiBody = JSON.stringify({
+      trip_id: navigation.getParam('trip_id')
+    })
+    navigation.navigate('CautionPrompt', {title: 'Payment', successBody: 'The amount was successfully paid!', errorBody: 'There was some error with the transaction. Please try again later.', apiLink: apiLink, apiBody: apiBody, token:mytoken})
   }
 
   
@@ -30,6 +35,7 @@ const SentRequestsPayment = ({navigation}) => {
           pickupdate={navigation.getParam('pickupdate')}
           dropoffdate={navigation.getParam('dropoffdate')}
           status={navigation.getParam('status')}
+          cost={navigation.getParam('cost')}
         >
         </SentRequestCard1>
         <TouchableButton

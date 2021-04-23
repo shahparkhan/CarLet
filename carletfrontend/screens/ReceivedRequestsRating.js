@@ -6,12 +6,19 @@ import RegisterStyles from "./RegisterStyles";
 import { Rating, AirbnbRating } from 'react-native-ratings';
 
 const ReceivedRequestsRating = ({navigation}) => {
+    const [rating, setRating] = useState(3)
     const onPressHandler = () => {
-        navigation.navigate('CautionPrompt', {title: 'Rating', successBody: 'Thankyou! Your rating was successfully registered.', errorBody: 'There was some error with rating. Please try again.'})
+        const apiBody = JSON.stringify({
+            trip_id: navigation.getParam('trip_id'),
+            rating: rating
+        })
+        const apiLink = 'http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/raterenter/'
+        navigation.navigate('CautionPrompt', {title: 'Rating', successBody: 'Thankyou! Your rating was successfully registered.', errorBody: 'There was some error with rating. Please try again.', apiLink: apiLink, apiBody: apiBody, token: navigation.getParam("token")})
     }
 
     const ratingCompleted = (rating) => {
         console.log("Rating is: " + rating)
+        setRating(rating)
     }
 
     return (

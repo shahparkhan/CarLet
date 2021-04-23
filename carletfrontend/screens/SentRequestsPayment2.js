@@ -30,14 +30,11 @@ const SentRequestsPayment2 = ({navigation}) => {
           pickupdate={navigation.getParam('pickupdate')}
           dropoffdate={navigation.getParam('dropoffdate')}
           status={navigation.getParam('status')}
+          cost={navigation.getParam('cost')}
+
         >
         </SentRequestCard1>
-        <TouchableButton
-            title="VIEW BILL"
-            buttonposition = {{position:"relative", marginTop:16}}
-        >
-
-        </TouchableButton>
+        
         </ScrollView>
         <Image
                 style={styles.smallcar}

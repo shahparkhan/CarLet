@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
+  Image,
   View,
   Text,
   StyleSheet,
@@ -9,9 +10,13 @@ import {
 } from "react-native";
 import TextField from "../assets/components/TextField";
 import TouchableButton from "../assets/components/TouchableButton";
+import Context from './../shared/context';
+
 
 const Wallet2 = ({ navigation }) => {
   const [RedeemAmount, setRedeemAmount] = useState("");
+  const {walletamount} = useContext(Context)
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View
@@ -21,6 +26,17 @@ const Wallet2 = ({ navigation }) => {
         }}
       >
         <View style={styles.topbar}>
+          <View
+              style={styles.button}
+              onTouchStart={() => {
+                navigation.navigate("Wallet3");
+                console.log("dumb");
+              }}
+            >
+              <TouchableOpacity>
+                <Text style={styles.buttontext}>STATEMENT</Text>
+              </TouchableOpacity>
+          </View>
           <View
             style={styles.button}
             onTouchStart={() => navigation.navigate("Wallet1")}
@@ -42,17 +58,7 @@ const Wallet2 = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View
-            style={styles.button}
-            onTouchStart={() => {
-              navigation.navigate("Wallet3");
-              console.log("dumb");
-            }}
-          >
-            <TouchableOpacity>
-              <Text style={styles.buttontext}>STATEMENT</Text>
-            </TouchableOpacity>
-          </View>
+          
         </View>
         <View
           style={{
@@ -64,7 +70,16 @@ const Wallet2 = ({ navigation }) => {
           <Text style={styles.mainheading}>Wallet</Text>
           <View style={styles.card}>
             <Text style={styles.balance}>Balance</Text>
-            <Text style={styles.amount}>5000.00</Text>
+            <View style={styles.walletstyle}>
+                <Image
+                    source = {require('./../assets/wallet.png')}
+                    style = {styles.walletImage}>
+                </Image>
+                
+                <Text style = {styles.amount}>
+                    {walletamount}.00
+                </Text>
+            </View>
           </View>
         </View>
         <View style={{ width: "100%", alignItems: "center" }}>
@@ -113,25 +128,44 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "lightgrey",
     width: "100%",
-    height: 64,
     marginTop: 26,
+    justifyContent:"flex-start"
   },
   balance: {
     fontFamily: "Nunito-Bold",
-    fontSize: 16,
-    paddingLeft: 10,
-    paddingTop: 10,
-    marginBottom: 9,
+    fontSize: 18,
+    marginLeft: 16,
+    marginTop: 8,
+    marginBottom: 8,
   },
   amount: {
-    paddingLeft: 10,
-    fontFamily: "Nunito-Regular",
+    fontSize: 14,
+    textAlign: 'left',
+    marginLeft: 16,
+    marginRight: 16,
+    marginTop: 8,
+    color: 'black',
+    fontFamily:"Nunito-Light",
+    justifyContent:"flex-start"
   },
   receipt: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 24,
     color: "#263238",
     margin: 16,
+  },
+  walletstyle:{
+    flexDirection:"row",
+    justifyContent:"flex-start",
+    marginBottom: 16,
+    alignItems:"center",
+  },
+  walletImage:{
+      height:24,
+      width:24,
+      marginLeft:16,
+      marginTop: 8,
+      justifyContent:"flex-start"
   },
 });
 export default Wallet2;

@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    height: 175,
+    flex:1,
+    justifyContent:"flex-start",
     width: "100%",
   },
   image: {
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection:"row",
     justifyContent:"space-between",
-    
+    alignItems:"center",
     borderRadius: 16
   },
   requester:{
@@ -109,6 +110,9 @@ const styles = StyleSheet.create({
     position:"relative",
     marginTop: 8,
     marginLeft: 8,
+    marginBottom: 8,
+    width: "70%",
+    justifyContent:"flex-start"
   },
   rate:{
     fontFamily: "Nunito-Regular",
@@ -125,6 +129,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderTopColor: "#D8D8D8",
     borderTopWidth: 1,
+    marginBottom:8,
   },
   
 });
