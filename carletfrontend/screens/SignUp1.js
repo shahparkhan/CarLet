@@ -15,10 +15,6 @@ const Signup = ({ navigation }) => {
 
   let l = "";
 
-  
-
-  
-
   const nameHandler = (e) => {
     setName(e);
   };

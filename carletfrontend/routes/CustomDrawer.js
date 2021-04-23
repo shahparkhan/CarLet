@@ -1,11 +1,89 @@
 
-import React,{Component, useState, useEffect, useLayoutEffect, useContext} from 'react';
-import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView} from 'react-native';
+import React,{Component,useEffect,useState,useLayoutEffect, useContext} from 'react';
+import { StyleSheet, Text, View, TouchableHighlight,TouchableOpacity,Image,ScrollView, Modal} from 'react-native';
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList,DrawerActions } from 'react-navigation-drawer';
 import { Entypo,MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { Icon } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Context from './../shared/context'
+import Context from './../shared/context';
+import { FlatList } from 'react-native-gesture-handler';
+
+
+
+
+const ModalPopUp = ({visible,children}) =>{
+    const [showModal, setShowModal] = useState(visible)
+
+    useEffect(() => {
+        toggleModal();
+    }, [visible])
+    const toggleModal = () =>{
+        if (visible){
+            setShowModal(true)
+        }
+        else{
+            setShowModal(false)
+        }
+    }
+    return(
+        <Modal transparent visible={showModal} >
+            <View style = {styles.modalBackground}>
+                <View style = {styles.modalContainer}>
+                    {children}
+                </View>
+            </View>
+        </Modal>
+    )
+}
+
+
+export default function ContentContainer( {navigation} ){
+    const [visible,setVisible] = useState(false);
+    const [image,setImage] = useState(null);
+
+    useEffect(()=>
+    {
+        async function fetchData(){
+            if (Platform.OS !== 'web')
+            {
+                try {
+                    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                    if ( status !== `granted`)
+                    {
+                        alert('Permission denied!')
+                    }
+                } catch (error) {
+
+                }
+                
+            }
+        }
+        fetchData()
+    },[])
+
+    const PickImage = async () =>{
+        try {
+            let result  = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing:true,
+                aspect:[4,3],
+                quality:1,
+                base64:true,
+            })
+            // console.log("rrr", result)
+            setImage(`data:image/jpeg;base64,${result.base64}`)
+            if (!result.cancelled)
+            {
+                // setImage(result.uri)
+            }
+        } catch (error) {
+            console.log("bc", error)
+        }
+        
+        
+    }
+
 
 
 export default function ContentContainer( {navigation} ){
@@ -56,31 +134,42 @@ export default function ContentContainer( {navigation} ){
         navigation.navigate("Welcome")
     }
 
-    // const profilepicture = async () => {
-    //     try {
-    //         pic = await AsyncStorage.getItem('@profilepicture')
-    
-    //     } catch (e) {
-    //         console.log("loggedout error: ", e)
-    //     }
-
-    //     return {uri:pic}
-    // }
 
     return(
         <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
             <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
-                <View style = {{justifyContent:"flex-start", backgroundColor:"#ffc107"}}>
+
+                <View style = {{height:178, backgroundColor:"#ffc107"}}>
+                    <ModalPopUp visible = {visible}>
+                        <View style = {{alignItems:'center'}}>
+                            <View style = {styles.header}>
+                                <TouchableOpacity onPress = {()=>setVisible(false)}>
+                                <Image source = {require("./../assets/cancel.png")} style = {{height:15,width:15}} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style = {{alignItems:'center'}}>
+                        <Image source={profilepic} style = {{height:150,width:150,marginVertical:10,borderRadius:50}}/>
+                        </View>
+
+                        <TouchableOpacity onPress = {PickImage}>
+                            <Text style = {{textAlign:'center',position:'relative',fontFamily:"Nunito-SemiBold",
+                            fontSize: 14,}}>
+                                Upload new photo
+                            </Text>
+                        </TouchableOpacity>
+                    </ModalPopUp>
+                    <TouchableOpacity onPress = {()=> setVisible(true) }>
                     <Image source={profilepic} style = {styles.imageStyle}/>
+                    </TouchableOpacity>
                     <Text style = {styles.name}>
-                        {profilename}
+                      {profilename}
                     </Text>
                 </View>
                 <ScrollView>
                     
-
-                    
-                    <TouchableOpacity onPress = {() => {console.log("pressed")}}>
+                    {/* // navigation.navigate("AccountSettings") */}
+                    <TouchableOpacity onPress = {() => navigation.navigate("AccountSettings")}>
                         <View style = {styles.optionStyle} >
                             <MaterialIcons name="settings" size={24} color="black" style={styles.testIcon}/>
                             <Text style = {styles.testText}> Account Settings </Text >
@@ -117,6 +206,27 @@ const styles = StyleSheet.create({
         flex:1, 
         flexDirection: 'row', 
         'marginTop': 25
+    },
+
+    modalBackground:{
+        flex:1,
+        backgroundColor:"rgba(0,0,0,0.2)",
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    modalContainer:{
+        width:'80%',
+        backgroundColor:"white",
+        paddingHorizontal:20,
+        paddingVertical:30,
+        borderRadius:20,
+        elevation:20,
+    },
+    header:{
+        width:'100%',
+        height:10,
+        alignItems:"flex-end",
+        justifyContent:"center"
     },
 
     drawerTransparent: {
