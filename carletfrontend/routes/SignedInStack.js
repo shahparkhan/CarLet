@@ -49,6 +49,7 @@ import RegisterVehicle1 from "./../screens/RegisterVehicle1";
 import RegisterVehicle2 from "./../screens/RegisterVehicle2";
 import RegisterVehicle3 from "./../screens/RegisterVehicle3";
 import RegisterVehicle4 from "./../screens/RegisterVehicle4";
+import RegisterVehicle5 from "./../screens/RegisterVehicle5";
 import Wallet1 from "./../screens/Wallet1";
 import Wallet2 from "./../screens/Wallet2";
 import Wallet3 from "./../screens/Wallet3";
@@ -471,6 +472,15 @@ const signedin = {
   },
   RegisterVehicle4: {
     screen: RegisterVehicle4,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  RegisterVehicle5: {
+    screen: RegisterVehicle5,
     navigationOptions: ({ navigation }) => {
       return {
         headerLeft: () => null,

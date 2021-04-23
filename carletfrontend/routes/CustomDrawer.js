@@ -132,7 +132,6 @@ export default function ContentContainer({ navigation }) {
           <Text style={styles.name}>{profilename}</Text>
         </View>
         <ScrollView>
-          {/* // navigation.navigate("AccountSettings") */}
           <TouchableOpacity onPress={() => navigation.navigate("AccountMenu")}>
             <View style={styles.optionStyle}>
               <MaterialIcons
