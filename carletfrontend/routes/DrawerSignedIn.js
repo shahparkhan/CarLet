@@ -2,7 +2,7 @@ import React from 'react';
 import { createDrawerNavigator, DrawerItem,DrawerContentScrollView,DrawerItemList } from 'react-navigation-drawer';
 import { createAppContainer } from 'react-navigation';
 import HomeStack from './HomeStack';
-import {StyleSheet, View, SafeAreaView,Image,ScrollView} from 'react-native';
+import {StyleSheet, View, SafeAreaView,Image,ScrollView,Modal} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 //import { Header } from 'react-native/Libraries/NewAppScreen';
 import { Container, Content, Text, Header, Left, Body, Title, Right, Icon } from 'native-base';
