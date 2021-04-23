@@ -224,6 +224,7 @@ const signedin = {
     },
   },
 
+
   EditVehicle: {
     screen: EditVehicle,
     navigationOptions: ({ navigation }) => {

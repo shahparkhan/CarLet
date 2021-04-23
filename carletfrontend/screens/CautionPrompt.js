@@ -31,6 +31,8 @@ export default function CautionPrompt({navigation}) {
             
         } catch (error) {
             console.error('server error: ', error);
+            navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+
             
         }
 
