@@ -10,6 +10,7 @@ from django.core.files.base import ContentFile
 from django.contrib.gis.geos import *
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -347,7 +348,11 @@ class VehicleRegistration(APIView):
         vehicle_picture3 = request.data.get('vehicle_picture3')
         vehicle_picture4 = request.data.get('vehicle_picture4')
         vehicle_picture5 = request.data.get('vehicle_picture5')
-        
+        street_address = request.data.get('street_address')
+        city = request.data.get('city')
+        latitude = request.data.get('latitude')
+        longitude = request.data.get('longitude')
+        point_location = Point(latitude,longitude)
         
         reg_papers = base64_to_image(request.data.get('reg_papers'))
         insurance_papers = base64_to_image(request.data.get('insurance_papers'))
@@ -373,6 +378,7 @@ class VehicleRegistration(APIView):
                 vehicle_detail.save()
                
             vehicle_doc = VehicleDocument.objects.create(vehicledoc_id = vehicle_detail, reg_papers=reg_papers, insurance_papers=insurance_papers, tracker_papers=tracker_papers)
+            vehicle_loc = VehicleLocation.objects.create(vehicleloc_id= vehicle_detail, vehicle_street_address= street_address, vehicle_city= city, point_location=point_location)
             return Response({"Success": "Vehicle Registration Successful"})
         
         except:
@@ -389,6 +395,23 @@ class VehicleDetailValidation(APIView):
         else:
             return Response({"Success": "Valid license plate number"})
 
+class GetProfileInfo(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        user_id = request.data.get('user_id')
+        try:
+            carlet_user = CarletUser.objects.get(pk=user_id)
+            user_doc = UserDocument.objects.get(user_doc_id=carlet_user)
+            wallet = Wallet.objects.get(pk=carlet_user)
+            resp = {}
+            resp["Success"] = ""
+            resp["amount"] = wallet.amount
+            resp["picture"] = path_splitting(user_doc.picture.path)
+            resp["name"] = carlet_user.user.first_name + " " + carlet_user.user.last_name
+            return Response(resp)
+        except: 
+            return Response({"Error": "An error occured"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProfileAccountSetting(APIView):
     
@@ -475,75 +498,76 @@ class VehicleSetting(APIView):
                 vehicle_name = request.data.get("vehicle_name")
                 vehicle.vehicle_name = vehicle_name
                 vehicle.save()
-                return Response({"Success": "Vehicle name updated"})
+                #return Response({"Success": "Vehicle name updated"})
             
             if attribute == "vehicle_model":
                 vehicle_model = request.data.get("vehicle_model")
                 vehicle.vehicle_model = vehicle_model
                 vehicle.save()
-                return Response({"Success": "Vehicle model updated"})
+                #return Response({"Success": "Vehicle model updated"})
 
             if attribute == "vehicle_type":
                 vehicle_type = request.data.get("vehicle_type")
                 vehicle.vehicle_type = vehicle_type
                 vehicle.save()
-                return Response({"Success": "Vehicle type updated"})
+                #return Response({"Success": "Vehicle type updated"})
             
             if attribute == "rate":
                 daily_rate = request.data.get("rate")
                 vehicle.daily_rate = daily_rate
                 vehicle.save()
-                return Response({"Success": "Vehicle rate updated"})
+                #return Response({"Success": "Vehicle rate updated"})
 
             if attribute == "vehicle_picture1":
                 vehicle_picture1 = base64_to_image(request.data.get("vehicle_picture1"))
                 vehicle.vehicle_picture1 = vehicle_picture1
                 vehicle.save()
-                return Response({"Success": "Vehicle picture1 updated"})
+                #return Response({"Success": "Vehicle picture1 updated"})
             
             
             if attribute == "vehicle_picture2":
                 vehicle_picture2 = base64_to_image(request.data.get("vehicle_picture2"))
                 vehicle.vehicle_picture2 = vehicle_picture2
                 vehicle.save()
-                return Response({"Success": "Vehicle picture2 updated"})
+                #return Response({"Success": "Vehicle picture2 updated"})
             
             if attribute == "vehicle_picture3":
                 vehicle_picture3 = base64_to_image(request.data.get("vehicle_picture3"))
                 vehicle.vehicle_picture3 = vehicle_picture3
                 vehicle.save()
-                return Response({"Success": "Vehicle picture3 updated"})
+                #return Response({"Success": "Vehicle picture3 updated"})
             
             if attribute == "vehicle_picture4":
                 vehicle_picture4 = base64_to_image(request.data.get("vehicle_picture4"))
                 vehicle.vehicle_picture4 = vehicle_picture4
                 vehicle.save()
-                return Response({"Success": "Vehicle picture4 updated"})
+                #return Response({"Success": "Vehicle picture4 updated"})
             
             if attribute == "vehicle_picture5":
                 vehicle_picture5 = base64_to_image(request.data.get("vehicle_picture5"))
                 vehicle.vehicle_picture5 = vehicle_picture5
                 vehicle.save()
-                return Response({"Success": "Vehicle picture5 updated"})
+                #return Response({"Success": "Vehicle picture5 updated"})
                 
             if attribute == "reg_papers":
                 reg_papers = request.data.get('reg_papers')
                 vehicle_documents.reg_papers = reg_papers
                 vehicle_documents.save()
-                return Response({"Success": "Registration papers updated"})
+                #return Response({"Success": "Registration papers updated"})
             
             if attribute == "insurance_papers":
                 insurance_papers = request.data.get('insurance_papers')
                 vehicle_documents.insurance_papers = insurance_papers
                 vehicle_documents.save()
-                return Response({"Success": "Insurance papers updated"})
+                #return Response({"Success": "Insurance papers updated"})
             
             if attribute == "tracker_papers":
                 tracker_papers = request.data.get('tracker_papers')
                 vehicle_documents.tracker_papers = tracker_papers
                 vehicle_documents.save()
-                return Response({"Success": "Tracker papers updated"})
-
+                #return Response({"Success": "Tracker papers updated"})
+        
+        return Response({"Success":"Update successful"})
 
 
 class TripHistory(APIView):
@@ -606,3 +630,84 @@ class TripHistory(APIView):
             history["from_you"] = "No cars owned by you"
 
         return Response(history)
+
+
+class RetreiveProfilePicture(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self,request, pk, format=None):
+        carlet_id = uuid.UUID(pk)
+        carlet_user = CarletUser.objects.get(pk=carlet_id)
+        user_doc = UserDocument.objects.get(user_doc_id=carlet_user)
+        try:
+            image_path = path_splitting(user_doc.picture.path)
+            return Response({"Success": image_path})
+        except:
+            return Response({"Error": "No image found"}, status = status.HTTP_400_BAD_REQUEST)
+
+# class RedeemWallet(APIView):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
+
+class DisplayVehiclePictures(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk, format=None):
+        picture_count = 2
+        vehicle_id = uuid.UUID(pk)
+        vehicle = VehicleDetail.objects.get(vehicle_id=vehicle_id)
+        pic1 = path_splitting(vehicle.vehicle_picture1.path)
+        pic2 = path_splitting(vehicle.vehicle_picture2.path)
+        pic3 = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU'
+        pic4 = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU'
+        pic5 = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU'
+        
+        try:
+            pic3 = path_splitting(vehicle.vehicle_picture3.path)
+            picture_count = picture_count + 1
+        except:
+            pass
+        try:
+            pic4 = path_splitting(vehicle.vehicle_picture4.path)
+            picture_count = picture_count + 1
+        except:
+            pass
+        try:
+            pic5 = path_splitting(vehicle.vehicle_picture5.path)
+            picture_count = picture_count + 1
+        except:
+            pass
+        
+        resp = [pic1,pic2,pic3,pic4,pic5]
+        return Response({"Success": resp, "count": picture_count})
+
+
+class RemoveVehicleForRent(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def patch(self,request,pk, format=None):
+        pk = uuid.UUID(pk)
+        vehicle = VehicleDetail.objects.get(pk=pk)
+        vehicle.put_up_for_rent = False
+        vehicle.save()
+        return Response({"Success": "Vehicle is not up for rent"})
+
+class RedeemAmount(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk, format=None):
+        pk = uuid.UUID(pk)
+        carlet_user = CarletUser.objects.get(pk=pk)
+        user_wallet = Wallet.objects.get(user=carlet_user)
+        redeem_amount = int(request.data.get('redeem_amount'))
+
+        if user_wallet.amount < redeem_amount:
+            return Response({"Error": "You do not have sufficient funds in wallet"})
+        else:
+            user_wallet.redeem_amount = redeem_amount
+            user_wallet.is_Redeemed = False
+            user_wallet.save()
+            return Response({"Success": "Your request has been rceieved to admin"})

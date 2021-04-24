@@ -129,6 +129,13 @@ class AdminWallet(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if obj.payment_approved == True:
             obj.amount = obj.payment_amount + obj.amount
+            obj.payment_amount = 0
+            obj.payment_approved = False
+        if obj.is_Redeemed == True:
+            obj.amount = obj.amount - obj.redeem_amount
+            obj.redeem_amount = 0
+            obj.is_Redeemed = False
+        
         super().save_model(request, obj, form, change)
 
 admin.site.register(UserDocument, AdminUserDocument)

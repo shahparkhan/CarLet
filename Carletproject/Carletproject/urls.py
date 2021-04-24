@@ -38,6 +38,10 @@ urlpatterns = [
     path('uservehicle/<str:pk>/', csrf_exempt(views.UserVehicleList.as_view())),
     path('vehiclesetting/<str:pk>/', csrf_exempt(views.VehicleSetting.as_view())),
     path('triphistory/<str:pk>/', csrf_exempt(views.TripHistory.as_view())),
+    path('profilepic/<str:pk>/', csrf_exempt(views.RetreiveProfilePicture.as_view())),
+    path('vehiclepictures/<str:pk>/', csrf_exempt(views.DisplayVehiclePictures.as_view())),
+    path('redeemamount/<str:pk>/', csrf_exempt(views.RedeemAmount.as_view())),
+    path('removefromrent/<str:pk>/', csrf_exempt(views.RemoveVehicleForRent.as_view())),
     
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

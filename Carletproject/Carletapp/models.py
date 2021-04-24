@@ -66,10 +66,6 @@ class VehicleLocation(models.Model):
     vehicleloc_id = models.OneToOneField(VehicleDetail, on_delete=models.CASCADE, primary_key=True, related_name='vehicleloc_id')
     vehicle_street_address = models.TextField(max_length = 300,blank = True, null = True)
     vehicle_city = models.CharField(max_length = 50,blank = True, null = True)
-    vehicle_state = models.CharField(max_length = 50,blank = True, null = True)
-    vehicle_zip = models.CharField(max_length = 50, blank = True, null = True)
-    vehicle_latitude = models.DecimalField(max_digits=19, decimal_places=4,blank = True, null = True)
-    vehicle_longitude = models.DecimalField(max_digits=19, decimal_places=4,blank = True, null = True)
     point_location = PointField(null=False, blank=False, srid=4326, verbose_name="vehicle_location", default= (0,0))
 
     def __str__(self):
@@ -119,6 +115,9 @@ class Wallet(models.Model):
     proof_of_payment = models.ImageField(blank = True, null = True, upload_to='proof_of_payment/')
     payment_amount = models.PositiveIntegerField(default=0)
     payment_approved = models.BooleanField(default=False)
+    redeem_amount = models.PositiveIntegerField(default=0)
+    is_Redeemed = models.BooleanField(default=False)
+
 
 
 # class Rating(models.Model):
