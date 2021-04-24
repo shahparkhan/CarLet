@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
+import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
 const RegisterVehicle2 = ({ navigation }) => {
   const [Rate, setRate] = useState("");
@@ -38,6 +39,7 @@ const RegisterVehicle2 = ({ navigation }) => {
 
   return (
     <View style={styles.view}>
+
       <View>
         <Text style={styles.mainHeading}>Register Vehicle</Text>
         <Text style={styles.error}>{Error}</Text>
@@ -52,13 +54,16 @@ const RegisterVehicle2 = ({ navigation }) => {
         <Text style={styles.heading}>Suggested Rate</Text>
         <Text style={styles.rate}>1200.00</Text>
 
-        <TouchableButton
+        
+      </View>
+      <TouchableButton
           title="NEXT"
           buttonposition={styles.buttonposition}
           onPress={validateInput}
         />
-      </View>
+      
     </View>
+   
   );
 };
 

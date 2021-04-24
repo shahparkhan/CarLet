@@ -18,6 +18,8 @@ import * as ImagePicker from 'expo-image-picker';
 const Wallet1 = ({ navigation }) => {
   const [TopupAmount, setTopupAmount] = useState("");
   const {walletamount} = useContext(Context)
+  const [Uploadmsg, setUploadmsg] = useState("");
+  const [image, setImage] = useState("")
 
   useEffect(()=>
     {
@@ -52,39 +54,8 @@ const Wallet1 = ({ navigation }) => {
             // console.log(result)
             if (!result.cancelled)
             {
-                // setImage(`data:image/jpeg;base64,${result.base64}`)
-                let myuuid
-                let mytoken
-                try {
-                  myuuid = await AsyncStorage.getItem('@useruuid')
-                  mytoken = await AsyncStorage.getItem('@mytoken')
-                } catch (e) {
-                  console.log("error: ", e)
-                }
-
-                const apiLink = 'http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/uploadreceipt/'
-                const apiBody = JSON.stringify({
-                  user_id: myuuid,
-                  proof_of_payment: `data:image/jpeg;base64,${result.base64}`
-                })
-
-                try {
-                  
-                  response = await fetch(apiLink,{
-                  method: 'post',
-                  mode: 'no-cors',
-                  headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'Authorization': `Token ${mytoken}`
-                  },
-                  body: apiBody
-                  })
-                  responseJson = await response.json()
-                  console.log('server response: ', responseJson)
-                  
-                } catch (error) {
-                }
+              setImage(`data:image/jpeg;base64,${result.base64}`)
+              setUploadmsg("Image Uploaded")  
             }
         } catch (error) {
             console.log("bc", error)
@@ -92,6 +63,48 @@ const Wallet1 = ({ navigation }) => {
         
         
     }
+
+  const submitHandler = async () => {
+    let myuuid
+    let mytoken
+    try {
+      myuuid = await AsyncStorage.getItem('@useruuid')
+      mytoken = await AsyncStorage.getItem('@mytoken')
+    } catch (e) {
+      console.log("error: ", e)
+    }
+
+    const apiLink = 'http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/uploadreceipt/'
+    const apiBody = JSON.stringify({
+      user_id: myuuid,
+      proof_of_payment: image
+    })
+    console.log("apibody", apiBody)
+
+    try {
+      
+      response = await fetch(apiLink,{
+      method: 'post',
+      mode: 'no-cors',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${mytoken}`
+      },
+      body: apiBody
+      })
+      responseJson = await response.json()
+      console.log('server response: ', responseJson)
+      if (responseJson['Success'] != undefined){
+            navigation.navigate('SuccessPrompt', {title: "Upload Receipt", body: "Your Receipt has been uploaded successfully! We will soon add the amount to your wallet."})
+      } else {
+            navigation.navigate('ErrorPrompt', {title: "Upload Receipt", body: "There was an error while uploading your receipt. Please try again later."})
+      }
+
+    } catch (error) {
+      navigation.navigate('ErrorPrompt', {title: "Generate Receipt", body: "There was an error while uploading your receipt. Please try again later."})
+    }
+  }
 
   const generateHandler = async () => {
     let myuuid
@@ -123,8 +136,14 @@ const Wallet1 = ({ navigation }) => {
       })
       responseJson = await response.json()
       console.log('server response: ', responseJson)
-      
+      if (responseJson['Success'] != undefined){
+            navigation.navigate('SuccessPrompt', {title: "Generate Receipt", body: "Your Receipt has been generated successfully! Please check you email."})
+      } else {
+            navigation.navigate('ErrorPrompt', {title: "Generate Receipt", body: "There was an error while generating your receipt. Please try again later."})
+      }
+
     } catch (error) {
+      navigation.navigate('ErrorPrompt', {title: "Generate Receipt", body: "There was an error while generating your receipt. Please try again later."})
     }
 
   }
@@ -218,10 +237,29 @@ const Wallet1 = ({ navigation }) => {
           />
         </View>
         <Text style={styles.upload}>Upload Receipt</Text>
-        <TouchableButton
-          title="UPLOAD"
-          onPress={PickImage}
-        />
+        <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+          <View>
+            <TouchableButton
+              title="UPLOAD"
+              onPress={PickImage}
+            />
+            <View style={styles.uploadmsg}>
+              <Text style={styles.greenText}>{Uploadmsg}</Text>
+            </View>
+          </View>
+          
+          <View>
+            <TouchableButton
+              title="SUBMIT"
+              onPress={submitHandler}
+              buttonposition={{marginLeft:16}}
+            />
+            <View style={styles.uploadmsg}>
+              <Text style={styles.greenText}></Text>
+            </View>
+          </View>
+        </View>
+        
       </View>
     </TouchableWithoutFeedback>
   );
@@ -302,6 +340,15 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
     
+  },
+  uploadmsg: {
+    flexDirection: "row",
+    
+    
+  },
+  greenText: {
+    fontFamily: "Nunito-Regular",
+    color: "green",
   },
 });
 export default Wallet1;

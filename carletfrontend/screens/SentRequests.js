@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, TouchableOpacity, Text } from "react-native";
+import { FlatList, TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import Card from "../assets/components/SentRequestCard";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -51,8 +51,25 @@ const SentRequests = ({navigation}) => {
       </TouchableOpacity>
     );
   };
-
-  return <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.trip_id}></FlatList>;
+  return(
+    <View>
+      <Text style={styles.heading}>Sent Requests</Text>
+      <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.trip_id}></FlatList>
+    </View>
+  )
 };
 
+const styles = StyleSheet.create({
+  heading: {
+    position: 'relative',
+    width:360,
+    marginTop: 32,
+    alignSelf: 'center',
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 34,
+    textAlign: 'center'
+  }
+})
+
 export default SentRequests;
+// return <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.trip_id}></FlatList>;

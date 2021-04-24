@@ -10,28 +10,13 @@ import {
 } from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const RegisterVehicle4 = ({ navigation }) => {
-  const [Pics, setPics] = useState([
-    {
-      uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
-    },
-    {
-      uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
-    },
-    {
-      uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
-    },
-    {
-      uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
-    },
-    {
-      uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
-    },
-  ]);
-  const [ImageCount, setImageCount] = useState(0);
+  const [Pics, setPics] = useState(navigation.getParam('result'));
+  const [ImageCount, setImageCount] = useState(navigation.getParam('image_count'));
   const [Error, setError] = useState("");
-
   const pickImage = async (index) => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -46,7 +31,7 @@ const RegisterVehicle4 = ({ navigation }) => {
         let pics = [...Pics];
         pics[index] = { uri: `data:image/jpeg;base64,${result.base64}` };
         setPics([...pics]);
-        setImageCount(ImageCount + 1);
+        setImageCount((state) => state + 1);
       }
     } catch (error) {
       console.log("bc", error);
@@ -54,11 +39,19 @@ const RegisterVehicle4 = ({ navigation }) => {
   };
 
   const deleteimage = (index) => {
-    let pics = [...Pics];
-    pics[index] = {
-      uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
-    };
-    setPics(pics);
+    if (index === 0 || index === 1) {
+      Alert.alert(
+        "You cannot delete the first two images."
+      )
+    } else {
+      let pics = [...Pics];
+      pics[index] = {
+        uri: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU`,
+      };
+      setPics(pics);
+      setImageCount((state) => state - 1);
+      }
+    
   };
 
   const deleteAlert = (index) => {
@@ -86,11 +79,78 @@ const RegisterVehicle4 = ({ navigation }) => {
     );
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (ImageCount < 2) {
       setError("Please upload atleast 2 images");
     } else {
       setError("");
+      let apiBody = {}
+      let pics = [...Pics];
+      for (let i = 0; i < 5;i++){
+        console.log(pics[i].uri[0])
+        if (pics[i].uri[0] === 'd'){
+          if (i === 0) {
+            apiBody.vehicle_picture1 = pics[i].uri
+          } else if (i === 1) {
+            apiBody.vehicle_picture2 = pics[i].uri
+          } else if (i === 2) {
+            apiBody.vehicle_picture3 = pics[i].uri
+          } else if (i === 3) {
+            apiBody.vehicle_picture4 = pics[i].uri
+          } else if (i === 4) {
+            apiBody.vehicle_picture5 = pics[i].uri
+          }
+        } else if (pics[i].uri === 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfGtQCsunk92AAglsdBR7b_9Ghs9kI6HAvVYixOOau-ZUUkLph61rUbiIlKxaQMOtbSzg&usqp=CAU'){
+          if (i === 0) {
+            apiBody.vehicle_picture1 = ""
+          } else if (i === 1) {
+            apiBody.vehicle_picture2 = ""
+          } else if (i === 2) {
+            apiBody.vehicle_picture3 = ""
+          } else if (i === 3) {
+            apiBody.vehicle_picture4 = ""
+          } else if (i === 4) {
+            apiBody.vehicle_picture5 = ""
+          }
+        }
+      }
+
+      // console.log("apiBody ", apiBody)
+
+      let mytoken
+
+      try{
+          mytoken = await AsyncStorage.getItem("@mytoken")
+      } catch (e) {
+          console.log("error ", e)
+      }
+      console.log('api req')
+      let vehicle_id =  navigation.getParam('vehicle_id')
+      console.log("vehicleid ", vehicle_id)
+      
+      try {
+
+          response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/vehiclesetting/${vehicle_id}/`,{
+          method: 'patch',
+          mode: 'no-cors',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${mytoken}`
+          },
+          body: JSON.stringify(apiBody)
+          })
+          responseJson = await response.json()
+          console.log('server response: ', responseJson)
+          if (responseJson['Success'] != undefined){
+              navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
+          } else {
+              navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+          }
+          
+      } catch (error) {
+        navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+      }
     }
   };
 
@@ -131,7 +191,7 @@ const RegisterVehicle4 = ({ navigation }) => {
             <Image source={Pics[3]} style={styles.imagestyle} />
           </Pressable>
           <Pressable
-            onLongPress={() => deleteimage(4)}
+            onLongPress={() => deleteAlert(4)}
             onPress={() => pickImage(4)}
           >
             <Image source={Pics[4]} style={styles.imagestyle} />
@@ -140,7 +200,7 @@ const RegisterVehicle4 = ({ navigation }) => {
       </View>
 
       <TouchableButton
-        title="DONE"
+        title="SUBMIT"
         onPress={onSubmit}
         buttonposition={styles.buttonposition}
       />

@@ -26,67 +26,68 @@ export default function EditProfile( {navigation} ) {
     }
 
     
-    const validateInput = async () =>
-    {
-        if (Nic === ``)
-        {
+    const validateInput = async () => {
+        let mytoken
+        let myuuid
 
-        } 
-        else {
-            let phonedigits = phonenumber.split("")
-            const phonewithcode = "+92" + phonedigits.slice(1,phonedigits.length).join("")
+        try{
+            mytoken = await AsyncStorage.getItem("@mytoken")
+            myuuid = await AsyncStorage.getItem("@useruuid")
+        } catch (e) {
+            console.log("error ", e)
+        }
+        console.log("uuid ", myuuid)
+        console.log("token ", mytoken)
+        
+        let apiBody = {}
+        if (name === "" && number === ""){
+            seterror(true)
+            seterrorMsg("Please fill a field before pressing update button.")
+        } else if (number[0] != "+" || number[1] != "9" || number[2] != "2") {
+            seterror(true)
+            seterrorMsg("Please fill the number field with +92 country code")
+        } else {
 
+            seterror(false)
+            seterrorMsg("")
 
-            console.log("ALl GOOD!");
-      
-            const details = {
-                name: name,
-                phone_number: phonedigits,
-
+            if (name != "" && number != ""){
+                apiBody.name = name
+                apiBody.phone_number = number.replace("0", "+92")
+            } else if (name != ""){
+                apiBody.name = name
+            } else if (number != ""){
+                apiBody.phone_number = number.replace("0", "+92")
             }
-
-            const validationDetails = JSON.stringify({
-                nic: Nic,
-            })
-            
-            let mytoken = ''
+            console.log("number: ", apiBody)
 
             try {
-                mytoken = await AsyncStorage.getItem('@mytoken')
-            
-            } catch (error) {
-                console.error('Failed to get token: ', error)
-            }
 
-
-            try {
-                let response = await fetch('https://carlet.pythonanywhere.com/uservalidation/',{
-                method: 'post',
+                
+                response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/accountsetting/${myuuid}/`,{
+                method: 'patch',
                 mode: 'no-cors',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${mytoken}`
                 },
-                body: validationDetails
+                body: JSON.stringify(apiBody)
                 })
-                let responseJson = await response.json()
+
+                responseJson = await response.json()
                 console.log('server response: ', responseJson)
-                
-                if (responseJson.nic === "This NIC number is already registered"){
-                    seterrorMsg("This NIC number is already registered");
-                    seterror(true);
+                if (responseJson['Success'] != undefined){
+                    navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
                 } else {
-                    navigation.navigate("Register2", {params: details})
+                    navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
                 }
-
+                
             } catch (error) {
-                console.error('server error: ', error);
-                seterrorMsg("Server error. Please try again");
-                seterror(true);
+                navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
             }
-
-        }
+            
+        } 
 
     }
 
@@ -115,7 +116,7 @@ export default function EditProfile( {navigation} ) {
                 Enter new phone number
             </Text>
             <TextField
-                placeholder={"Phone number"}
+                placeholder={"example: +923331234123"}
                 style={{
                     position: "relative",
                     marginTop: 16,
@@ -123,6 +124,7 @@ export default function EditProfile( {navigation} ) {
                 }}
                 changeHandler={NumberHandler}
                 secureTextEntry={false}
+                keyboardType={"phone-pad"}
             />
 
             <Image
@@ -208,6 +210,7 @@ const styles = StyleSheet.create({
         color: "tomato",
         alignSelf: "center",
         position: "relative",
-        marginTop: 16
+        marginTop: 16,
+        marginBottom: 16
     }
 })

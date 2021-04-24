@@ -28,8 +28,7 @@ export default function ChangePassword( {navigation} ) {
     
     const validateInput = async () =>
     {
-        if (password === `` || confirmPassword == ``)
-        {
+        if (password === `` || confirmPassword == ``) {
             seterror(true);
             seterrorMsg(`Some fields are empty`);
             
@@ -43,22 +42,60 @@ export default function ChangePassword( {navigation} ) {
                 field2 = "red"
             } 
             setborderColor([field1, field2])
-        }
-        else if (password != confirmPassword) {
+        } else if (password != confirmPassword) {
             seterror(true);
             setborderColor(["red","red"]);
             seterrorMsg(`Passwords don't match`);
-          } else if (password.length < 8) {
+        } else if (password.length < 8) {
 
             seterror(true);
             seterrorMsg("Password should be eight characters long");
             setborderColor(["red", "red"]);
       
-          } else {
+        } else {
             seterrorMsg("");
             seterror(false);
             setborderColor(["black", "black"]);
-          }
+
+            let mytoken
+            let myuuid
+
+            try{
+                mytoken = await AsyncStorage.getItem("@mytoken")
+                myuuid = await AsyncStorage.getItem("@useruuid")
+            } catch (e) {
+                console.log("error ", e)
+            }
+
+            try {
+
+                const apiBody = JSON.stringify({
+                    password: password
+                })
+      
+                response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/accountsetting/${myuuid}/`,{
+                method: 'patch',
+                mode: 'no-cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${mytoken}`
+                },
+                body: apiBody
+                })
+                responseJson = await response.json()
+                console.log('server response: ', responseJson)
+                if (responseJson['Success'] != undefined){
+                    navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
+                } else {
+                    navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+                }
+                
+            } catch (error) {
+                navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+            }
+            
+        }
         
 
     }

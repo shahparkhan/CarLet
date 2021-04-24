@@ -46,10 +46,10 @@ export default function Register1( {navigation} ) {
                 base64:true,
             })
             // console.log("rrr", result)
-            setImage(`data:image/jpeg;base64,${result.base64}`)
             if (!result.cancelled)
             {
-                // setImage(result.uri)
+                setImage(`data:image/jpeg;base64,${result.base64}`)
+
             }
         } catch (error) {
             console.log("bc", error)
@@ -62,63 +62,78 @@ export default function Register1( {navigation} ) {
         if (image === null)
         {
 
-            seterrorMsg(`Please upload NIC picture`);
+            seterrorMsg(`Please upload document picture`);
             console.log("Pic not uploaded");
             seterror(true);
             
         } 
         else {
 
-            console.log("ALl GOOD!");      
             seterrorMsg("");
             seterror(false);
 
-            const details = {
-                nicPicture: image,
-            }
-
+            
+            let apiBody
             // console.log("forward this: ", details)
-
-            const validationDetails = JSON.stringify({
-                nic: Nic,
-            })
-            
-            let mytoken = ''
-
-            try {
-                mytoken = await AsyncStorage.getItem('@mytoken')
-            
-            } catch (error) {
-                console.error('Failed to get token: ', error)
-            }
-
-
-            try {
-                let response = await fetch('https://carlet.pythonanywhere.com/uservalidation/',{
-                method: 'post',
-                mode: 'no-cors',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${mytoken}`
-                },
-                body: validationDetails
+            if (navigation.getParam('title') === 'Vehicle Registration Docs') {
+                console.log("here1")
+                apiBody = JSON.stringify({
+                    reg_papers: image,
                 })
-                let responseJson = await response.json()
-                console.log('server response: ', responseJson)
-                
-                if (responseJson.nic === "This NIC number is already registered"){
-                    seterrorMsg("This NIC number is already registered");
-                    seterror(true);
-                } else {
-                    navigation.navigate("Register2", {params: details})
-                }
-
-            } catch (error) {
-                console.error('server error: ', error);
-                seterrorMsg("Server error. Please try again");
-                seterror(true);
             }
+
+            if (navigation.getParam('title') === 'Vehicle Insurance Docs') {
+                console.log("here2")
+                apiBody = JSON.stringify({
+                    insurance_papers: image,
+                })
+            }
+
+            if (navigation.getParam('title') === 'Vehicle Tracker Docs') {
+                console.log("here3")
+                apiBody = JSON.stringify({
+                    tracker_papers: image,
+                })
+            }
+
+            
+            if (apiBody != {}) {
+                let mytoken = ''
+
+                try {
+                    mytoken = await AsyncStorage.getItem('@mytoken')
+                
+                } catch (error) {
+                    console.error('Failed to get token: ', error)
+                }
+                let vehicle_id =  navigation.getParam('vehicle_id')
+    
+                try {
+                    response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/vehiclesetting/${vehicle_id}/`,{
+                    method: 'patch',
+                    mode: 'no-cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${mytoken}`
+                    },
+                    body: apiBody
+                    })
+                    responseJson = await response.json()
+                    console.log('server response: ', responseJson)
+                    
+                    if (responseJson['Success'] != undefined){
+                        navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
+                    } else {
+                        navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+                    }
+    
+                } catch (error) {
+                    navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
+                }
+    
+            }
+            
 
         }
 
@@ -136,7 +151,7 @@ export default function Register1( {navigation} ) {
                 {navigation.getParam('subheading')}
             </Text>
             <Text style = {styles.key}>
-                doc snaps 
+                {navigation.getParam('title')} Picture
             </Text>
             <TouchableButton
                 title="UPLOAD"
@@ -181,12 +196,12 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     subheading:{
+        width:"80%",
         left:16,
         position:'relative',
         marginTop:16,
         fontFamily:"Nunito-SemiBold",
         fontSize: 24,
-        width:win.width
     },
     key:{
         fontFamily:"Nunito-Regular",
@@ -194,7 +209,8 @@ const styles = StyleSheet.create({
         position:'relative',
         left:16,
         marginTop: 52,
-
+        width:"50%",
+        justifyContent:"flex-start"
     },
 
     smallcar : {

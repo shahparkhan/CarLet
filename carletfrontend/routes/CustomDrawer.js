@@ -27,7 +27,7 @@ const ModalPopUp = ({ visible, children }) => {
     } else {
       setShowModal(false);
     }
-
+  }
     return(
         <Modal transparent visible={showModal} >
             <View style = {styles.modalBackground}>
@@ -149,12 +149,7 @@ export default function ContentContainer( {navigation} ){
                 <ScrollView>
                     
                     {/* // navigation.navigate("AccountSettings") */}
-                    <TouchableOpacity onPress = {() => navigation.navigate("AccountSettings")}>
-                        <View style = {styles.optionStyle} >
-                            <MaterialIcons name="settings" size={24} color="black" style={styles.testIcon}/>
-                            <Text style = {styles.testText}> Account Settings </Text >
-                        </View>
-                    </TouchableOpacity>
+                    
 
                     <TouchableOpacity onPress = {() => navigation.navigate("RentRequests")}>
                         <View style = {styles.optionStyle} >
@@ -189,7 +184,12 @@ export default function ContentContainer( {navigation} ){
                         </View>
                     </TouchableOpacity>
 
-
+                    <TouchableOpacity onPress = {() => navigation.navigate("AccountMenu")}>
+                        <View style = {styles.optionStyle} >
+                            <MaterialIcons name="settings" size={24} color="black" style={styles.testIcon}/>
+                            <Text style = {styles.testText}> Account Settings </Text >
+                        </View>
+                    </TouchableOpacity>
 
                     <TouchableOpacity onPress = {logoutHandler}>
                         <View style = {styles.optionStyle} >
@@ -198,12 +198,16 @@ export default function ContentContainer( {navigation} ){
                         </View>
                     </TouchableOpacity>
 
+                    
+
 
                 </ScrollView>
             </TouchableOpacity>
         </TouchableOpacity>
     )
 }
+
+
 
 const styles = StyleSheet.create({
 
@@ -290,5 +294,5 @@ const styles = StyleSheet.create({
         marginLeft:16,
         marginTop: 8,
         justifyContent:"flex-start"
-    }
+    },
 })

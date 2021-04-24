@@ -3,12 +3,14 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import { Rating } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Card = ({ title, model }) => {
+const Card = ({ title, model,rate, status }) => {
   return (
     <View style={styles.shadow}>
         <View style={styles.card}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.model}>{model}</Text>
+            <Text style={styles.model}>Rate: {rate}/day</Text>
+            <Text style={styles.model}>Status: {status}</Text>
         </View>
     </View>
   );
@@ -53,14 +55,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#212121",
     marginRight: 23,
-    paddingLeft:8
+    paddingLeft:8,
+    marginTop: 8
   },
   model: {
     fontFamily: "Nunito-Regular",
     fontSize:16,
     alignSelf: "flex-start",
     flexDirection: "row",
-    paddingBottom: 10,
+    marginBottom:8, 
     paddingLeft: 8,
   },
 

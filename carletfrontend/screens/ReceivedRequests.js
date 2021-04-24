@@ -1,6 +1,9 @@
+import { View } from "native-base";
 import React from "react";
-import { FlatList, TouchableOpacity, Text } from "react-native";
+import { ScrollView } from "react-native";
+import { FlatList, TouchableOpacity, Text, StyleSheet } from "react-native";
 import Card from "../assets/components/ReceivedRequestCard";
+import RegisterStyles from "./RegisterStyles";
 
 
 const SentRequests = ({navigation}) => {
@@ -44,7 +47,25 @@ const SentRequests = ({navigation}) => {
     );
   };
 
-  return <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.trip_id}></FlatList>;
+  return (
+    <View>
+      <Text style={styles.heading}>Received Requests</Text>
+      <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.trip_id}></FlatList>
+    </View>
+  )
 };
 
+const styles = StyleSheet.create({
+  heading: {
+    position: 'relative',
+    width:360,
+    marginTop: 32,
+    alignSelf: 'center',
+    fontFamily: "Nunito-SemiBold",
+    fontSize: 34,
+    textAlign: 'center'
+  }
+})
+
 export default SentRequests;
+
