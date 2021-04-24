@@ -10,59 +10,16 @@ import {
 } from "react-native";
 import Card from "../assets/components/YourVehicleCard";
 
-const searchData = [
-  {
-    key: "1",
-    title: "Honda Civic",
-    model: "2018",
-  },
-  {
-    key: "2",
-    title: "Honda Civic",
-    model: "2020",
-  },
-  {
-    key: "3",
-    title: "Honda Civic",
-    model: "2018",
-  },
-  {
-    key: "4",
-    title: "Honda Civic",
-    model: "2020",
-  },
-  {
-    key: "5",
-    title: "Honda Civic",
-    model: "2018",
-  },
-  {
-    key: "6",
-    title: "Honda Civic",
-    model: "2020",
-  },
-  {
-    key: "7",
-    title: "Honda Civic",
-    model: "2018",
-  },
-  {
-    key: "8",
-    title: "Honda Civic",
-    model: "2020",
-  },
-];
-
 const YourVehicles = ({ navigation }) => {
-  const onPressHandler = async (title, model) => {
-    console.log(`as`);
-    navigation.navigate("EditVehicle", { title: title, model: model });
+  const searchData = navigation.getParam('result')
+  const onPressHandler = async (id, title, model) => {
+    navigation.navigate("EditVehicle", { title: title, model: model, vehicle_id: id });
   };
 
   const renderCard = ({ item, index, separators }) => {
     return (
-      <TouchableOpacity onPress={() => onPressHandler(item.title, item.model)}>
-        <Card key={item.key} title={item.title} model={item.model} />
+      <TouchableOpacity onPress={() => onPressHandler(item.vehicle_id, item.vehicle_name, item.vehicle_model)}>
+        <Card key={item.vehicle_id} title={item.vehicle_name} model={item.vehicle_model} rate={item.rate} status={item.status}/>
       </TouchableOpacity>
     );
   };
@@ -98,7 +55,7 @@ const YourVehicles = ({ navigation }) => {
         </View>
       </View>
       <Text style={styles.heading}>Your Vehicles</Text>
-      <FlatList data={searchData} renderItem={renderCard}></FlatList>
+      <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.vehicle_id}></FlatList>
       <Image
         style={styles.smallcar}
         source={require("./../assets/smallcar.png")}
@@ -113,8 +70,8 @@ const smallcarheight = win.height - 116;
 const styles = StyleSheet.create({
   heading: {
     position: "relative",
-    marginTop: 10,
-    width: 360,
+    marginTop: 16,
+    justifyContent:"flex-start",
     alignSelf: "center",
     fontFamily: "Nunito-SemiBold",
     fontSize: 34,

@@ -25,7 +25,7 @@ export default function Header1 ({navigation}){
         try {
             
       
-            response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/getwalletamount/',{
+            response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/getprofileinfo/',{
             method: 'post',
             mode: 'no-cors',
             headers: {
@@ -41,9 +41,21 @@ export default function Header1 ({navigation}){
             if (responseJson.Success != undefined){
                 
                 try {
-                  await AsyncStorage.setItem('@walletamount', (responseJson.amount).toString())
-                  actions({type:"setWalletamount", payload:(responseJson.amount).toString()})
+                    await AsyncStorage.setItem('@walletamount', (responseJson.amount).toString())
+                    actions({type:"setWalletamount", payload:(responseJson.amount).toString()})
                   
+                } catch (e) {
+                }
+                try {
+                    await AsyncStorage.setItem('@profilepicture', responseJson.picture)
+                    actions({type:"setProfilepic", payload:{uri:responseJson.picture}})
+                
+                } catch (e) {
+                }
+                try {
+                    await AsyncStorage.setItem('@profilename', responseJson.name)
+                    actions({type:"setProfilename", payload:responseJson.name})
+                
                 } catch (e) {
                 }
             } 

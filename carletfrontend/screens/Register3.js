@@ -174,9 +174,9 @@ export default function Register1( {navigation} ) {
                         },
                         body: details
                         })
-                        console.log('server response: ', response)
+                        // console.log('server response: ', response)
                         responseJson = await response.json()
-                        console.log('server response: ', responseJson)
+                        // console.log('server response: ', responseJson)
                         
                         if (responseJson['Error'] === "There was some error uploading your registration information. Please try again later"){
                             seterrorMsg("There was some error uploading your registration information. Please try again later");

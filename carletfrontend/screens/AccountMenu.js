@@ -1,13 +1,53 @@
-import React from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import React, {useContext} from "react";
+import { Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import Context from "./../shared/context";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AccountMenu = ({ navigation }) => {
+  const {profilename} = useContext(Context)
   const credentialHandler = () => {
-    navigation.navigate("EditProfile");
+    navigation.navigate("EditProfile", {title:"Edit Profile", successBody:"Your credentials have been updated successfully!", errorBody:"There was some error while updating your credentials. Please try again later."});
   };
   const passwordHandler = () => {
-    navigation.navigate("ChangePassword");
+    navigation.navigate("ChangePassword", {title:"Change Password", successBody:"Your password has been updated successfully!", errorBody:"There was some error while updating your password. Please try again later."});
   };
+
+  const vehicleHandler = async () => {
+
+    let mytoken
+    let myuuid
+    try{
+      mytoken = await AsyncStorage.getItem('@mytoken')
+      myuuid = await AsyncStorage.getItem('@useruuid')
+    } catch (e) {
+      console.log('error: ', e)
+    }
+
+    
+
+    try {
+        response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/uservehicle/${myuuid}/`,{
+        method: 'get',
+        mode: 'no-cors',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${mytoken}`
+        },
+        })
+
+        responseJson = await response.json()
+        console.log('server response: ', responseJson)
+        
+        if (responseJson['Success'] != undefined){
+          navigation.navigate("YourVehicles", {result: responseJson['Success']})
+        }
+        
+    } catch (error) {
+        console.log("error: ", error)
+    }
+    
+  }
 
   return (
     <View style={{ alignItems: "center" }}>
@@ -32,18 +72,19 @@ const AccountMenu = ({ navigation }) => {
             borderBottomColor: "lightgrey",
             borderBottomWidth: 1,
           }}
-          onTouchStart={() => navigation.navigate("YourVehicles")}
+          onTouchStart={vehicleHandler}
         >
           <TouchableOpacity>
             <Text style={styles.buttontext}>VEHICLE</Text>
           </TouchableOpacity>
         </View>
       </View>
-
-      <Text style={styles.heading}>HEADING</Text>
+     
+      <ScrollView contentContainerStyle={{alignItems:"center"}}>
+      <Text style={styles.heading}>{profilename}</Text>
 
       <View style={styles.optionbox}>
-        <TouchableOpacity onPress={passwordHandler} style={styles.touch}>
+        <TouchableOpacity onPress={credentialHandler} style={styles.touch}>
           <View style={styles.card}>
             <Text style={styles.text}>Edit Credentials</Text>
           </View>
@@ -53,7 +94,9 @@ const AccountMenu = ({ navigation }) => {
             <Text style={styles.text}>Edit Password</Text>
           </View>
         </TouchableOpacity>
+        
       </View>
+      </ScrollView>
     </View>
   );
 };
@@ -107,6 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     elevation: 2,
     borderRadius: 3,
+    
   },
 });
 

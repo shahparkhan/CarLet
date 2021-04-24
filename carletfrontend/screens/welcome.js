@@ -18,7 +18,7 @@ export default function Welcome({ navigation }) {
                 source={require('./../assets/YellowVector.png')}
             />
             <Text style = {styles.welcometext}>
-                Welcome
+                Welcome Screens!!!!
             </Text>
             <Text style = {styles.bodytext}>
                 Our tagline which we haven't thought of yet

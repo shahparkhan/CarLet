@@ -10,77 +10,75 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EditVehicleGeneral ( {navigation} ) {
     const [borderColor, setborderColor] = useState("black");
-    const [Nic,setNic] = useState(``)
+    const [item,setItem] = useState(``)
     const [errorMsg, seterrorMsg] = useState(``);
     const [error, seterror] = useState(false);
 
-    const NICHandler = (nic) => {
-        setNic(nic)
+    const itemHandler = (item) => {
+        setItem(item)
     }
 
     const validateInput = async () =>
     {
-        if (Nic === ``)
+        if (item === ``)
         {
             let field = "black"
             seterrorMsg(`Please input ${navigation.getParam('placeholder')}`);
-            console.log("NIC fields is empty");
+            console.log("item fields is empty");
             field = "red"
             seterror(true);
             setborderColor(field);   
         } 
         else {
-
-            console.log("ALl GOOD!");
+            console.log('button clicked')
+            let apiBody = {}
+            if (navigation.getParam('title') === 'Vehicle Name'){
+                apiBody.vehicle_name = item
+            } else if (navigation.getParam('title') === 'Vehicle Model'){
+                apiBody.vehicle_model = item
+            } else if (navigation.getParam('title') === 'Rental Rate'){
+                apiBody.rate = item
+            }
       
-            seterrorMsg("");
-            seterror(false);
-            setborderColor("black");
+            seterrorMsg("")
+            seterror(false)
+            setborderColor("black")
 
-            const details = {
-                nic: Nic,
-                nicPicture: image,
+            let mytoken
+
+            try{
+                mytoken = await AsyncStorage.getItem("@mytoken")
+            } catch (e) {
+                console.log("error ", e)
             }
-            const validationDetails = JSON.stringify({
-                nic: Nic,
-            })
+            console.log('api req')
+            let vehicle_id =  navigation.getParam('vehicle_id')
+            console.log("vehicleid ", vehicle_id)
             
-            let mytoken = ''
-
             try {
-                mytoken = await AsyncStorage.getItem('@mytoken')
-            
-            } catch (error) {
-                console.error('Failed to get token: ', error)
-            }
 
-
-            try {
-                let response = await fetch('https://carlet.pythonanywhere.com/uservalidation/',{
-                method: 'post',
+                console.log(JSON.stringify(apiBody))
+                response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/vehiclesetting/${vehicle_id}/`,{
+                method: 'patch',
                 mode: 'no-cors',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${mytoken}`
                 },
-                body: validationDetails
+                body: JSON.stringify(apiBody)
                 })
-                let responseJson = await response.json()
+                responseJson = await response.json()
                 console.log('server response: ', responseJson)
-                
-                if (responseJson.nic === "This NIC number is already registered"){
-                    seterrorMsg("This NIC number is already registered");
-                    seterror(true);
+                if (responseJson['Success'] != undefined){
+                    navigation.navigate('SuccessPrompt', {title: navigation.getParam('title'), body: navigation.getParam('successBody')})
                 } else {
-                    navigation.navigate("Register2", {params: details})
+                    navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
                 }
-
+                
             } catch (error) {
-                console.error('server error: ', error);
-                seterrorMsg("Server error. Please try again");
-                seterror(true);
             }
+            
         }
 
     }
@@ -104,7 +102,7 @@ export default function EditVehicleGeneral ( {navigation} ) {
                     left:16,
                     borderColor: borderColor,
                 }}
-                changeHandler={NICHandler}
+                changeHandler={itemHandler}
                 secureTextEntry={false}
             />
 

@@ -11,11 +11,48 @@ import {
 import TextField from "../assets/components/TextField";
 import TouchableButton from "../assets/components/TouchableButton";
 import Context from './../shared/context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Wallet2 = ({ navigation }) => {
   const [RedeemAmount, setRedeemAmount] = useState("");
   const {walletamount} = useContext(Context)
+
+
+  const redeemHandler = async () => {
+    let myuuid
+    let mytoken
+    try {
+      myuuid = await AsyncStorage.getItem('@useruuid')
+      mytoken = await AsyncStorage.getItem('@mytoken')
+    } catch (e) {
+      console.log("error: ", e)
+    }
+
+    const apiLink = `http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/redeemamount/${myuuid}/`
+    const apiBody = JSON.stringify({
+      redeem_amount: RedeemAmount
+    })
+
+    try {
+      
+      response = await fetch(apiLink,{
+      method: 'patch',
+      mode: 'no-cors',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${mytoken}`
+      },
+      body: apiBody
+      })
+      responseJson = await response.json()
+      console.log('server response: ', responseJson)
+      
+    } catch (error) {
+    }
+
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -92,7 +129,7 @@ const Wallet2 = ({ navigation }) => {
           ></TextField>
           <TouchableButton
             title="REDEEM"
-            onPress={() => console.log("GENERATED")}
+            onPress={redeemHandler}
             buttonposition={{ marginTop: 16 }}
           />
         </View>

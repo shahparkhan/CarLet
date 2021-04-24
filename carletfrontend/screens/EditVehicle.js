@@ -1,5 +1,7 @@
 import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const EditVehicle = ({ navigation }) => {
   const nameHandler = () => {
@@ -7,28 +9,82 @@ const EditVehicle = ({ navigation }) => {
       title: "Vehicle Name",
       subheading: "Enter new vehicle name",
       placeholder: "Vehicle Name",
+      vehicle_id: navigation.getParam('vehicle_id'),
+      successBody: 'Your vehicle name has been updated successfully!',
+      errorBody: ' There was some problem while updating your vehicle name. Please try again later.'
     });
   };
-  const modelHandler = () => {};
-  const typeHandler = () => {
+  const modelHandler = () => {
     navigation.navigate("EditVehicleGeneral", {
-      title: "Vehicle Type",
-      subheading: "Enter new vehicle type",
-      placeholder: "Vehicle Type",
+      title: "Vehicle Model",
+      subheading: "Enter new vehicle model",
+      placeholder: "Vehicle Model",
+      vehicle_id: navigation.getParam('vehicle_id'),
+      successBody: 'Your vehicle model has been updated successfully!',
+      errorBody: ' There was some problem while updating your vehicle model. Please try again later.'
     });
   };
+  
   const rateHandler = () => {
     navigation.navigate("EditVehicleGeneral", {
       title: "Rental Rate",
       subheading: "Enter new per day rate",
       placeholder: "Rental Rate",
+      vehicle_id: navigation.getParam('vehicle_id'),
+      successBody: 'Your vehicle rate has been updated successfully!',
+      errorBody: ' There was some problem while updating your vehicle rate. Please try again later.'
     });
   };
   const docsHandler = () => {
-    navigation.navigate("EditVehicleDocs");
+    navigation.navigate("EditVehicleDocs", {
+    title:"Vehicle Documents", 
+    vehicle_id: navigation.getParam('vehicle_id'),
+    successBody: 'Your vehicle docs has been updated successfully! Admin will verify your documents again.',
+    errorBody: ' There was some problem while updating your vehicle docs. Please try again later.'
+  });
   };
-  const picHandler = () => {
-    navigation.navigate("EditVehiclePics");
+  const picHandler = async () => {
+    let mytoken
+    try{
+      mytoken = await AsyncStorage.getItem('@mytoken')
+    } catch (e) {
+      console.log('error: ', e)
+    }
+    const vehicle_id = navigation.getParam('vehicle_id')
+    
+
+    try {
+        response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/vehiclepictures/${vehicle_id}/`,{
+        method: 'get',
+        mode: 'no-cors',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${mytoken}`
+        },
+        })
+
+        responseJson = await response.json()
+        console.log('server response: ', responseJson)
+        
+        if (responseJson['Success'] != undefined){
+          const picarr = responseJson['Success'].map((item)=>{return {uri:item}})
+          
+          navigation.navigate("EditVehiclePics", {
+            result: picarr,
+            vehicle_id: navigation.getParam('vehicle_id'),
+            image_count: responseJson.count,
+            title: "Vehicle Pictures",
+            successBody: 'Your vehicle pictures have been updated successfully!',
+            errorBody: ' There was some problem while updating your vehicle pictures. Please try again later.'
+          });
+          
+        }
+        
+    } catch (error) {
+        console.log("server error: ", error)
+    }
+    
   };
 
   return (
@@ -46,11 +102,7 @@ const EditVehicle = ({ navigation }) => {
             <Text style={styles.text}>Edit Model</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => typeHandler()} style={styles.touch}>
-          <View style={styles.card}>
-            <Text style={styles.text}>Edit Type</Text>
-          </View>
-        </TouchableOpacity>
+        
         <TouchableOpacity onPress={() => rateHandler()} style={styles.touch}>
           <View style={styles.card}>
             <Text style={styles.text}>Edit Rental Rate</Text>
