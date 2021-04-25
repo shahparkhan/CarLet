@@ -5,6 +5,7 @@ import TextField from "../assets/components/TextField";
 import SignUpView from "./SignUpView";
 import SignUpStyles from "./SignUpStyles";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { ScrollPager } from "react-native-tab-view";
 
 const Signup = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -50,9 +51,13 @@ const Signup = ({ navigation }) => {
       }
       setborderColor([field1, field2])
       console.log("Some fields are empty");
-    } else if (phonenumber.length !== 11 ) {
+    } else if (phonenumber[0] != "+" || phonenumber[1] != "9" || phonenumber[2] != "2") {
+      seterror(true)
+      seterrorMsg("Please fill the phone number field with +92 country code")
+      setborderColor(["black", "red"])
+    } else if (phonenumber.length !== 13 ) {
       seterror(true);
-      seterrorMsg(`Phone Number should be of 11 digits`);
+      seterrorMsg(`Incorrect length of phone number`);
       setborderColor(["black", "red"])
     } else {
       
@@ -67,8 +72,8 @@ const Signup = ({ navigation }) => {
       const Fname = namearr[0]
       const Lname = namearr.slice(1, namearr.length).join(" ")
 
-      let phonedigits = phonenumber.split("")
-      const phonewithcode = "+92" + phonedigits.slice(1,phonedigits.length).join("")
+      // let phonedigits = phonenumber.split("")
+      // const phonewithcode = "+92" + phonedigits.slice(1,phonedigits.length).join("")
 
       console.log("email: ", navigation.getParam('email'))
       
@@ -76,7 +81,7 @@ const Signup = ({ navigation }) => {
         email: navigation.getParam('email'),
         first_name: Fname,
         last_name: Lname,
-        phone_number:phonewithcode
+        phone_number:phonenumber
       })
 
       try {
@@ -113,7 +118,7 @@ const Signup = ({ navigation }) => {
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
         >
-
+        <ScrollView>
           <Image
             style={SignUpStyles.yellowvector}
             source={require("./../assets/SignupVector.png")}
@@ -138,7 +143,7 @@ const Signup = ({ navigation }) => {
         />
 
         <TextField
-          placeholder={"Phone Number"}
+          placeholder={"Example: +923331234123"}
           style={{
             position: "relative",
             marginTop: 16,
@@ -149,7 +154,7 @@ const Signup = ({ navigation }) => {
           secureTextEntry={false}
           keyboardType={"numeric"}
         />
-        
+        </ScrollView>
         </KeyboardAwareScrollView>
         <TouchableButton
         buttonposition={SignUpStyles.buttonposition}

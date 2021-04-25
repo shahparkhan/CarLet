@@ -3,13 +3,19 @@ import { StyleSheet, Text, View, Dimensions } from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 const RegisterVehicle2 = ({ navigation }) => {
   const [Rate, setRate] = useState("");
+  const [license, setLicense] = useState("");
   const [Error, setError] = useState("");
 
   const setDailyRate = (r) => {
     setRate(r);
+  };
+  const setLicensePlate = (r) => {
+    setLicense(r);
   };
 
   const checkDots = (decimal) => {
@@ -23,8 +29,8 @@ const RegisterVehicle2 = ({ navigation }) => {
   };
 
   const validateInput = () => {
-    if (Rate == "") {
-      setError("Enter Rate");
+    if (Rate == "" || license =="") {
+      setError("Please fill all fields");
     } else if (checkDots(Rate)) {
       setError("Invalid Rate");
     } else {
@@ -32,7 +38,7 @@ const RegisterVehicle2 = ({ navigation }) => {
       let x = navigation.getParam("params");
       console.log(`params: ${JSON.stringify(x)} rate: ${Rate}`);
       navigation.navigate("RegisterVehicle3", {
-        params: { ...x, rate: Rate },
+        params: { ...x, rate: Rate, licenseplate: license },
       });
     }
   };
@@ -41,6 +47,9 @@ const RegisterVehicle2 = ({ navigation }) => {
     <View style={styles.view}>
 
       <View>
+      <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+      >
         <Text style={styles.mainHeading}>Register Vehicle</Text>
         <Text style={styles.error}>{Error}</Text>
         <Text style={styles.heading}>Per Day Rate</Text>
@@ -50,11 +59,13 @@ const RegisterVehicle2 = ({ navigation }) => {
           style={styles.textstyle}
           keyboardType="decimal-pad"
         />
-
-        <Text style={styles.heading}>Suggested Rate</Text>
-        <Text style={styles.rate}>1200.00</Text>
-
-        
+        <Text style={styles.heading}>License Plate Number</Text>
+        <TextField
+          placeholder="License Plate Number"
+          changeHandler={setLicensePlate}
+          style={styles.textstyle}
+        />
+        </KeyboardAwareScrollView>
       </View>
       <TouchableButton
           title="NEXT"

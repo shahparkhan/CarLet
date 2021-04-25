@@ -45,7 +45,7 @@ const RegisterVehicle4 = ({ navigation }) => {
         let pics = [...Pics];
         pics[index] = { uri: `data:image/jpeg;base64,${result.base64}` };
         setPics([...pics]);
-        setImageCount(ImageCount + 1);
+        setImageCount((state) => state + 1);
       }
     } catch (error) {
       console.log("bc", error);
@@ -57,6 +57,31 @@ const RegisterVehicle4 = ({ navigation }) => {
       setError("Please upload atleast 2 images");
     } else {
       setError("");
+      let pics = [...Pics]
+      let picturenumber = 0
+      let picturesdict = {}
+      for (let i = 0; i < 5; i++){
+        if (pics[i].uri[0] === 'd'){
+          if (picturenumber === 0){
+            picturesdict.vehicle_picture1 = pics[i].uri
+          } else if (picturenumber === 1) {
+            picturesdict.vehicle_picture2 = pics[i].uri
+          } else if (picturenumber === 2) {
+            picturesdict.vehicle_picture3 = pics[i].uri
+          } else if (picturenumber === 3) {
+            picturesdict.vehicle_picture4 = pics[i].uri
+          } else {
+            picturesdict.vehicle_picture5 = pics[i].uri
+          }
+          picturenumber++
+        }
+      }
+
+
+      let x = navigation.getParam("params");
+      navigation.navigate("RegisterVehicle5", {
+        params: { ...x, vehicle_pictures:picturesdict },
+      })
     }
   };
 

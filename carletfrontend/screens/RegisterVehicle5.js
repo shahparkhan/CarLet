@@ -5,8 +5,10 @@ import TextField from "../assets/components/TextField";
 import TouchableButton from "../assets/components/TouchableButton";
 import ModalDropdown from "react-native-modal-dropdown";
 // import FadeInOut from "react-native-fade-in-out";
-//hello just for git
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ScrollView } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const RegisterVehicle5 = ({ navigation }) => {
   const { LocationState } = useContext(Context);
@@ -18,26 +20,80 @@ const RegisterVehicle5 = ({ navigation }) => {
     "Lahore",
     "Islamabad",
   ]);
-  const [City, setCity] = useState("");
+  const [City, setCity] = useState("Select City");
   const [Error, setError] = useState("");
 
-  const onSubmit = () => {
-    const address = `${House} ${Street} ${Area}`;
+  const onSubmit = async () => {
+    const address = `${House} ${Street} ${Area} ${City}`;
     const city = City;
 
-    if (House == "" || Street == "" || Area == "") {
+    if (House == "" || Street == "" || Area == "" || City == "Select City") {
       setError("Please fill all fields");
     } else {
       setError("");
       console.log(
-        `address ${address} \n latitiude, longitude ${
-          (LocationState.coords.latitude, LocationState.coords.longitude)
-        }`
+        `address ${address} \n latitiude ${LocationState.coords.latitude}, longitude ${LocationState.coords.longitude}`
       );
+
+      let myuuid
+      let mytoken
+      try {
+        myuuid = await AsyncStorage.getItem('@useruuid')
+        mytoken = await AsyncStorage.getItem('@mytoken')
+      } catch (e) {
+        console.log("error: ", e)
+      }
+      
+      const apiBody = JSON.stringify({
+        user_id: myuuid,
+        vehicle_name: navigation.getParam('params')['name'],
+        vehicle_model: navigation.getParam('params')['year'],
+        vehicle_type: navigation.getParam('params')['type'],
+        daily_rate: navigation.getParam('params')['rate'],
+        license_plate: navigation.getParam('params')['licenseplate'],
+        city: City,
+        latitude: LocationState.coords.latitude,
+        longitude: LocationState.coords.longitude,
+        street_address: address,
+        ...navigation.getParam('params')['vehicle_pictures'],
+        reg_papers: navigation.getParam('params')['registration'],
+        insurance_papers: navigation.getParam('params')['insurance'],
+        tracker_papers: navigation.getParam('params')['tracker'],
+      })
+
+      const apiLink = 'http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/registervehicle/'
+      
+
+      try {
+      
+        response = await fetch(apiLink,{
+        method: 'post',
+        mode: 'no-cors',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${mytoken}`
+        },
+        body: apiBody
+        })
+        responseJson = await response.json()
+        console.log('server response: ', responseJson)
+        if (responseJson['Success'] != undefined){
+          navigation.navigate('SuccessPrompt', {title: "Vehicle Registration", body: "Your vehicle has been registered successfully! We will soon send you the verify the vehicle."})
+        } else {
+          navigation.navigate('ErrorPrompt', {title: "Vehicle Registration", body: "There was an error while registering your vehicle. Please try again later."})
+        }
+  
+      } catch (error) {
+        console.log("server error: ", error)
+        navigation.navigate('ErrorPrompt', {title: "Vehicle Registration", body: "There was an error while registering your vehicle. Please try again later."})
+      }
+
     }
   };
 
   return (
+    <ScrollView>
     <View style={styles.mainview}>
       <Text style={styles.mainheading}>Register Vehicle</Text>
       <Text style={styles.error}>{Error}</Text>
@@ -49,12 +105,12 @@ const RegisterVehicle5 = ({ navigation }) => {
       <TextField
         style={styles.textfieldstyle}
         placeholder="Street"
-        changeHandler={(e) => setHouse(e)}
+        changeHandler={(e) => setStreet(e)}
       ></TextField>
       <TextField
         style={styles.textfieldstyle}
         placeholder="Area"
-        changeHandler={(e) => setHouse(e)}
+        changeHandler={(e) => setArea(e)}
       ></TextField>
       <View style={{ width: "100%" }}>
         <ModalDropdown
@@ -69,13 +125,15 @@ const RegisterVehicle5 = ({ navigation }) => {
             setCity(CityItems[index]);
           }}
         >
-          <Text style={styles.citytext}>Select City</Text>
+          <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+          <Text style={styles.citytext}>{City}</Text>
           <MaterialCommunityIcons
             name="menu-down"
             size={24}
             color="black"
             style={styles.icon}
           />
+          </View>
         </ModalDropdown>
       </View>
       <TouchableButton
@@ -83,7 +141,9 @@ const RegisterVehicle5 = ({ navigation }) => {
         onPress={onSubmit}
         buttonposition={styles.buttonposition}
       ></TouchableButton>
+      
     </View>
+    </ScrollView>
   );
 };
 
@@ -96,10 +156,11 @@ const styles = StyleSheet.create({
   mainheading: {
     fontFamily: "Nunito-Bold",
     marginTop: 36,
+    fontSize: 34,
+    color: "#212121",
   },
   textfieldstyle: {
-    marginTop: 10,
-    marginBottom: 20,
+    marginBottom:16,
   },
   style: {
     borderColor: "#212121",
@@ -107,7 +168,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     height: 56,
     justifyContent: "center",
-    marginTop: 10,
     alignContent: "center",
   },
   dropdown: {
@@ -129,6 +189,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     alignSelf: "flex-end",
+    marginRight:16
   },
   citytext: {
     fontFamily: "Nunito-Light",
@@ -139,6 +200,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: "tomato",
     fontFamily: "Nunito-Light",
+    marginTop: 16
   },
 });
 

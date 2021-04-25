@@ -18,10 +18,10 @@ export default function Welcome({ navigation }) {
                 source={require('./../assets/YellowVector.png')}
             />
             <Text style = {styles.welcometext}>
-                Welcome Screens!!!!
+                Welcome
             </Text>
             <Text style = {styles.bodytext}>
-                Our tagline which we haven't thought of yet
+                A place to let your car and get your car
             </Text>
             
             <View style={{...RegisterStyles.buttonposition, flexDirection:"row", justifyContent:"space-between"}}>

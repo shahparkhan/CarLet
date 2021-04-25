@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StyleSheet,Text,View,Pressable} from 'react-native';
 import { Entypo, MaterialIcons} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,7 @@ import Context from './../shared/context';
 export default function Header1 ({navigation}){
 
     const {actions} = useContext(Context)
+    
 
     const updatewalletamount = async () => {
         let mytoken

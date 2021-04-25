@@ -48,8 +48,14 @@ const Wallet2 = ({ navigation }) => {
       })
       responseJson = await response.json()
       console.log('server response: ', responseJson)
-      
+      if (responseJson['Success'] != undefined){
+        navigation.navigate('SuccessPrompt', {title: "Upload Receipt", body: "Your redeem request has been registered successfully! We will soon send you the redeemed amount."})
+      } else {
+            navigation.navigate('ErrorPrompt', {title: "Upload Receipt", body: "There was an error while registering your redeem request. Please try again later."})
+      }
+
     } catch (error) {
+      navigation.navigate('ErrorPrompt', {title: "Upload Receipt", body: "There was an error while registering your redeem request. Please try again later."})
     }
 
   }

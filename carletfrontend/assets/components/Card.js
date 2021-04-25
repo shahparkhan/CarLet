@@ -3,10 +3,8 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import { Rating } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const Card = ({ title, rating, model, location, rate, imagesrc }) => {
-  console.log(imagesrc);
+const Card = ({ title, rating, model, location, rate, imagesrc, pickupdate, dropoffdate }) => {
   return (
-    <View style={styles.shadow}>
       <View style={styles.card}>
         <Image source={{uri:imagesrc}} style={styles.image} />
         <View style={styles.bottomText}>
@@ -31,27 +29,32 @@ const Card = ({ title, rating, model, location, rate, imagesrc }) => {
             <Text style={styles.location}>{location}</Text>
             <Text style={styles.rate}>{`${rate}/day`}</Text>
           </View>
+          <View>
+            {pickupdate ? <Text style={styles.model}>Pickup date: {pickupdate}</Text> : <></>}   
+          </View>
+          <View>
+          {dropoffdate ? <Text style={styles.model}>Dropoff date: {dropoffdate}</Text> : <></>} 
+          </View>
         </View>
+        
       </View>
-    </View>
   );
 };
 
 export default Card;
 
 const styles = StyleSheet.create({
-  shadow: {
-    width: "84%",
-    elevation: 0,
+  
+  card: {
+    flex:1,
+    width: "90%",
     borderWidth:3,
     borderColor:"lightgrey",
     borderRadius: 4,
-    marginTop: 50,
-    alignSelf: "center",
-    alignItems: "center",
-  },
-  card: {
-    width: "100%",
+    justifyContent:"flex-start",
+    margin: 16,
+    alignSelf:"center"
+    
   },
   image: {
     width: "100%",
@@ -63,26 +66,27 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingLeft:8,
     paddingRight:8,
+    flex:1,
   },
   titleRating: {
     flexDirection: "row",
     alignItems: "center",
     paddingBottom: 5,
     justifyContent: "space-between",
-    paddingLeft: 3,
   },
   title: {
     fontFamily: "Nunito-Bold",
     fontSize: 23,
     color: "#212121",
     marginRight: 23,
+    marginLeft:8
   },
   model: {
     fontFamily: "Nunito-Regular",
     alignSelf: "flex-start",
     flexDirection: "row",
-    paddingBottom: 10,
-    paddingLeft: 3,
+    marginBottom: 8,
+    marginLeft: 8,
   },
   locationRate: {
     flexDirection: "row",
@@ -92,17 +96,17 @@ const styles = StyleSheet.create({
     marginTop: 4,
     paddingTop: 4,
     alignItems: "center",
-    paddingBottom: 20,
-    paddingLeft: 3,
     paddingRight: 3,
+    marginBottom:8
   },
   location: {
     fontFamily: "Nunito-Regular",
     fontSize: 14,
     color: "#212121",
-    // paddingLeft: 3,
+    marginLeft: 8,
     width:"70%",
-    justifyContent:"flex-start"
+    justifyContent:"flex-start",
+
   },
   rate: {
     fontFamily: "Nunito-Light",
@@ -110,4 +114,10 @@ const styles = StyleSheet.create({
     
     
   },
+  pickupdate: {
+    fontFamily: "Nunito-Regular",
+    fontFamily: "Nunito-Regular",
+    fontSize: 14,
+    marginLeft: 8,
+  }
 });

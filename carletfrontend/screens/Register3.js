@@ -85,7 +85,7 @@ export default function Register1( {navigation} ) {
             setborderColor(field);    
             
         } else if (iban.length !== 24) {
-            seterrorMsg(`IBAN number should have 24 digits`);
+            seterrorMsg(`IBAN number should be 24 characters long`);
             console.log("IBAN number not of correct length");
             seterror(true);
             setborderColor("red")

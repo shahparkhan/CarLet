@@ -7,7 +7,7 @@ import Card from "../assets/components/Card";
 const SearchResults1 = ({navigation}) => {
   const searchData = navigation.getParam('results')
   console.log("search data: ", searchData)
-  const onPressHandler = async (vehicle_id, arr, title, rating, model, location, rate, owner_fname, owner_lname, bio, owner_picture) => {
+  const onPressHandler = async (vehicle_id, arr, title, rating, model, location, rate, owner_fname, owner_lname, bio, owner_picture, phone_number) => {
     const owner = `${owner_fname} ${owner_lname}`   
     console.log("pickup: ", navigation.getParam('pickupdate'))
     console.log("dropoff: ", navigation.getParam('dropoffdate'))
@@ -28,7 +28,7 @@ const SearchResults1 = ({navigation}) => {
 
     // console.log({imagesrc:arr, title: title, rating: rating, model: model, location: location, rate: rate, owner: owner, bio: bio, owner_picture: owner_picture, duration: Difference_In_Days, cost: total_amount, pickup: navigation.getParam('djangopickup'), dropoff: navigation.getParam('djangodropoff'), uuid: navigation.getParam('uuid'), vehicle_id: vehicle_id})
 
-    navigation.navigate('CarDetails', {imagesrc:arr, title: title, rating: rating, model: model, location: location, rate: rate, owner: owner, bio: bio, owner_picture: owner_picture, duration: Difference_In_Days, cost: total_amount, pickup: navigation.getParam('djangopickup'), dropoff: navigation.getParam('djangodropoff'), uuid: navigation.getParam('uuid'),token: navigation.getParam('token'), vehicle_id: vehicle_id})
+    navigation.navigate('CarDetails', {imagesrc:arr, title: title, rating: rating, model: model, location: location, rate: rate, owner: owner, bio: bio, owner_picture: owner_picture, duration: Difference_In_Days, cost: total_amount, pickup: navigation.getParam('djangopickup'), dropoff: navigation.getParam('djangodropoff'), uuid: navigation.getParam('uuid'),token: navigation.getParam('token'), vehicle_id: vehicle_id, phone_number:phone_number})
   }
   const renderCard = ({ item, index, separators }) => {
     return (
@@ -49,7 +49,7 @@ const SearchResults1 = ({navigation}) => {
           if (item.vehicle_picture5 != ""){
             pictures.push({url: item.vehicle_picture5})
           }
-          onPressHandler(item.vehicle_id, pictures, item.vehicle_name, item.vehicle_rating, item.vehicle_model, item.vehicle_street_address, item.daily_rate, item.first_name,item.last_name, "item.bio", item.picture)
+          onPressHandler(item.vehicle_id, pictures, item.vehicle_name, item.vehicle_rating, item.vehicle_model, item.vehicle_street_address, item.daily_rate, item.first_name,item.last_name, "item.bio", item.picture, item.phone_number)
 
         }}>
         <Card

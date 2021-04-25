@@ -52,9 +52,9 @@ const SentRequests = ({navigation}) => {
     );
   };
   return(
-    <View>
+    <View style={{flex:1}}>
       <Text style={styles.heading}>Sent Requests</Text>
-      <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.trip_id}></FlatList>
+      <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.trip_id} ></FlatList>
     </View>
   )
 };

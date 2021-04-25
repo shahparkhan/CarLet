@@ -13,6 +13,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
+import { ScrollPager } from "react-native-tab-view";
+import { ScrollView } from "react-native";
 
 
 export default function Login({ navigation }) {
@@ -228,11 +230,11 @@ export default function Login({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress = {() =>{Keyboard.dismiss()}}>
-
       <View style={styles.container}>
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
         >
+        
           <Image
             style={styles.yellowvector}
             source={require("./../assets/login.png")}
@@ -283,6 +285,7 @@ export default function Login({ navigation }) {
           source={require("./../assets/smallcar.png")}
         />
       </View>
+
     </TouchableWithoutFeedback>
   );
 }

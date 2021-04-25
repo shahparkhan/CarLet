@@ -14,6 +14,7 @@ const globalState = () => {
     coords: { longitude: 0, latitude: 0 },
   });
   const [profilename, setProfilename] = useState("Carlet User");
+  const [walletamount, setWalletamount] = useState('0')
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -56,6 +57,14 @@ const globalState = () => {
       } catch (e) {
         console.log("loggedout error: ", e);
       }
+      try {
+        let wallet = await AsyncStorage.getItem('@walletamount')
+        if (wallet != undefined){
+            setWalletamount(wallet)
+        }
+      } catch (e) {
+          console.log("loggedout error: ", e)
+      }
     };
     profilepictureandname();
   }, []);
@@ -75,11 +84,15 @@ const globalState = () => {
         return LocationState;
       case "setLocation":
         return setLocationState(payload);
+      case 'setWalletamount':
+          return setWalletamount(payload)
+      case 'getWalletamount':
+          return walletamount
       default:
         return "default";
     }
   };
-  return { profilepic, profilename, LocationState, actions };
+  return { profilepic, profilename,walletamount, LocationState, actions };
 };
 
 export default globalState;

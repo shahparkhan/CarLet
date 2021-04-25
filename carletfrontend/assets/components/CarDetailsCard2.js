@@ -4,7 +4,7 @@ import { Rating } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import FavButton from "./FavButton"
 
-const Card = ({ title, rating, model, location, rate }) => {
+const Card = ({ title, rating, model, location, rate, favHandler }) => {
   return (
     <View style={styles.shadow}>
       <View style={styles.card}>
@@ -23,7 +23,7 @@ const Card = ({ title, rating, model, location, rate }) => {
          <Text style={styles.rate}>{rate}/day</Text>
        </View>
        <View style={styles.fourthView}>
-        <FavButton buttonposition={{marginBottom:8, alignSelf:"center"}}></FavButton>
+        <FavButton onPress={favHandler} buttonposition={{marginBottom:8, alignSelf:"center"}}></FavButton>
        </View>
        
       </View>

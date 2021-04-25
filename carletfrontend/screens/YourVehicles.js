@@ -18,7 +18,8 @@ const YourVehicles = ({ navigation }) => {
 
   const renderCard = ({ item, index, separators }) => {
     return (
-      <TouchableOpacity onPress={() => onPressHandler(item.vehicle_id, item.vehicle_name, item.vehicle_model)}>
+      <TouchableOpacity 
+        onPress={() => onPressHandler(item.vehicle_id, item.vehicle_name, item.vehicle_model)}>
         <Card key={item.vehicle_id} title={item.vehicle_name} model={item.vehicle_model} rate={item.rate} status={item.status}/>
       </TouchableOpacity>
     );

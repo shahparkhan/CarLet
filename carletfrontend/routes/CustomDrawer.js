@@ -75,21 +75,88 @@ export default function ContentContainer( {navigation} ){
                 quality:1,
                 base64:true,
             })
-            console.log("rrr", result)
-            setImage(`data:image/jpeg;base64,${result.base64}`)
             if (!result.cancelled)
             {
-                // setImage(result.uri)
+                setImage(`data:image/jpeg;base64,${result.base64}`)
+                
+                const apiBody = JSON.stringify({
+                    profile_picture: `data:image/jpeg;base64,${result.base64}`
+                }) 
+                let mytoken
+                let myuuid
+
+                try{
+                    mytoken = await AsyncStorage.getItem("@mytoken")
+                    myuuid = await AsyncStorage.getItem("@useruuid")
+                } catch (e) {
+                    console.log("error ", e)
+                }
+                console.log("uuid ", myuuid)
+                console.log("token ", mytoken)
+
+                try {
+
+                    response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/updateprofilepic/${myuuid}/`,{
+                    method: 'patch',
+                    mode: 'no-cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${mytoken}`
+                    },
+                    body: apiBody
+                    })
+                    
+                    responseJson = await response.json()
+                    console.log('server response: ', responseJson)
+                    
+                    
+                } catch (error) {
+                    console.log('error: ', error)
+                }
+
+                try {
+            
+      
+                    response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/getprofileinfo/',{
+                    method: 'post',
+                    mode: 'no-cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${mytoken}`
+                    },
+                    body: JSON.stringify({user_id:myuuid})
+                    })
+                    responseJson = await response.json()
+                    console.log('server response: ', responseJson)
+                    
+                    if (responseJson.Success != undefined){
+                        
+                        try {
+                            await AsyncStorage.setItem('@profilepicture', responseJson.picture)
+                            actions({type:"setProfilepic", payload:{uri:responseJson.picture}})
+                        
+                        } catch (e) {
+                        }
+                    } 
+                  } catch (error) {
+                    console.log("err", error)
+            
+                }
+
+
             }
         } catch (error) {
             console.log("bc", error)
         }
         
         
+        
     }
 
     
-
+    
 
 
   const logoutHandler = async () => {
@@ -181,6 +248,30 @@ export default function ContentContainer( {navigation} ){
                             style={styles.testIcon}
                         />
                         <Text style={styles.testText}> Wallet </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.navigate("FavVehicles")}>
+                        <View style={styles.optionStyle}>
+                        <MaterialCommunityIcons
+                            name="heart"
+                            size={24}
+                            color="black"
+                            style={styles.testIcon}
+                        />
+                        <Text style={styles.testText}> Favourite Vehicles </Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.navigate("History1")}>
+                        <View style={styles.optionStyle}>
+                        <MaterialIcons
+                            name="history"
+                            size={24}
+                            color="black"
+                            style={styles.testIcon}
+                        />
+                        <Text style={styles.testText}> History </Text>
                         </View>
                     </TouchableOpacity>
 

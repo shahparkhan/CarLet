@@ -53,6 +53,9 @@ import RegisterVehicle5 from "./../screens/RegisterVehicle5";
 import Wallet1 from "./../screens/Wallet1";
 import Wallet2 from "./../screens/Wallet2";
 import Wallet3 from "./../screens/Wallet3";
+import History1 from "./../screens/History1";
+import History2 from "./../screens/History2";
+import FavVehicles from "./../screens/FavVehicles";
 
 const signedin = {
   Register: {
@@ -509,6 +512,33 @@ const signedin = {
   },
   Wallet3: {
     screen: Wallet3,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  History1: {
+    screen: History1,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  History2: {
+    screen: History2,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => null,
+        headerTitle: () => <Header1 navigation={navigation} />,
+      };
+    },
+  },
+  FavVehicles: {
+    screen: FavVehicles,
     navigationOptions: ({ navigation }) => {
       return {
         headerLeft: () => null,

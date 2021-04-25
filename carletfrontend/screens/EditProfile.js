@@ -45,7 +45,10 @@ export default function EditProfile( {navigation} ) {
             seterrorMsg("Please fill a field before pressing update button.")
         } else if (number[0] != "+" || number[1] != "9" || number[2] != "2") {
             seterror(true)
-            seterrorMsg("Please fill the number field with +92 country code")
+            seterrorMsg("Please fill the phone number field with +92 country code")
+        } else if (number.length != 13) {
+            seterror(true)
+            seterrorMsg("Incorrect length of phone number")
         } else {
 
             seterror(false)
@@ -87,6 +90,8 @@ export default function EditProfile( {navigation} ) {
                 navigation.navigate('ErrorPrompt', {title: navigation.getParam('title'), body: navigation.getParam('errorBody')})
             }
             
+           
+
         } 
 
     }
@@ -116,7 +121,7 @@ export default function EditProfile( {navigation} ) {
                 Enter new phone number
             </Text>
             <TextField
-                placeholder={"example: +923331234123"}
+                placeholder={"Example: +923331234123"}
                 style={{
                     position: "relative",
                     marginTop: 16,

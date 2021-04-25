@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions, Alert } from "react-native";
 import Card from "../assets/components/Card";
 import CarDetailsCard1 from "../assets/components/CarDetailsCard1";
 import CarDetailsCard2 from "../assets/components/CarDetailsCard2";
 import CarDetailsCard3 from "../assets/components/CarDetailsCard3";
 import CarDetailsCard4 from "../assets/components/CarDetailsCard4";
 import TouchableButton from "../assets/components/TouchableButton";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const searchData = [
     {
@@ -39,6 +41,46 @@ const CarDetails = ({navigation}) => {
 
     navigation.navigate("CautionPrompt", {title:"Book Now", successBody:"The vehicle has been successfully booked!", errorBody: "There was some error while booking the vehicle. Please try again later.", apiLink: "http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/requestvehicle/", apiBody:apiBody, token: navigation.getParam('token')})
   }
+  const favHandler = async () => {
+    let mytoken
+    let myuuid
+    try{
+      mytoken = await AsyncStorage.getItem('@mytoken')
+      myuuid = await AsyncStorage.getItem('@useruuid')
+    } catch (e) {
+      console.log('error: ', e)
+    }
+    const apiBody = JSON.stringify({
+      user_id: myuuid,
+      vehicle_id: navigation.getParam('vehicle_id')
+    })
+
+    try {
+      response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/addfav/`,{
+      method: 'post',
+      mode: 'no-cors',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${mytoken}`
+      },
+      body: apiBody
+      })
+
+      responseJson = await response.json()
+      console.log('server response: ', responseJson)
+      
+      if (responseJson['Success'] != undefined){
+      }
+      
+    } catch (error) {
+        console.log("error: ", error)
+    }
+  }
+
+  const contactHandler = () => {
+    Alert.alert(`You can call the owner on the following number: ${navigation.getParam('phone_number')}`)
+  }
 
   const renderCard = ({ item, index, separators }) => {
     console.log("image list", navigation.getParam('imagesrc'))
@@ -55,6 +97,7 @@ const CarDetails = ({navigation}) => {
           model={navigation.getParam('model')}
           location={navigation.getParam('location')}
           rate={navigation.getParam('rate')}
+          favHandler={favHandler}
         />
         <CarDetailsCard3
           
@@ -74,12 +117,20 @@ const CarDetails = ({navigation}) => {
   return (
     <View>
       <FlatList data={searchData} renderItem={renderCard}></FlatList>
-      <TouchableButton
-        buttonposition={styles.buttonposition}
-        title="BOOK NOW"
-        onPress={booknowHandler}>
-
-      </TouchableButton>
+      
+      <View style={{alignSelf:"center", flexDirection:"row", justifyContent:"space-between", ...styles.buttonposition}}>
+        <TouchableButton
+          title="BOOK NOW"
+          onPress={booknowHandler}>
+        </TouchableButton>
+        <TouchableButton
+          title="CONTACT"
+          buttonposition={{marginLeft:16}}
+          onPress={contactHandler}
+        >
+        </TouchableButton>
+      </View>
+      
     </View>
   );
 };

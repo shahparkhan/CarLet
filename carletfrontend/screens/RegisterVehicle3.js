@@ -143,7 +143,7 @@ const RegisterVehicle3 = ({ navigation }) => {
         </View>
 
         <TouchableButton
-          title="SUBMIT"
+          title="NEXT"
           buttonposition={styles.buttonposition}
           onPress={validateAndSubmit}
         />

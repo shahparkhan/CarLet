@@ -10,6 +10,8 @@ import {
 import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
 import ModalDropdown from "react-native-modal-dropdown";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 const RegisterVehicle1 = ({ navigation }) => {
   const [Name, setName] = useState("");
@@ -17,10 +19,6 @@ const RegisterVehicle1 = ({ navigation }) => {
   const [Type, setType] = useState("");
   const [Error, setError] = useState("");
   const [TypeItems, setTypeItems] = useState([
-    "Car",
-    "Bike",
-    "Pick-up",
-    "Cycle",
     "Car",
     "Bike",
     "Pick-up",
@@ -43,7 +41,7 @@ const RegisterVehicle1 = ({ navigation }) => {
   const validateInput = () => {
     if (Name == "" || Modelyear == "" || Type == "") {
       setError("Please fill all fields");
-    } else if (Modelyear.length > 4) {
+    } else if (Modelyear.length != 4) {
       setError("Invalid year");
     } else {
       setError("");
@@ -55,19 +53,23 @@ const RegisterVehicle1 = ({ navigation }) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    
       <View style={styles.view}>
+      <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+      >
         <Text style={styles.mainHeading}>Register Vehicle</Text>
         <View style={styles.form}>
           <Text style={styles.error}>{Error}</Text>
           <Text style={styles.heading}>Enter Name</Text>
           <TextField
-            placeholder="Vehicle Name"
+            placeholder="Example: Ferrari F1"
             changeHandler={setVehicleName}
             style={{ marginTop: 10, marginBottom: 10 }}
           />
           <Text style={styles.heading}>Enter Model Year</Text>
           <TextField
-            placeholder="Vehicle Name"
+            placeholder="Example 1999"
             changeHandler={setModel}
             style={{ marginTop: 10, marginBottom: 10 }}
             keyboardType="number-pad"
@@ -84,12 +86,14 @@ const RegisterVehicle1 = ({ navigation }) => {
             onSelect={setVehicleType}
           ></ModalDropdown>
         </View>
+        </KeyboardAwareScrollView>
         <TouchableButton
           buttonposition={styles.buttonposition}
           onPress={validateInput}
           title="NEXT"
         ></TouchableButton>
       </View>
+      
     </TouchableWithoutFeedback>
   );
 };

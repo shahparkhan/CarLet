@@ -13,6 +13,7 @@ import TouchableButton from "../assets/components/TouchableButton";
 import Context from './../shared/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import { ScrollView } from "react-native";
 
 
 const Wallet1 = ({ navigation }) => {
@@ -197,14 +198,17 @@ const Wallet1 = ({ navigation }) => {
           </View>
           
         </View>
-
+    
+        <ScrollView>
         <View
           style={{
             width: "80%",
             alignItems: "center",
             justifyContent: "center",
+            alignSelf:"center"
           }}
         >
+        
           <Text style={styles.mainheading}>Wallet</Text>
           
           <View style={styles.card}>
@@ -259,7 +263,7 @@ const Wallet1 = ({ navigation }) => {
             </View>
           </View>
         </View>
-        
+        </ScrollView>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -291,7 +295,7 @@ const styles = StyleSheet.create({
     borderColor: "lightgrey",
     width: "100%",
     marginTop: 26,
-    justifyContent:"flex-start"
+    justifyContent:"flex-start",
   },
   
   
