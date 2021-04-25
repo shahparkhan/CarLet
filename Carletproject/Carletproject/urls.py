@@ -37,6 +37,26 @@ urlpatterns = [
     path('requestvehicle/', csrf_exempt(views.RequestVehicle.as_view())),
     path('approverequest/', csrf_exempt(views.ApproveRequest.as_view())),
     path('ratevehicle/', csrf_exempt(views.RaterReviewVehicle.as_view())),
+    path('raterenter/', csrf_exempt(views.RateReviewRenter.as_view())),
+    path('sentrentrequest/', csrf_exempt(views.SentRentRequest.as_view())),
+    path('rcvrentrequest/', csrf_exempt(views.RecvRentRequest.as_view())),
+    path('generatereceipt/', csrf_exempt(views.GenerateReceipt.as_view())),
+    path('uploadreceipt/', csrf_exempt(views.UploadReceipt.as_view())),
+    path('getprofileinfo/', csrf_exempt(views.GetProfileInfo.as_view())),
+    path('payment/', csrf_exempt(views.Payment.as_view())),
+    path('accountsetting/<str:pk>/', csrf_exempt(views.ProfileAccountSetting.as_view())),
+    path('uservehicle/<str:pk>/', csrf_exempt(views.UserVehicleList.as_view())),
+    path('vehiclesetting/<str:pk>/', csrf_exempt(views.VehicleSetting.as_view())),
+    path('triphistory/<str:pk>/', csrf_exempt(views.TripHistory.as_view())),
+    path('profilepic/<str:pk>/', csrf_exempt(views.RetreiveProfilePicture.as_view())),
+    path('vehiclepictures/<str:pk>/', csrf_exempt(views.DisplayVehiclePictures.as_view())),
+    path('redeemamount/<str:pk>/', csrf_exempt(views.RedeemAmount.as_view())),
+    path('removefromrent/<str:pk>/', csrf_exempt(views.RemoveVehicleForRent.as_view())),
+    path('updateprofilepic/<str:pk>/', csrf_exempt(views.UpdateProfilePicture.as_view())),
+    path('addfav/', csrf_exempt(views.AddFavorite.as_view())),
+    path('removefav/<str:pk>/', csrf_exempt(views.RemoveFavorite.as_view())),
+    path('displayfav/<str:pk>/', csrf_exempt(views.FavoriteList.as_view())),
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

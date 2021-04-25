@@ -1,7 +1,7 @@
 from django.contrib import admin
 from Carletapp.models import CarletUser, UserDocument
 from django.utils.safestring import mark_safe
-from Carletapp.models import VehicleDetail, TripDetail, VehicleLocation, VehicleDocument
+from Carletapp.models import VehicleDetail, TripDetail, VehicleLocation, VehicleDocument, Wallet, Favorite
 from django.contrib.gis.db.models import PointField
 from django.contrib.gis.db import models as geomodels
 from .widget import LatLongWidget
@@ -10,8 +10,7 @@ admin.site.register(CarletUser)
 #admin.site.register(VehicleLocation)
 # admin.site.register(UserDocument)
 admin.site.register(TripDetail)
-# admin.site.register(Rating)
-# admin.site.register(Voucher)
+admin.site.register(Favorite)
 
 @admin.register(VehicleLocation)
 class VehicleLocationAdmin(admin.ModelAdmin):
@@ -59,7 +58,7 @@ class AdminVehicleDocument(admin.ModelAdmin):
     )
     def insurance_image(self, obj):
         return mark_safe('<img src="{url}" width="{width}" height={height} />'.format(
-            url = obj.insurace_papers.url,
+            url = obj.insurance_papers.url,
             width=400,
             height=240,
             )
@@ -113,7 +112,31 @@ class AdminVehicleDetail(admin.ModelAdmin):
     )
     pass
 
+class AdminWallet(admin.ModelAdmin):
+    list_display = ('user', 'amount', 'payment_approved')
+    readonly_fields = ['payment_image']
+    search_fields = ['payment_approved']
+    def payment_image(self, obj):
+        return mark_safe('<img src="{url}" width="{width}" height={height} />'.format(
+            url = obj.proof_of_payment.url,
+            width=400,
+            height=240,
+            )
+    )
+    def save_model(self, request, obj, form, change):
+        if obj.payment_approved == True:
+            obj.amount = obj.payment_amount + obj.amount
+            obj.payment_amount = 0
+            obj.payment_approved = False
+        if obj.is_Redeemed == True:
+            obj.amount = obj.amount - obj.redeem_amount
+            obj.redeem_amount = 0
+            obj.is_Redeemed = False
+        
+        super().save_model(request, obj, form, change)
+
 
 admin.site.register(UserDocument, AdminUserDocument)
 admin.site.register(VehicleDocument, AdminVehicleDocument)
 admin.site.register(VehicleDetail, AdminVehicleDetail)
+admin.site.register(Wallet, AdminWallet)

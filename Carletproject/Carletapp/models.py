@@ -13,7 +13,7 @@ import uuid
 
 class CarletUser (models.Model):
     carletuser_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone_number = PhoneNumberField(unique=True)
     isVerified = models.BooleanField(default = False)
     isBanned = models.BooleanField(default = False)
@@ -21,8 +21,8 @@ class CarletUser (models.Model):
     permanentBan = models.BooleanField(default = False)
     isTempBan = models.BooleanField(default = False)
     tempBan = models.DateField(blank = True, null = True)
-    wallet = models.IntegerField(default=0)
     rating = models.DecimalField(default=5.0, max_digits = 2, decimal_places = 1)
+    rating_counter = models.PositiveIntegerField(default=1)
 
     def __str__(self):
       return (str(self.user.email) + " "+str(self.carletuser_id))
@@ -105,10 +105,36 @@ class TripDetail(models.Model):
     duration = models.PositiveIntegerField()
     cost = models.PositiveIntegerField()
     booking_confirm = models.BooleanField(default=False)
+    rating_done_renter = models.BooleanField(default=False)
+    rating_done_owner =  models.BooleanField(default=False)
+    payment = models.BooleanField(default=False)
 
     def __str__(self):
-        return (self.vehicle_trip_id.vehicle_user.user.username + " "+self.renter_id.user.username +" " + str(self.trip_id))
+       return (self.vehicle_trip_id.vehicle_user.user.username + " rented to "+self.renter_id.user.username +" - " + str(self.trip_id))
 
+class Wallet(models.Model):
+    user = models.OneToOneField(CarletUser,on_delete=models.CASCADE, primary_key=True )
+    amount = models.PositiveIntegerField(default=0)
+    proof_of_payment = models.ImageField(blank = True, null = True, upload_to='proof_of_payment/')
+    payment_amount = models.PositiveIntegerField(default=0)
+    payment_approved = models.BooleanField(default=False)
+    redeem_amount = models.PositiveIntegerField(default=0)
+    is_Redeemed = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return (self.user.user.email + " " + str(self.amount))
+
+class Favorite(models.Model):
+    favorite_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(CarletUser,on_delete=models.CASCADE)
+    fav_vehicle = models.ForeignKey(VehicleDetail, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (('user', 'fav_vehicle'),)
+    
+
+    def __str__(self):
+        return (self.user.user.email + " " + str(self.favorite_id))
 
 
 # class Rating(models.Model):
