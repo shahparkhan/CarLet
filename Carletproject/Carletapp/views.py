@@ -598,7 +598,7 @@ class TripHistory(APIView):
                 result.append(detail)
             history['by_you'] = result
         else:
-            history["by_you"] = "No cars rented by you"
+            history["by_you"] = []
 
         user_vehicles = VehicleDetail.objects.filter(vehicle_user=carlet_user)        
         if user_vehicles.exists:
@@ -625,9 +625,9 @@ class TripHistory(APIView):
                 else:
                     continue
             if result == []:
-                history["from_you"] = "No cars owned by you"
+                history["from_you"] = []
         else:
-            history["from_you"] = "No cars owned by you"
+            history["from_you"] = []
 
         return Response(history)
 
@@ -711,3 +711,74 @@ class RedeemAmount(APIView):
             user_wallet.is_Redeemed = False
             user_wallet.save()
             return Response({"Success": "Your request has been rceieved to admin"})
+
+
+class UpdateProfilePicture(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def patch(self,request,pk, format=None):
+        carlet_id = uuid.UUID(pk)
+        carlet_user = CarletUser.objects.get(pk=carlet_id)
+        user_doc = UserDocument.objects.get(user_doc_id=carlet_user)
+        try:
+            user_doc.picture = base64_to_image(request.data.get('profile_picture'))
+            user_doc.save()
+            return Response({"Success": "Profile Picture updated"})
+        except:
+            return Response({"Error": "Some error updating profile picture"}, status=status.HTTP_400_BAD_REQUEST)
+
+class AddFavorite(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request,format=None):
+        user_id = request.data.get('user_id')
+        vehicle_id = request.data.get('vehicle_id')
+        carlet_user = CarletUser.objects.get(pk=user_id)
+        vehicle = VehicleDetail.objects.get(pk= vehicle_id)
+        pk = uuid.uuid4()
+        try:
+            new_fav = Favorite.objects.create(favorite_id=pk, user=carlet_user, fav_vehicle=vehicle)
+            return Response({"Success": "Vehicle added to favorites"})
+        except:
+            return Response({"Error": "Already added this vehicle to favorites"}, status=status.HTTP_400_BAD_REQUEST)
+
+class RemoveFavorite(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self,request, pk, format=None):
+        pk = uuid.UUID(pk)
+        fav = Favorite.objects.get(pk=pk)
+        fav.delete()
+        return Response({"Success": "Vehicle removed from favorites"})
+
+class FavoriteList(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request,pk, format=None):
+        pk = uuid.UUID(pk)
+        user = CarletUser.objects.get(pk=pk)
+        favorites = Favorite.objects.filter(user=user)
+        result = []
+        if favorites.exists():
+            for fav in favorites:
+                vehicle = fav.fav_vehicle
+                vehicle_location = VehicleLocation.objects.get(vehicleloc_id=vehicle)
+                detail = {}
+                detail['favorite_id'] = fav.favorite_id
+                detail['vehicle_id'] = vehicle.vehicle_id
+                detail['vehicle_name'] = vehicle.vehicle_name
+                detail['vehicle_model'] = vehicle.vehicle_model
+                detail['daily_rate'] = vehicle.daily_rate
+                detail['vehicle_picture1'] =  path_splitting(vehicle.vehicle_picture1.path)
+                detail['vehicle_address'] = vehicle_location.vehicle_street_address
+                detail['vehicle_owner_name'] = vehicle.vehicle_user.user.first_name + " " + vehicle.vehicle_user.user.last_name
+                detail['vehicle_rating'] = vehicle.vehicle_rating
+                result.append(detail)
+
+            return Response({"Success": result})
+        else:
+            return Response({"Success": []})

@@ -42,7 +42,9 @@ urlpatterns = [
     path('vehiclepictures/<str:pk>/', csrf_exempt(views.DisplayVehiclePictures.as_view())),
     path('redeemamount/<str:pk>/', csrf_exempt(views.RedeemAmount.as_view())),
     path('removefromrent/<str:pk>/', csrf_exempt(views.RemoveVehicleForRent.as_view())),
-    
+    path('addfav/', csrf_exempt(views.AddFavorite.as_view())),
+    path('removefav/<str:pk>/', csrf_exempt(views.RemoveFavorite.as_view())),
+    path('displayfav/<str:pk>/', csrf_exempt(views.FavoriteList.as_view())),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

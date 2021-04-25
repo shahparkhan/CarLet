@@ -119,6 +119,12 @@ class Wallet(models.Model):
     is_Redeemed = models.BooleanField(default=False)
 
 
+class Favorite(models.Model):
+    favorite_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(CarletUser,on_delete=models.CASCADE)
+    fav_vehicle = models.ForeignKey(VehicleDetail, on_delete=models.CASCADE)
+
+
 
 # class Rating(models.Model):
 #     rating_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
