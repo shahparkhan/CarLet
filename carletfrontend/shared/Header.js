@@ -67,6 +67,15 @@ export default function Header1 ({navigation}){
 
     const openMenu = async () =>{
         updatewalletamount()
+
+        let verifiedcheck = await AsyncStorage.getItem('@isverified')
+        console.log("verigied chekc ", verifiedcheck)
+        if (verifiedcheck === '0'){
+            actions({type: 'setDrawerOptions', payload:false})
+        } else {
+            actions({type: 'setDrawerOptions', payload:true})
+        }
+
         navigation.openDrawer({pic:"gggg"})
         // console.log(`menu opened`)
     }

@@ -11,6 +11,7 @@ import TouchableButton from "../assets/components/TouchableButton";
 import TextField from "../assets/components/TextField";
 import ModalDropdown from "react-native-modal-dropdown";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { ScrollView } from "react-native-gesture-handler";
 
 
 const RegisterVehicle1 = ({ navigation }) => {
@@ -55,6 +56,7 @@ const RegisterVehicle1 = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     
       <View style={styles.view}>
+      <ScrollView>
       <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
       >
@@ -74,6 +76,7 @@ const RegisterVehicle1 = ({ navigation }) => {
             style={{ marginTop: 10, marginBottom: 10 }}
             keyboardType="number-pad"
           />
+          
           <Text style={styles.heading}>Select Vehicle Type</Text>
           <ModalDropdown
             options={TypeItems}
@@ -85,8 +88,10 @@ const RegisterVehicle1 = ({ navigation }) => {
             textStyle={styles.textStyle}
             onSelect={setVehicleType}
           ></ModalDropdown>
+          <View style={{height:150}}></View>
         </View>
         </KeyboardAwareScrollView>
+        </ScrollView>
         <TouchableButton
           buttonposition={styles.buttonposition}
           onPress={validateInput}
@@ -113,6 +118,7 @@ const styles = StyleSheet.create({
     color: "#212121",
     marginTop: 36,
     marginBottom: 30,
+    alignSelf:"center"
   },
   heading: {
     fontFamily: "Nunito-SemiBold",

@@ -89,6 +89,7 @@ const signedin = {
     screen: Welcome,
     navigationOptions: {
       headerShown: false,
+      edgeWidth: false,
     },
   },
   Login: {

@@ -14,13 +14,18 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Context from "./../shared/context";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const ModalPopUp = ({ visible, children }) => {
   const [showModal, setShowModal] = useState(visible);
+  
 
   useEffect(() => {
     toggleModal();
   }, [visible]);
+
+  
+
   const toggleModal = () => {
     if (visible) {
       setShowModal(true);
@@ -43,8 +48,8 @@ const ModalPopUp = ({ visible, children }) => {
 export default function ContentContainer( {navigation} ){
     const [visible,setVisible] = useState(false);
     const [image,setImage] = useState(null);
-
-    const {profilepic, profilename, walletamount} = useContext(Context)
+    const [showDrawer, setShowDrawer] = useState(true)
+    const {actions, drawerOptions, profilepic, profilename, walletamount} = useContext(Context)
 
     useEffect(()=>
     {
@@ -65,22 +70,22 @@ export default function ContentContainer( {navigation} ){
         }
         fetchData()
     },[])
+    
 
     const PickImage = async () =>{
         try {
             let result  = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing:true,
-                aspect:[4,3],
-                quality:1,
-                base64:true,
+                allowsEditing:true
             })
             if (!result.cancelled)
             {
-                setImage(`data:image/jpeg;base64,${result.base64}`)
+                const manipResult = await ImageManipulator.manipulateAsync(result.uri,[{resize: {height:500}}],{ compress: 0.3, base64:true});
+                setImage(`data:image/jpeg;base64,${manipResult.base64}`)
+
                 
                 const apiBody = JSON.stringify({
-                    profile_picture: `data:image/jpeg;base64,${result.base64}`
+                    profile_picture: `data:image/jpeg;base64,${manipResult.base64}`
                 }) 
                 let mytoken
                 let myuuid
@@ -136,8 +141,8 @@ export default function ContentContainer( {navigation} ){
                         try {
                             await AsyncStorage.setItem('@profilepicture', responseJson.picture)
                             actions({type:"setProfilepic", payload:{uri:responseJson.picture}})
-                        
                         } catch (e) {
+                            console.log('error', e)
                         }
                     } 
                   } catch (error) {
@@ -168,57 +173,11 @@ export default function ContentContainer( {navigation} ){
     navigation.navigate("Welcome");
   };
 
-  return(
-        <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
-            <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
-
-                <View style = {{justifyContent: "flex-start", backgroundColor:"#ffc107"}}>
-                    <ModalPopUp visible = {visible}>
-                        <View style = {{alignItems:'center'}}>
-                            <View style = {styles.header}>
-                                <TouchableOpacity onPress = {()=>setVisible(false)}>
-                                <Image source = {require("./../assets/cancel.png")} style = {{height:15,width:15}} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style = {{alignItems:'center'}}>
-                        <Image source={profilepic} style = {{height:150,width:150,marginVertical:10,borderRadius:50}}/>
-                        </View>
-
-                        <TouchableOpacity onPress = {PickImage}>
-                            <Text style = {{textAlign:'center',position:'relative',fontFamily:"Nunito-SemiBold",
-                            fontSize: 14,}}>
-                                Upload new photo
-                            </Text>
-                        </TouchableOpacity>
-                    </ModalPopUp>
-                    <TouchableOpacity onPress = {()=> setVisible(true) }>
-                    <Image source={profilepic} style = {styles.imageStyle}/>
-                    </TouchableOpacity>
-                    
-                    
-                        <Text style = {styles.name}>
-                            {profilename}
-                        </Text>
-                        
-                        <View style={styles.walletstyle}>
-                            <Image
-                                source = {require('./../assets/wallet.png')}
-                                style = {styles.walletImage}>
-                            </Image>
-                            
-                            <Text style = {styles.name}>
-                                {walletamount}
-                            </Text>
-                        </View>
-                    
-                </View>
-                <ScrollView>
-                    
-                    {/* // navigation.navigate("AccountSettings") */}
-                    
-
-                    <TouchableOpacity onPress = {() => navigation.navigate("RentRequests")}>
+  const DrawerOptions = () => {
+      if (drawerOptions) {
+          return (
+              <View>
+                <TouchableOpacity onPress = {() => navigation.navigate("SentRequests")}>
                         <View style = {styles.optionStyle} >
                             <MaterialCommunityIcons name="bell" size={24} color="black" style={styles.testIcon}/>
                             <Text style = {styles.testText}> Rent Requests </Text >
@@ -281,6 +240,80 @@ export default function ContentContainer( {navigation} ){
                             <Text style = {styles.testText}> Account Settings </Text >
                         </View>
                     </TouchableOpacity>
+              </View>
+          )
+          
+      } else {
+          return null
+      }
+  }
+
+  const visibleHandler = async () => {
+    let verifiedcheck
+
+    try{
+        verifiedcheck = await AsyncStorage.getItem("@isverified")
+    } catch (e) {
+        console.log("error ", e)
+    }
+    if (verifiedcheck === "1"){
+        setVisible(true)
+    } else {
+        setVisible(false)
+    }
+    
+  }
+
+  return(
+        <TouchableOpacity activeOpacity = {1} style = {styles.drawerTransparent}   >
+            <TouchableOpacity activeOpacity = {1} style = {styles.drawer}>
+
+                <View style = {{justifyContent: "flex-start", backgroundColor:"#ffc107"}}>
+                    <ModalPopUp visible = {visible}>
+                        <View style = {{alignItems:'center'}}>
+                            <View style = {styles.header}>
+                                <TouchableOpacity onPress = {()=>setVisible(false)}>
+                                <Image source = {require("./../assets/cancel.png")} style = {{height:15,width:15}} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style = {{alignItems:'center'}}>
+                        <Image source={profilepic} style = {{height:150,width:150,marginVertical:10,borderRadius:50}}/>
+                        </View>
+
+                        <TouchableOpacity onPress = {PickImage}>
+                            <Text style = {{textAlign:'center',position:'relative',fontFamily:"Nunito-SemiBold",
+                            fontSize: 14,}}>
+                                Upload new photo
+                            </Text>
+                        </TouchableOpacity>
+                    </ModalPopUp>
+                    <TouchableOpacity onPress = {visibleHandler}>
+                    <Image source={profilepic} style = {styles.imageStyle}/>
+                    </TouchableOpacity>
+                    
+                    
+                        <Text style = {styles.name}>
+                            {profilename}
+                        </Text>
+                        
+                        <View style={styles.walletstyle}>
+                            <Image
+                                source = {require('./../assets/wallet.png')}
+                                style = {styles.walletImage}>
+                            </Image>
+                            
+                            <Text style = {styles.name}>
+                                {walletamount}
+                            </Text>
+                        </View>
+                    
+                </View>
+                <ScrollView>
+                    
+                    {/* // navigation.navigate("AccountSettings") */}
+                    
+                    <DrawerOptions/>
 
                     <TouchableOpacity onPress = {logoutHandler}>
                         <View style = {styles.optionStyle} >

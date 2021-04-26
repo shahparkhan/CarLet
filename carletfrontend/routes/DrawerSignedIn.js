@@ -21,8 +21,8 @@ const RootDrawerNavigator = createDrawerNavigator(drawers,
     config = {
         initialRouteName: 'Logout',
         contentComponent: ContentComponent,
-        drawerBackgroundColor: 'transparent'
-
+        drawerBackgroundColor: 'transparent',
+        edgeWidth:-100
     });
 
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Text, Modal, View, Image, StyleSheet, Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MapView from "react-native-maps";
@@ -8,93 +8,27 @@ import TouchableButton from "../assets/components/TouchableButton";
 import * as Location from "expo-location";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RegisterStyles from "./RegisterStyles";
+import Context from "../shared/context";
 import * as Permissions from "expo-permissions";
 
 const Home = ({ navigation }) => {
   const [IconColor, setIconColor] = useState("black");
   const [IsVisible, setIsVisible] = useState(false);
   const [Querry, setQuerry] = useState();
-
+  const { LocationState } = useContext(Context);
   const [Region, setRegion] = useState({ latitude: 0, longitude: 0 });
   const [HasPermission, setHasPermission] = useState(false);
   const [LocationResult, setLocationResult] = useState({coords:{longitude: 0, latitude:0}});
   const [Geocode, setGeocode] = useState();
   
-  useEffect(() => {
-    // getGeocodeAsync = async (location) => {
-    //   let geocode = await Location.reverseGeocodeAsync(location);
-    //   setGeocode(geocode);
-    // };
-
-    const getUserLocation = async () => {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== "granted") {
-        setLocationResult("Permission to access location was denied");
-      } else {
-        setHasPermission(true);
-      }
-
-      
-
-      try {
-        let location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
-        });
-        // const { latitude, longitude } = location.coords;
-        setLocationResult(location);
-        // getGeocodeAsync({ latitude, longitude });
-        // Center the map on the location we just fetched.
-        // lat = location.coords.latitude
-        // long = location.coords.longitude
-        console.log(
-          `coords`,
-          {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          }
-        );
-        // setRegion({
-        //   latitude: location.coords.latitude,
-        //   longitude: location.coords.longitude,
-        // });
-        
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUserLocation();
-  }, [HasPermission, Region]);
-
-  let long
-  let lat
-
-  if (LocationResult.coords.latitude != 0) {
-    long = LocationResult.coords.longitude
-    lat = LocationResult.coords.latitude
-  }
+  
   
 
 
 
-  const logoutHandler = async () => {
-      try {
-        await AsyncStorage.setItem('@isloggedin', '0')
+  
 
-      } catch (e) {
-          console.log("loggedout error: ", e)
-      }
-      navigation.navigate("Welcome")
-  }
-
-  const regionChange = (newPlace) => {
-    // console.log(`${newPlace["latitude"]},${newPlace["longitude"]}`);
-    const coordinates = {
-      latitude: newPlace["latitude"],
-      longitude: newPlace["longitude"],
-    };
-    console.log(coordinates);
-    setRegion(coordinates);
-  };
+  
 
   const pressOut = () => {
     setIconColor("black");
@@ -110,15 +44,10 @@ const Home = ({ navigation }) => {
     console.log("CLICKED", Querry);
     setIconColor("grey");
     
-    console.log("before sending ", long," ", lat)
-    navigation.navigate('PickUpandDropOff', {longitude: long, latitude: lat})
+    navigation.navigate('PickUpandDropOff', {longitude:  LocationState.coords.longitude, latitude:  LocationState.coords.latitude})
   };
 
-  const goToInitialRegion = () => {
-    let initialRegion = Region;
-    initialRegion["latitudeDelta"] = 0.005;
-    initialRegion["longitudeDelta"] = 0.005;
-  };
+  
 
   return (
     <View style={{...SignUpStyles.viewContainer, position:"relative", top:-50}}>
@@ -152,10 +81,9 @@ const Home = ({ navigation }) => {
           followsUserLocation={true}
           showsMyLocationButton={true}
           loadingEnabled={true}
-          onRegionChange={regionChange}
           initialRegion={{
-            latitude: LocationResult.coords.latitude,
-            longitude: LocationResult.coords.longitude,
+            latitude:  LocationState.coords.latitude,
+            longitude:  LocationState.coords.longitude,
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
           }}

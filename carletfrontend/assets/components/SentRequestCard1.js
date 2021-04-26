@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    height: 350,
+    justifyContent:"flex-start",
     width: "100%",
   },
   image: {
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
     position:"relative",
     marginTop: 8,
     marginLeft: 8,
+    marginBottom: 8
   },
   thirdView:{
     flex:1,

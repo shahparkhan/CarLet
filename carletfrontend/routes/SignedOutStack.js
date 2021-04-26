@@ -63,6 +63,7 @@ const signedout = {
     screen: Welcome,
     navigationOptions: {
       headerShown: false,
+      swipeEnabled: false,
     },
   },
   Login: {

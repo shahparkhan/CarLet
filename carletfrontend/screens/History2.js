@@ -62,6 +62,7 @@ const History1 = ({ navigation }) => {
         style={{
           alignItems: "center",
           justifyContent: "center",
+          flex:1
         }}
       >
         <View style={styles.topbar}>

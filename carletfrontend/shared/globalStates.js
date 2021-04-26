@@ -15,6 +15,7 @@ const globalState = () => {
   });
   const [profilename, setProfilename] = useState("Carlet User");
   const [walletamount, setWalletamount] = useState('0')
+  const [drawerOptions, setDrawerOptions] = useState(true)
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -65,6 +66,16 @@ const globalState = () => {
       } catch (e) {
           console.log("loggedout error: ", e)
       }
+      try {
+        let verifiedcheck = await AsyncStorage.getItem('@isverified')
+        if (verifiedcheck === "0"){
+          setDrawerOptions(false)
+        } else {
+          setDrawerOptions(true)
+        }
+      } catch (e) {
+          console.log("loggedout error: ", e)
+      }
     };
     profilepictureandname();
   }, []);
@@ -88,11 +99,15 @@ const globalState = () => {
           return setWalletamount(payload)
       case 'getWalletamount':
           return walletamount
+      case 'setDrawerOptions':
+        return setDrawerOptions(payload)
+      case 'getDrawerOptions':
+          return drawerOptions
       default:
         return "default";
     }
   };
-  return { profilepic, profilename,walletamount, LocationState, actions };
+  return { profilepic, profilename,walletamount, LocationState, drawerOptions, actions };
 };
 
 export default globalState;

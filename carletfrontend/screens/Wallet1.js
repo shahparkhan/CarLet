@@ -14,6 +14,7 @@ import Context from './../shared/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { ScrollView } from "react-native";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 
 const Wallet1 = ({ navigation }) => {
@@ -46,16 +47,14 @@ const Wallet1 = ({ navigation }) => {
     const PickImage = async () =>{
         try {
             let result  = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing:true,
-                aspect:[4,3],
-                quality:1,
-                base64:true,
             })
             // console.log(result)
             if (!result.cancelled)
             {
-              setImage(`data:image/jpeg;base64,${result.base64}`)
+              const manipResult = await ImageManipulator.manipulateAsync(result.uri,[{resize: {height:500}}],{ compress: 0.3, base64:true});
+              setImage(`data:image/jpeg;base64,${manipResult.base64}`)
               setUploadmsg("Image Uploaded")  
             }
         } catch (error) {
@@ -108,6 +107,9 @@ const Wallet1 = ({ navigation }) => {
   }
 
   const generateHandler = async () => {
+    if (TopupAmount == ""){
+      return
+    }
     let myuuid
     let mytoken
     try {
@@ -241,8 +243,8 @@ const Wallet1 = ({ navigation }) => {
           />
         </View>
         <Text style={styles.upload}>Upload Receipt</Text>
-        <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-          <View>
+        <View style={{flexDirection:"row", justifyContent:"space-between", marginTop:16}}>
+          <View style={{alignItems:"center"}}>
             <TouchableButton
               title="UPLOAD"
               onPress={PickImage}
@@ -321,7 +323,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#263238",
     alignSelf: "center",
-    margin: 16,
     marginTop: 32
   },
   walletstyle:{
