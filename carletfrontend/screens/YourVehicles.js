@@ -26,7 +26,7 @@ const YourVehicles = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={{flex:1}}>
       <View style={styles.topbar}>
         <View
           style={{
@@ -57,10 +57,7 @@ const YourVehicles = ({ navigation }) => {
       </View>
       <Text style={styles.heading}>Your Vehicles</Text>
       <FlatList data={searchData} renderItem={renderCard} keyExtractor={item => item.vehicle_id}></FlatList>
-      <Image
-        style={styles.smallcar}
-        source={require("./../assets/smallcar.png")}
-      />
+      
     </View>
   );
 };

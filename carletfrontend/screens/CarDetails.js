@@ -79,7 +79,7 @@ const CarDetails = ({navigation}) => {
   }
 
   const contactHandler = () => {
-    Alert.alert(`You can call the owner on the following number: ${navigation.getParam('phone_number')}`)
+    Alert.alert(`You can call the owner on the following number:`, `${navigation.getParam('phone_number')}`)
   }
 
   const renderCard = ({ item, index, separators }) => {

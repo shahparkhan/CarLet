@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const RegisterVehicle4 = ({ navigation }) => {
   const [Pics, setPics] = useState([
@@ -34,16 +35,14 @@ const RegisterVehicle4 = ({ navigation }) => {
   const pickImage = async (index) => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-        base64: true,
       });
       // console.log(result)
       if (!result.cancelled) {
+        const manipResult = await ImageManipulator.manipulateAsync(result.uri,[{resize: {height:500}}],{ compress: 0.3, base64:true});
         let pics = [...Pics];
-        pics[index] = { uri: `data:image/jpeg;base64,${result.base64}` };
+        pics[index] = { uri: `data:image/jpeg;base64,${manipResult.base64}` };
         setPics([...pics]);
         setImageCount((state) => state + 1);
       }

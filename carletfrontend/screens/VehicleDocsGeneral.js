@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 
 export default function Register1( {navigation} ) {
@@ -14,6 +15,7 @@ export default function Register1( {navigation} ) {
     const [errorMsg, seterrorMsg] = useState(``);
     const [error, seterror] = useState(false);
     const [image,setImage] = useState(null);
+    const [Uploadmsg, setUploadmsg] = useState("");
 
     useEffect(()=>
     {
@@ -39,16 +41,15 @@ export default function Register1( {navigation} ) {
     const PickImage = async () =>{
         try {
             let result  = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing:true,
-                aspect:[4,3],
-                quality:1,
-                base64:true,
             })
             // console.log("rrr", result)
             if (!result.cancelled)
             {
-                setImage(`data:image/jpeg;base64,${result.base64}`)
+                const manipResult = await ImageManipulator.manipulateAsync(result.uri,[{resize: {height:500}}],{ compress: 0.3, base64:true});
+                setImage(`data:image/jpeg;base64,${manipResult.base64}`)
+                setUploadmsg("Image Uploaded")  
 
             }
         } catch (error) {
@@ -150,14 +151,22 @@ export default function Register1( {navigation} ) {
             <Text style = {styles.subheading}>
                 {navigation.getParam('subheading')}
             </Text>
+            <View style={{flexDirection:"row", justifyContent:"space-between",alignItems:"center", marginBottom: 16, marginTop:32}}>
             <Text style = {styles.key}>
                 {navigation.getParam('title')} Picture
             </Text>
-            <TouchableButton
-                title="UPLOAD"
-                onPress={PickImage}
-                buttonposition={styles.uploadposition}>
-            </TouchableButton>
+            <View style={{alignItems:"center", alignSelf:"flex-end", marginRight:16}}>
+                <TouchableButton
+                    title="UPLOAD"
+                    onPress={PickImage}
+                    buttonposition={styles.uploadposition}>
+                </TouchableButton>
+                <View style={styles.uploadmsg}>
+                    <Text style={styles.greenText}>{Uploadmsg}</Text>
+                </View>
+            </View>
+            </View>
+            
 
             </KeyboardAwareScrollView>
             <TouchableButton
@@ -207,8 +216,7 @@ const styles = StyleSheet.create({
         fontFamily:"Nunito-Regular",
         fontSize:16,
         position:'relative',
-        left:16,
-        marginTop: 52,
+        marginLeft:16,
         width:"50%",
         justifyContent:"flex-start"
     },
@@ -221,10 +229,6 @@ const styles = StyleSheet.create({
         right: 16,
     },
     uploadposition : {
-        position: "relative",
-        marginTop: -30,
-        alignSelf: "flex-end",
-        right:40
     },
     buttonposition: {
         alignSelf:'center',
@@ -236,5 +240,12 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         position: "relative",
         marginTop: 16
+    },
+    uploadmsg: {
+      flexDirection: "row",
+    },
+    greenText: {
+      fontFamily: "Nunito-Regular",
+      color: "green",
     },
 })

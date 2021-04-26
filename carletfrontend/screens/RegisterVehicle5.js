@@ -79,7 +79,7 @@ const RegisterVehicle5 = ({ navigation }) => {
         responseJson = await response.json()
         console.log('server response: ', responseJson)
         if (responseJson['Success'] != undefined){
-          navigation.navigate('SuccessPrompt', {title: "Vehicle Registration", body: "Your vehicle has been registered successfully! We will soon send you the verify the vehicle."})
+          navigation.navigate('SuccessPrompt', {title: "Vehicle Registration", body: "Your vehicle has been registered successfully! We will soon verify your vehicle."})
         } else {
           navigation.navigate('ErrorPrompt', {title: "Vehicle Registration", body: "There was an error while registering your vehicle. Please try again later."})
         }

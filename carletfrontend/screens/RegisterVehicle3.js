@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import TouchableButton from "../assets/components/TouchableButton";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const RegisterVehicle3 = ({ navigation }) => {
   const [RegistrationPDF, setRegistrationPDF] = useState("");
@@ -33,15 +34,13 @@ const RegisterVehicle3 = ({ navigation }) => {
   const pickImageRegistration = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-        base64: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true
       });
       // console.log(result)
       if (!result.cancelled) {
-        setRegistrationPDF(`data:image/jpeg;base64,${result.base64}`);
+        const manipResult = await ImageManipulator.manipulateAsync(result.uri,[{resize: {height:500}}],{ compress: 0.3, base64:true});
+        setRegistrationPDF(`data:image/jpeg;base64,${manipResult.base64}`);
         setRegistrationMsg("Image uploaded");
       }
     } catch (error) {
@@ -52,15 +51,13 @@ const RegisterVehicle3 = ({ navigation }) => {
   const pickImageInsurance = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-        base64: true,
       });
       // console.log(result)
       if (!result.cancelled) {
-        setInsurancePDF(`data:image/jpeg;base64,${result.base64}`);
+        const manipResult = await ImageManipulator.manipulateAsync(result.uri,[{resize: {height:500}}],{compress: 0.3,  base64:true});
+        setInsurancePDF(`data:image/jpeg;base64,${manipResult.base64}`);
         setInsuranceMsg("Image uploaded");
       }
     } catch (error) {
@@ -71,15 +68,13 @@ const RegisterVehicle3 = ({ navigation }) => {
   const pickImagetracker = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-        base64: true,
       });
       // console.log(result)
       if (!result.cancelled) {
-        setTrackerPDF(`data:image/jpeg;base64,${result.base64}`);
+        const manipResult = await ImageManipulator.manipulateAsync(result.uri,[{resize: {height:500}}],{ compress: 0.3, base64:true});
+        setTrackerPDF(`data:image/jpeg;base64,${manipResult.base64}`);
         setTrackerMsg("Image uploaded");
       }
     } catch (error) {
@@ -112,7 +107,7 @@ const RegisterVehicle3 = ({ navigation }) => {
         <Text style={styles.heading}>Documents</Text>
 
         <View style={styles.uploadView}>
-          <Text style={styles.text}>Registration pdf</Text>
+          <Text style={styles.text}>Registration Image</Text>
           <TouchableButton
             title="UPLOAD"
             onPress={pickImageRegistration}
@@ -122,7 +117,7 @@ const RegisterVehicle3 = ({ navigation }) => {
           <Text style={styles.greenText}>{RegistrationMsg}</Text>
         </View>
         <View style={styles.uploadView}>
-          <Text style={styles.text}>Insurance pdf</Text>
+          <Text style={styles.text}>Insurance Image</Text>
           <TouchableButton
             title="UPLOAD"
             onPress={pickImageInsurance}
@@ -132,7 +127,7 @@ const RegisterVehicle3 = ({ navigation }) => {
           <Text style={styles.greenText}>{InsuranceMsg}</Text>
         </View>
         <View style={styles.uploadView}>
-          <Text style={styles.text}>Tracker pdf</Text>
+          <Text style={styles.text}>Tracker Image</Text>
           <TouchableButton
             title="UPLOAD"
             onPress={pickImagetracker}

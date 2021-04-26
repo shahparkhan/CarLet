@@ -2,8 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import TouchableButton from "../assets/components/TouchableButton";
 import RegisterStyles from "./RegisterStyles";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Register5() {
+
+export default function Register5({navigation}) {
 
     const onPressHandler = async () => {
         try {
@@ -11,6 +13,7 @@ export default function Register5() {
           await AsyncStorage.setItem('@isverified', '0')
 
         } catch (e) {
+            console.log("cccccce")
         }
 
         navigation.navigate('Register')

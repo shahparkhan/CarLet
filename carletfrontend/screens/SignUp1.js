@@ -152,7 +152,7 @@ const Signup = ({ navigation }) => {
           }}
           changeHandler={phonenumberHandler}
           secureTextEntry={false}
-          keyboardType={"numeric"}
+          keyboardType={"phone-pad"}
         />
         </ScrollView>
         </KeyboardAwareScrollView>

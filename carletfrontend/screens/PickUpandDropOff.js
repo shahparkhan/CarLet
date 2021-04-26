@@ -4,7 +4,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import TouchableButton from "../assets/components/TouchableButton";
 import SignUpStyles from "./SignUpStyles";
 // import CalendarPicker from "react-native-calendar-picker";
-import Calendar from "../assets/components/Calendar";
+// import Calendar from "../assets/components/Calendar";
+import Calendar from "react-native-calendar-range-picker";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchBar from "react-native-elements/dist/searchbar/SearchBar-ios";
 
@@ -62,16 +63,16 @@ const PickUpandDropOff = ({navigation}) => {
 
     console.log("send these ", sendpickup, " ", senddropoff)
 
+    const startDate = new Date(pickup[2], pickup[1], pickup[0])
+    const endDate = new Date(dropoff[2], dropoff[1], dropoff[0])
 
-    
-
-    if (parseInt(pickup[0]) >= parseInt(dropoff[0])) {
+    if (PickupText === 'Set Pickup' || DropOffText === 'Set Dropoff') {
+      setError(true);
+      setErrorMsg("Please enter both Pickup and Dropoff dates");
+    } else if (startDate > endDate) {
       setError(true);
       setErrorMsg("Pick up date can not be after drop off date");
       // setBorderColor("tomato");
-    } else if (PickupText === 'Set Pickup' || DropOffText === 'Set Dropoff') {
-      setError(true);
-      setErrorMsg("Please enter both Pickup and Dropoff dates");
     } else {
       setError(false);
       setErrorMsg("");
@@ -98,8 +99,8 @@ const PickUpandDropOff = ({navigation}) => {
       })
       let responseJson
       try {
-          let response = await fetch('http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/searchvehicle/',{
-          method: 'post',
+          let response = await fetch(`http://ec2-65-0-12-151.ap-south-1.compute.amazonaws.com/searchvehicle/${myuuid}/`,{
+          method: 'patch',
           mode: 'no-cors',
           headers: {
               'Accept': 'application/json',
@@ -133,6 +134,24 @@ const PickUpandDropOff = ({navigation}) => {
     }
   };
 
+  const addDateHandler = (e) => {
+    console.log(e)
+    setModalVisiblePickUp(false)
+    const date = e.split("-")
+    const f = `${date[2]}/${date[1]}/${date[0]}`
+    setpickUpDate(f);
+    setPickupText(f);
+  }
+
+  const addDateHandler2 = (e) => {
+    console.log(e)
+    setModalVisibleDropOff(false)
+    const date = e.split("-")
+    const f = `${date[2]}/${date[1]}/${date[0]}`
+    setDropoffDate(f);
+    setDropOffText(f);
+  }
+
   return (
     <View style={{ alignItems: "center"}}>
       <Text style={styles.text}>Pickup and Dropoff</Text>
@@ -150,15 +169,31 @@ const PickUpandDropOff = ({navigation}) => {
             />
           </Pressable>
         </View>
-        <Calendar
+        {/* <Calendar
           modalVisible={modalVisiblePickUp}
-          addDate={(e) => {
+          addDate={(e, f) => {
             setpickUpDate(e);
             setPickupText(e);
             setBorderColor("#21212");
           }}
           setModalVisible={setModalVisiblePickUp}
-        />
+        /> */}
+        
+
+        <Modal
+          transparent={false}
+          visible={modalVisiblePickUp}
+        >
+          <View style={{ flex: 1 }}>
+          <Calendar
+            singleSelectMode={true}
+            onChange={addDateHandler}
+            disabledBeforeToday={true}
+            style={{holidayColor: '#ffc107', todayColor: '#ffa000',}}
+          />
+        </View>
+        </Modal>
+        
         <View style={{ ...styles.textboxwithicon, borderColor: BorderColor }}>
           <Text style={{ color: "#212121", fontFamily:"Nunito-Light" }}>{DropOffText}</Text>
           <Pressable onPressIn={pressIn2} onPressOut={pressOutDropOff}>
@@ -170,14 +205,26 @@ const PickUpandDropOff = ({navigation}) => {
             />
           </Pressable>
         </View>
-        <Calendar
+        <Modal
+          transparent={false}
+          visible={modalVisibleDropOff}
+        >
+          <View style={{ flex: 1 }}>
+          <Calendar
+            singleSelectMode={true}
+            onChange={addDateHandler2}
+            disabledBeforeToday={true}
+            style={{holidayColor: '#ffc107', todayColor: '#ffa000',}}
+          />
+        </View>
+        </Modal>
+        {/* <Calendar
           modalVisible={modalVisibleDropOff}
           addDate={(e) => {
-            setDropoffDate(e);
-            setDropOffText(e);
+            
           }}
           setModalVisible={setModalVisibleDropOff}
-        />
+        /> */}
       </View>
       <TouchableButton
         buttonposition={styles.buttonposition}
