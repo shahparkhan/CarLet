@@ -1,6 +1,6 @@
 # CarLet
 
-This is a car-sharing marketplace application. The application allows providers to give their vehicle(s) on rent and seekers to get vehicle(s) on rent. The frontend is built using ReactNaitve and the backend is built using Django with SQLite database. 
+The project is a Car Sharing Marketplace application. The application allows providers to rent out their vehicle(s) to potential customers in need. The frontend is built using ReactNaitve and the backend is built using Django with SQLite database.
 
 
 ## Application Demo
